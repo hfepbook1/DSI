@@ -1,0 +1,19 @@
+name: "Data Science I"
+output_dir: "."
+navbar:
+  title: "Data Science I"
+  right:
+    - text: "Topics"
+      href: research.html
+    - text: "Homework"
+      href: papers.html
+    - text: "Datasets"
+      href: teaching.html
+    - icon: fa-github fa-lg
+      href: http://github.com/jeff-goldsmith/DSI/
+output:
+  html_document:
+    theme: flatly
+    include:
+      after_body: footer.html
+    css: styles.css

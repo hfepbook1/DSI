@@ -1,0 +1,15 @@
+---
+title: "Data Science I"
+---
+
+
+### Synopsis
+
+Gonna make a data science class; this page will eventually host the course material.
+
+<br>
+
+### Details
+
+Instructor, TAs, class location, link to syllabus. 
+
