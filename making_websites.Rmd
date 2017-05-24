@@ -1,0 +1,22 @@
+---
+title: "Making a website"
+---
+
+This page outlines the process of making a basic website using R Markdown, and hosting that website on GitHub. The content assumes some familiarity with both of those. 
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div>
+
+## Example
+
+
+
+## Other materials
+
+There's a lot of material online to help with making websites:
+
+* RStudio's [guide](http://rmarkdown.rstudio.com/rmarkdown_websites.html)
+* This [walk through](http://nickstrayer.me/RMarkdown_Sites_tutorial/)
+* GitHub [Pages](https://pages.github.com)
