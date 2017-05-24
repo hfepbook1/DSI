@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -19,7 +19,11 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -159,8 +163,111 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
 
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -202,6 +309,14 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Making websites</h1>
@@ -221,41 +336,82 @@ $(document).ready(function () {
 <h2>Example</h2>
 <div id="create-a-local-directory" class="section level3">
 <h3>Create a local directory</h3>
-<p>Naming structure (if this is a personal site vs anything else)</p>
+<p>This is going to hold everything you want on your website, and the name does matter a bit:</p>
+<ul>
+<li>Call it <code>&lt;YOUR_GH_NAME&gt;.github.io</code> if you want this to be your personal website</li>
+<li>Call it whatever you want if it will be something different (tip: website names should be short and easy-to-remember; they’re also generally case-sensitive)</li>
+</ul>
 </div>
 <div id="basic-elements" class="section level3">
 <h3>Basic elements</h3>
-<p>index.Rmd</p>
-<p>YAML</p>
-<p>Site nav</p>
+<p>Copy the files in <a href="resources/Website_Template.zip">this website template</a> into your new directory.</p>
+<p>All websites have an <code>index.html</code> file – it’s the most common name for the default page and gets served up whenever someone shows up at your site. We’ll build that using the <code>index.Rmd</code> file, which is shown below.</p>
+<pre class="r"><code>---
+title: &quot;Holy cow!&quot;
+---
+
+### I have a webpage!
+
+And I can put all kinds of stuff on it!</code></pre>
+<p>This has usual RMD stuff: a title, some headings, some content. Anything you could put in any other RMD file, you can put in here, too. Then, as usual, you can knit to create <code>index.html</code>; you should get something like the following:</p>
+<p><img src="images/making_websites_First_Website.png" style="width:75%"></p>
+<p>This is a bit different from knitting a usual RMD file to HTML – in particular, there’s a navigation bar across the top that has nothing to do with <code>index.Rmd</code>. That bit of magic came from <code>_site.yml</code>, which is below.</p>
+<pre class="r"><code>name: &quot;Yay internet!&quot;
+output_dir: &quot;.&quot;
+navbar:
+  title: &quot;Home&quot;
+  right:
+    - text: &quot;About&quot;
+      href: about.html
+    - icon: fa-envelope fa-lg
+      href: mailto:&lt;you@youremail.com&gt;
+    - icon: fa-github fa-lg
+      href: http://github.com/&lt;YOUR_GH_NAME&gt;/
+output:
+  html_document</code></pre>
+<p>This contains some usual kinds of formatting stuff, like <code>output</code> options, but also the <code>navbar</code>. Importantly, <code>_site.yml</code> is used by each page in your site (hence the name).</p>
+<p>There are several ways you can arrange this (right vs. left; single pages vs. drop-down menus) but the idea is to give a way to navigate through your <em>site</em>, not just your <em>page</em>. The two icons are there to encourage good practices – an easy way for someone to email you, and a link to the source for the site on GitHub. I’ve also included an “About” page, which is pretty common for pages describing projects.</p>
 </div>
 <div id="common-content" class="section level3">
 <h3>Common content</h3>
-<p>plain text</p>
-<p>r code (remember you can run code here)</p>
-<p>links (external and internal)</p>
-<p>images (i like to keep these in a sub-folder; do whatever you want)</p>
+<p>Your website can include text, of course; like I keep saying, you’re writing in RMD. You can also include code and figures generated from analyses.</p>
+<p>One important feature of your site will be hyperlinks. The general format for links is <code>[text for link](address.of.link)</code>. So, to link to my favorite tool for data science, I’d use <code>[this](google.com)</code>; to link to the about page on this site, I’d use <a href="about.html">about</a>.</p>
+<p>Sometimes you want to add images – pictures you’ve taken or found on the internets, rather than things that are generated from analyses. Honestly, this is a bit more involved than other things you might want to do. RMD’s default image settings (using <code>![](image.jpg)</code>) aren’t great. I often use a line of HTML:</p>
+<pre class="r"><code>&lt;img src=&quot;images/image.jpg&quot; style=&quot;width:75%&quot;&gt;</code></pre>
+<p>This will load and display <code>images/image.jpg</code> (I usually keep my images inside an <code>images</code> folder to reduce clutter). The <code>style</code> components control things like adding a border or adjusting the image height or width, along with lots of other things – googling around can help if you want to change the style settings. If you want your style rules to apply to all images it can be easier to write a short CSS file, but that’s beyond what we’re going to do now.</p>
 </div>
 <div id="r-project" class="section level3">
 <h3>R Project</h3>
-<p>(not necessary, but why not?)</p>
-<p>(build site)</p>
+<p>At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don’t have to add an R Project to the directory, but it doesn’t hurt and often helps, and I recommend it.</p>
+<p>One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the “build website” button. This is really just a shortcut to <code>rmarkdown::render_site()</code> command, but it’s still nice.</p>
+<p><img src="images/making_websites_RProj.png" style="width:75%"></p>
 </div>
 <div id="hosting-on-github" class="section level3">
 <h3>Hosting on GitHub</h3>
-<p>(name for primary webpage)</p>
-<p>(name for sub-pages)</p>
-<p>Change settings to publish</p>
+<p>Once you’ve built your site, your directory should include <code>index.html</code> and <code>about.html</code> (in addition to the respective RMD files), <code>_site.yml</code>, and a folder with some stuff you don’t need to worry about. That’s great – you have a “web” site! Except it exists only on your computer, so …</p>
+<p>This is where GitHub helps. By setting a few options, GitHub will recognize your repository as a website and host it as such. If your repo is named <code>&lt;YOUR_GH_NAME&gt;.github.io</code>, that’s your personal site address. If your repo has another name, your site address will be <code>&lt;YOUR_GH_NAME&gt;.github.io/&lt;YOUR_PROJECT_NAME&gt;</code>.</p>
+<p>So, in your directory with your site and R Project:</p>
+<ul>
+<li>Turn on Git</li>
+<li>Add the repo to your client</li>
+<li>Create a remote repo</li>
+<li>Push what you have to remote</li>
+<li>Log in to GitHub, find the repo, and navigate to settings</li>
+<li>Set the GitHub pages source to the master branch (see below)</li>
+<li>That’s it!</li>
+</ul>
+<p><img src="images/making_websites_GH_Settings.png" style="width:65%"></p>
 </div>
 <div id="tips-for-building-websites" class="section level3">
 <h3>Tips for building websites</h3>
-<p>Keep content up-to-date</p>
-<p>Copy structures from other websites</p>
+<p>The important stuff on your website is the content – what you say, how clearly you say it, and how easy it is for a reader to find information. Keeping things up-to-date is critical, and can require frequent tweaking (of e.g. your resume or list of projects).</p>
+<p>Default themes in GitHub are pretty good. You can modify these some; speaking from experience, you can also fall down a rabbit hole and spend a few days learning CSS to make bigger changes. That’s probably not a good use of your time, and you will eventually get tired of any styling you do anyway. Stick to a default theme and change it from time to time.</p>
+<p>The best way to extend your website is to copy from other websites you like. You can borrow structurally (e.g. how content is organized) or specific elements (e.g. how that person added a twitter button). People generally understand that this happens (and make their code public to help!), but if you borrow a lot it’s friendly to shoot the person an email to say their stuff was useful.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p>There’s a lot of material online to help with making websites:</p>
+<p>There’s a lot of material online to help with making websites. You should use them.</p>
 <ul>
 <li>RStudio’s <a href="http://rmarkdown.rstudio.com/rmarkdown_websites.html">guide</a></li>
 <li>This <a href="http://nickstrayer.me/RMarkdown_Sites_tutorial/">walk through</a></li>
@@ -269,6 +425,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 
@@ -290,7 +448,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
