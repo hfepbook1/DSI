@@ -1,5 +1,5 @@
 ---
-title: "Making a website"
+title: "Making websites"
 ---
 
 This page outlines the process of making a basic website using R Markdown, and hosting that website on GitHub. The content assumes some familiarity with both of those. 
@@ -11,6 +11,51 @@ This page outlines the process of making a basic website using R Markdown, and h
 
 ## Example
 
+### Create a local directory
+
+Naming structure (if this is a personal site vs anything else)
+
+### Basic elements
+
+index.Rmd
+
+YAML
+
+Site nav
+
+
+### Common content
+
+plain text
+
+r code (remember you can run code here)
+
+links (external and internal)
+
+images (i like to keep these in a sub-folder; do whatever you want)
+
+
+### R Project
+
+(not necessary, but why not?)
+
+(build site)
+
+
+### Hosting on GitHub
+
+(name for primary webpage)
+
+(name for sub-pages)
+
+Change settings to publish
+
+
+### Tips for building websites
+
+Keep content up-to-date
+
+Copy structures from other websites
 
 
 ## Other materials
