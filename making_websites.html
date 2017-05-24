@@ -23,7 +23,6 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -163,14 +162,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 
@@ -309,14 +300,6 @@ div.tocify {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
-
 
 
 <h1 class="title toc-ignore">Making websites</h1>
@@ -331,6 +314,7 @@ div.tocify {
 <div style="margin-bottom:5px">
 <strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
+<p><br></p>
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
@@ -353,7 +337,7 @@ title: &quot;Holy cow!&quot;
 ### I have a webpage!
 
 And I can put all kinds of stuff on it!</code></pre>
-<p>This has usual RMD stuff: a title, some headings, some content. Anything you could put in any other RMD file, you can put in here, too. Then, as usual, you can knit to create <code>index.html</code>; you should get something like the following:</p>
+<p>This has usual RMD stuff: a title, some headings, some content. Anything you could put in any other RMD file, you can put in here, too. Then, as usual, you can knit to create <code>index.html</code>; you should get something like the following.</p>
 <p><img src="images/making_websites_First_Website.png" style="width:75%"></p>
 <p>This is a bit different from knitting a usual RMD file to HTML – in particular, there’s a navigation bar across the top that has nothing to do with <code>index.Rmd</code>. That bit of magic came from <code>_site.yml</code>, which is below.</p>
 <pre class="r"><code>name: &quot;Yay internet!&quot;
@@ -374,21 +358,21 @@ output:
 </div>
 <div id="common-content" class="section level3">
 <h3>Common content</h3>
-<p>Your website can include text, of course; like I keep saying, you’re writing in RMD. You can also include code and figures generated from analyses.</p>
-<p>One important feature of your site will be hyperlinks. The general format for links is <code>[text for link](address.of.link)</code>. So, to link to my favorite tool for data science, I’d use <code>[this](google.com)</code>; to link to the about page on this site, I’d use <a href="about.html">about</a>.</p>
-<p>Sometimes you want to add images – pictures you’ve taken or found on the internets, rather than things that are generated from analyses. Honestly, this is a bit more involved than other things you might want to do. RMD’s default image settings (using <code>![](image.jpg)</code>) aren’t great. I often use a line of HTML:</p>
+<p>Your website can include text, of course; you can also include code and figures generated from analyses. Like I keep saying, you’re writing in RMD.</p>
+<p>One important feature of your site will be hyperlinks. The general format for links is <code>[text for link](address.of.link)</code>. So, to link to my favorite tool for data science, I’d use <code>[this](google.com)</code>; to link to the about page on this site, I’d use <code>[about](about.html)</code>.</p>
+<p>Sometimes you want to add images – pictures you’ve taken or found on the internets, rather than things that are generated from analyses. This is a bit more involved than other things you might want to do. RMD’s default image settings (using <code>![](image.jpg)</code>) aren’t great. I often use a line of HTML:</p>
 <pre class="r"><code>&lt;img src=&quot;images/image.jpg&quot; style=&quot;width:75%&quot;&gt;</code></pre>
 <p>This will load and display <code>images/image.jpg</code> (I usually keep my images inside an <code>images</code> folder to reduce clutter). The <code>style</code> components control things like adding a border or adjusting the image height or width, along with lots of other things – googling around can help if you want to change the style settings. If you want your style rules to apply to all images it can be easier to write a short CSS file, but that’s beyond what we’re going to do now.</p>
 </div>
 <div id="r-project" class="section level3">
 <h3>R Project</h3>
 <p>At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don’t have to add an R Project to the directory, but it doesn’t hurt and often helps, and I recommend it.</p>
-<p>One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the “build website” button. This is really just a shortcut to <code>rmarkdown::render_site()</code> command, but it’s still nice.</p>
+<p>One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the “build website” button. This is really just a shortcut to <code>rmarkdown::render_site()</code>, but it’s still nice.</p>
 <p><img src="images/making_websites_RProj.png" style="width:75%"></p>
 </div>
 <div id="hosting-on-github" class="section level3">
 <h3>Hosting on GitHub</h3>
-<p>Once you’ve built your site, your directory should include <code>index.html</code> and <code>about.html</code> (in addition to the respective RMD files), <code>_site.yml</code>, and a folder with some stuff you don’t need to worry about. That’s great – you have a “web” site! Except it exists only on your computer, so …</p>
+<p>Once you’ve built your site, your directory should include <code>index.html</code> and <code>about.html</code> (in addition to the respective RMD files), <code>_site.yml</code>, the .Rproj, and a folder with some stuff you don’t need to worry about. That’s great – you have a website! Except it exists only on your computer, so … not really a <em>web</em> site…</p>
 <p>This is where GitHub helps. By setting a few options, GitHub will recognize your repository as a website and host it as such. If your repo is named <code>&lt;YOUR_GH_NAME&gt;.github.io</code>, that’s your personal site address. If your repo has another name, your site address will be <code>&lt;YOUR_GH_NAME&gt;.github.io/&lt;YOUR_PROJECT_NAME&gt;</code>.</p>
 <p>So, in your directory with your site and R Project:</p>
 <ul>
@@ -398,20 +382,20 @@ output:
 <li>Push what you have to remote</li>
 <li>Log in to GitHub, find the repo, and navigate to settings</li>
 <li>Set the GitHub pages source to the master branch (see below)</li>
-<li>That’s it!</li>
 </ul>
 <p><img src="images/making_websites_GH_Settings.png" style="width:65%"></p>
+<p>That’s it!</p>
 </div>
 <div id="tips-for-building-websites" class="section level3">
 <h3>Tips for building websites</h3>
-<p>The important stuff on your website is the content – what you say, how clearly you say it, and how easy it is for a reader to find information. Keeping things up-to-date is critical, and can require frequent tweaking (of e.g. your resume or list of projects).</p>
+<p>The important stuff on your website is the content – what you say, how clearly you say it, and how easy it is for a reader to find the information they care about. Keeping things up-to-date is critical, and can require frequent tweaking (of e.g. your resume or list of projects).</p>
 <p>Default themes in GitHub are pretty good. You can modify these some; speaking from experience, you can also fall down a rabbit hole and spend a few days learning CSS to make bigger changes. That’s probably not a good use of your time, and you will eventually get tired of any styling you do anyway. Stick to a default theme and change it from time to time.</p>
 <p>The best way to extend your website is to copy from other websites you like. You can borrow structurally (e.g. how content is organized) or specific elements (e.g. how that person added a twitter button). People generally understand that this happens (and make their code public to help!), but if you borrow a lot it’s friendly to shoot the person an email to say their stuff was useful.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p>There’s a lot of material online to help with making websites. You should use them.</p>
+<p>There’s a lot of material online to help with making websites. You should use it.</p>
 <ul>
 <li>RStudio’s <a href="http://rmarkdown.rstudio.com/rmarkdown_websites.html">guide</a></li>
 <li>This <a href="http://nickstrayer.me/RMarkdown_Sites_tutorial/">walk through</a></li>
