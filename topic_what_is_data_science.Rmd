@@ -1,13 +1,8 @@
 ---
-title: "Making websites"
-output:
-  html_document: 
-    toc: true
-    toc_float: true
+title: "What is Data Science?"
 ---
 
-This page outlines the process of making a basic website using R Markdown, and hosting that website on GitHub. The content assumes some familiarity with both of those. 
-
+Almost unheard of five years ago, "data science" has become ubiquitous in media, industry, and academia. Because this is a course in data science, we should spend some time understand various meanings of the term, how we'll use it in this class, and how you can learn data science.
 
 ## Some slides
 
@@ -15,113 +10,19 @@ This page outlines the process of making a basic website using R Markdown, and h
 <div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
-## Example
-
-### Create a local directory
-
-This is going to hold everything you want on your website, and the name does matter a bit:
-
-* Call it `<YOUR_GH_NAME>.github.io` if you want this to be your personal website
-* Call it whatever you want if it will be something different (tip: website names should be short and easy-to-remember; they're also generally case-sensitive)
-
-### Basic elements
-
-Copy the files in [this website template](resources/Website_Template.zip) into your new directory. 
-
-All websites have an `index.html` file -- it's the most common name for the default page and gets served up whenever someone shows up at your site. We'll build that using the `index.Rmd` file, which is shown below.
-
-```{r index, eval = FALSE}
----
-title: "Holy cow!"
----
-
-### I have a webpage!
-
-And I can put all kinds of stuff on it!
-```
-
-This has usual RMD stuff: a title, some headings, some content. Anything you could put in any other RMD file, you can put in here, too. Then, as usual, you can knit to create `index.html`; you should get something like the following.
-
-<img src="images/making_websites_First_Website.png" style="width:75%">
-
-This is a bit different from knitting a usual RMD file to HTML -- in particular, there's a navigation bar across the top that has nothing to do with `index.Rmd`. That bit of magic came from `_site.yml`, which is below.
-
-```{r yml, eval = FALSE}
-name: "Yay internet!"
-output_dir: "."
-navbar:
-  title: "Home"
-  right:
-    - text: "About"
-      href: about.html
-    - icon: fa-envelope fa-lg
-      href: mailto:<you@youremail.com>
-    - icon: fa-github fa-lg
-      href: http://github.com/<YOUR_GH_NAME>/
-output:
-  html_document
-```
-
-This contains some usual kinds of formatting stuff, like `output` options, but also the `navbar`. Importantly, `_site.yml` is used by each page in your site (hence the name).
-
-There are several ways you can arrange this (right vs. left; single pages vs. drop-down menus) but the idea is to give a way to navigate through your _site_, not just your _page_. The two icons are there to encourage good practices -- an easy way for someone to email you, and a link to the source for the site on GitHub. I've also included an "About" page, which is pretty common for pages describing projects.
-
-
-### Common content
-
-Your website can include text, of course; you can also include code and figures generated from analyses. Like I keep saying, you're writing in RMD.
-
-One important feature of your site will be hyperlinks. The general format for links is `[text for link](address.of.link)`. So, to link to my favorite tool for data science, I'd use `[this](google.com)`; to link to the about page on this site, I'd use `[about](about.html)`.
-
-Sometimes you want to add images -- pictures you've taken or found on the internets, rather than things that are generated from analyses. This is a bit more involved than other things you might want to do. RMD's default image settings (using `![](image.jpg)`) aren't great. I often use a line of HTML:
-```{r, eval = FALSE}
-<img src="images/image.jpg" style="width:75%">
-```
-This will load and display `images/image.jpg` (I usually keep my images inside an `images` folder to reduce clutter). The `style` components control things like adding a border or adjusting the image height or width, along with lots of other things -- googling around can help if you want to change the style settings. If you want your style rules to apply to all images it can be easier to write a short CSS file (and add it to your `_site.yml` so they apply site-wide), but that's beyond what we're going to do now.
-
-
-### R Project
-
-At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don't have to add an R Project to the directory, but it doesn't hurt and often helps, and I recommend it.
-
-One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the "build website" button. This is really just a shortcut to `rmarkdown::render_site()`, but it's still nice. 
-
-<img src="images/making_websites_RProj.png" style="width:75%">
-
-### Hosting on GitHub
-
-Once you've built your site, your directory should include `index.html` and `about.html` (in addition to the respective RMD files), `_site.yml`, the .Rproj, and a folder with some stuff you don't need to worry about. That's great -- you have a website! Except it exists only on your computer, so ... not really a _web_ site...
-
-This is where GitHub helps. By setting a few options, GitHub will recognize your repository as a website and host it as such. If your repo is named `<YOUR_GH_NAME>.github.io`, that's your personal site address. If your repo has another name, your site address will be `<YOUR_GH_NAME>.github.io/<YOUR_PROJECT_NAME>`.
-
-So, in your directory with your site and R Project:
-
-* Turn on Git
-* Add the repo to your client
-* Create a remote repo
-* Push what you have to remote
-* Log in to GitHub, find the repo, and navigate to settings
-* Set the GitHub pages source to the master branch (see below)
-
-<img src="images/making_websites_GH_Settings.png" style="width:65%">
-
-That's it!
-
-
-### Tips for building websites
-
-The important stuff on your website is the content -- what you say, how clearly you say it, and how easy it is for a reader to find the information they care about. Keeping things up-to-date is critical, and can require frequent tweaking (of e.g. your resume or list of projects). 
-
-Default themes in GitHub are pretty good. You can modify these some; speaking from experience, you can also fall down a rabbit hole and spend a few days learning CSS to make bigger changes. That's probably not a good use of your time, and you will eventually get tired of any styling you do anyway. Stick to a default theme and change it from time to time.
-
-The best way to extend your website is to copy from other websites you like. You can borrow structurally (e.g. how content is organized) or specific elements (e.g. how that person added a twitter button). People generally understand that this happens (and make their code public to help!), but if you borrow a lot it's friendly to shoot the person an email to say their stuff was useful.
-
-
 ## Other materials
 
-There's a lot of material online to help with making websites. You should use it. 
+Lots of folks have opinions about what data science is. Here's a collection of things that are worth reading (or watching).
 
-* RStudio's [guide](http://rmarkdown.rstudio.com/rmarkdown_websites.html)
-* This [walk through](http://nickstrayer.me/RMarkdown_Sites_tutorial/)
-* GitHub [Pages](https://pages.github.com)
+* There was a session at JSM 2015 called "The statistics identity crisis: am I really a data scientist?". All the talks were great; for now, two are especially relevant:
+    * Alyssa Frazee's ["Am I a Data Scientist"](https://youtu.be/JLs01Z5baSU?t=102)
+    * Chris Volinsky's ["How Industry Views Data Science Education in Statistics Departments"](https://youtu.be/JLs01Z5baSU?t=1063)
+* Hilary Parker's ["Opinionated Analysis Development"](https://www.rstudio.com/resources/videos/opinionated-analysis-development/) is a strong argument in favor of having opinions
+* Angela Bassa talks about ["Corporate Data Science"](https://www.youtube.com/watch?v=b9ZLXwAuUyw&app=desktop), which is useful complement to academic data science
 
+We also touched on useful resources for learning data science. Each class session will have relevant readings; the following are useful in giving an overview about how to learn and find help.
+
+* stackoverflow has a useful guide on [how to ask a good question](https://stackoverflow.com/help/how-to-ask)
+* Julia Evan's blog also has a useful guide [how to ask good questions](https://jvns.ca/blog/good-questions/) (note: hers has a cartoon!)
+* (Tip: the fact that there are guides on asking questions means it isn't always easy or obvious how to do it well. That's fine! Learning how to ask the right questions is important, and you should practice.)
+* This [blog post](http://mattgemmell.com/what-have-you-tried/) and the follow-up [disavowal](http://mattgemmell.com/hindsight/) are both interesting; one deals with learning to program and asking questions, and the other notes that flippant answers online are discouraging to people who want to learn but regretfully common. 
