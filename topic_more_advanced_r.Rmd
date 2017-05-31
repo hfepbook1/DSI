@@ -1,0 +1,13 @@
+---
+title: "More Advanced R"
+---
+
+Brief overview of content
+
+Overall topic is made up of the following components:
+
+* Functions
+* Looping and iteration
+* Simulations
+* Packages
+

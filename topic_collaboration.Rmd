@@ -1,0 +1,11 @@
+---
+title: "Collaboration"
+---
+
+Brief overview of content
+
+Overall topic is made up of the following components:
+
+* Git and GitHub
+* Team data science (e.g. code review; GitHub for teams)
+

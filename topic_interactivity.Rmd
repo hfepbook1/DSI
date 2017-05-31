@@ -1,0 +1,11 @@
+---
+title: "Interactivity"
+---
+
+Brief overview of content
+
+Overall topic is made up of the following components:
+
+* Dashboards
+* Shiny Apps
+

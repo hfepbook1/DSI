@@ -4,7 +4,23 @@ navbar:
   title: "Data Science I"
   right:
     - text: "Topics"
-      href: research.html
+      menu:
+        - text: "What is Data Science?"
+          href: topic_what_is_data_science.html
+        - text: "Building Blocks"
+          href: topic_building_blocks.html
+        - text: "Tidy Data"
+          href: topic_tidy_data.html
+        - text: "Visualization and EDA"
+          href: topic_visualization_and_EDA.html
+        - text: "Collaboration"
+          href: topic_collaboration.html
+        - text: "More Advanced R"
+          href: topic_more_advanced_r.html
+        - text: "Interactivity"
+          href: topic_interactivity.html
+        - text: "Other Topics"
+          href: topic_other.html
     - text: "Homework"
       href: papers.html
     - text: "Datasets"

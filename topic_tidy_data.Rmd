@@ -1,0 +1,11 @@
+---
+title: "Tidy Data"
+---
+
+Brief overview of content
+
+Overall topic is made up of the following components:
+
+* Tidy data (definition; dplyr; piping)
+* Data input (from various sources, including csv, xslx, sas7bdat; cleaning and merging)
+
