@@ -1,0 +1,229 @@
+---
+title: "Base R"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+This page gives a quick introduction to "base" R. 
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 8,
+  fig.height = 4
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+### Get started
+
+Launch R Studio and take stock -- find the Console, the Environment/History, and the
+Files/Plots/Packages/Help.
+
+Create a new R script using File > New File > R Script. Write a short comment section describing what this is, and follow along with the code below!
+
+You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console.
+
+```{r}
+2 + 3
+
+(18/3 + 1*2) ^ (4 - 2) - 6.18273
+```
+
+Before long, you'll do all your arithmetic in R!
+
+Computation is great, but you need to be able to assign objects to names. 
+
+```{r}
+x = (18/3 + 1*2) ^ (4 - 2) - 6.18273
+y = c(1, 3, 6, 9)
+```
+
+In the preceding, R was "silent" -- that is, nothing was printed to the console. When making assignments, R assumes you don't want to see the result of that assignment. If you want to see the result of an assignment, you'll have to ask for it. 
+
+```{r}
+x = c(1, 3, 6, 9)
+x
+```
+
+Note, in the preceding, that we overwrote the previous assignment to `r`. 
+
+R can handle several data types in addition to numbers, as illustrated in the vectors below. 
+
+```{r}
+vec1 = 5:8
+vec2 = c("My", "name", "is", "Jeff")
+vec3 = c(TRUE, TRUE, TRUE, FALSE)
+vec4 = factor(c("male", "male", "female", "female"))
+
+class(vec1)
+class(vec2)
+class(vec3)
+class(vec4)
+```
+
+Of these, factors are the least intuitive. They can be very useful, but they can also do things you don't expect. This is especially bad when you have factors but think you have characters -- which happens more than you'd expect, because R uses factors a lot ([mostly for historical reasons](https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/)). Folks get pretty [riled](https://twitter.com/JennyBryan/status/630052228624068609/photo/1) [up](https://cran.r-project.org/web/packages/hellno/hellno.pdf) about factors.
+
+Factors are the way to store categorical variables in R. They can take on specific levels (e.g. male and female) which are usually presented as characters but are, in fact, stored by R as integers. These integer values are used by functions throughout R -- in making plots, in organizing tables, in determining the "reference" category -- but most of the time are hidden by easier-to-read character strings. 
+
+This is the kind of thing that can get you in trouble.
+
+```{r}
+vec4
+as.numeric(vec4)
+
+vec4 = relevel(vec4, ref = "male")
+vec4
+as.numeric(vec4)
+```
+
+
+### Vectors, matrices, and subsetting
+
+Vectors can be comprised of any single data type (i.e. logical or numeric), as can matrices. In the following we'll create a first matrix; if you're not sure how a function (like `matrix()`) works, use `?matrix`.
+
+```{r}
+mat1 = matrix(1:8, nrow = 2, ncol = 4)
+mat1
+```
+
+We can also create matrices by binding rows or columns, as long as those have the right dimensions.
+
+```{r}
+mat2 = rbind(c(7,9,11,13), mat1)
+mat2
+```
+
+Again, every entry in a matrix has to be the same type; R will coerce variables if it has to.
+
+```{r}
+mat3 = cbind(vec1, vec2)
+mat3
+```
+
+You can access the entries in a vector or matrix using the appropriate indices -- entries in a vector are indexed by one number, and entries in a matrix by two numbers.
+
+```{r}
+vec1[1]
+mat1[2,4]
+```
+
+You can access multiple entries if you need to.
+
+```{r}
+vec1[2:3]
+mat1[1, ]
+```
+
+You can subset using `TRUE` and `FALSE` in place of indices, which gives rise to a common approach to filtering vectors.
+
+```{r}
+vec1[c(TRUE, FALSE, TRUE, FALSE)]
+vec1[vec1 > 2]
+which(vec1 > 2)
+```
+
+You can overwrite specific entries using subsets. 
+
+```{r}
+vec1[2:3] = c(14, 15)
+vec1
+
+mat1[1,1] = 12; mat1[2,] = 1:4
+mat1
+
+vec4[1] = "Male"
+vec4
+```
+
+Lastly, you can subset by row or column name, if they exist.
+```{r}
+colnames(mat1) = c("Col1", "Col2", "Col3", "Col4")
+mat1[,c("Col1", "Col3")]
+```
+
+### Summarizing and plotting vectors
+
+There are several functions that provide a useful look at vectors, some of which we illustrate below. Anytime you have a new vector in R, it's important to use these (or things like these) to get a sense of what you have in front of you! Some of these are useful for numeric, others for character, factor, or logical. (Don't forget to look up functions you don't understand using `?str` or `?sample`!)
+
+```{r}
+vec = rnorm(1000)
+
+str(vec)
+length(vec)
+head(vec)
+head(vec, 20)
+tail(vec)
+mean(vec)
+median(vec)
+summary(vec)
+
+vec = sample(c("male", "female"), 1000, replace = TRUE, prob = c(.3, .7))
+str(vec)
+table(vec)
+```
+
+Base R comes equipped with plotting but -- just giving you a heads-up -- if you [use base R graphics](https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/) people might give you a [hard](https://twitter.com/drob/status/697858212779806721) [time](https://twitter.com/_inundata/status/868297266913697792.) Nonetheless, since we haven't learned a better system yet, though, here are some quick-and-easy plotting functions. 
+
+```{r, fig.width = 4, fig.height = 4}
+x = rnorm(1000)
+y = 1 + 2 * x + rnorm(1000, 0, .4)
+hist(x)
+plot(x, y)
+```
+
+
+### Lists
+
+In contrast to vectors and matrices, which are limited to a single data class, lists provide a way to store anything you want. This flexibility is great, but is offset by a certain ... clunkiness. Lists contain indexed elements, and the indexed elements themselves be scalars, vectors, matrices, or other things entirely. 
+
+```{r}
+l = list(a = 1:5,
+         b = matrix(1:8, 2, 4),
+         c = TRUE,
+         d = summary(rnorm(1000)))
+l
+```
+
+Lists can be accessed using names or indices, and the things in lists can be accessed in the way you would usually access an object of that type. 
+
+```{r}
+l$a
+l[[1]]
+l[[1]][1:3]
+```
+
+Lists seem bizarre but are really useful, and there are a lot of functions that assume the main input will be a list of some type. Later in the course we'll see data frames (in fact, we'll spend a lot of time on this using data frames) -- these look and behave kind of like matrices, but are actually lists. So, they can store variables of multiple types, which is really important in practice. 
+
+### NA and NULL
+
+One final comment -- R stores missing values as `NA` and non-existent values as `NULL`. 
+
+```{r}
+vec = c(1, 2, NA, 4, 5, NULL, 6, 7)
+vec
+mean(vec)
+mean(vec, na.rm = TRUE)
+```
+
+
+
+## Other materials
+
+
+swirl
+
+jaffe's notes
+
+
+http://stat545.com/block029_factors.html
+

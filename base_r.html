@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Base R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_tidy_data.html">Tidy Data</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_EDA.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_more_advanced_r.html">More Advanced R</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_other.html">Other Topics</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="papers.html">Homework</a>
+</li>
+<li>
+  <a href="teaching.html">Datasets</a>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Base R</h1>
+
+</div>
+
+
+<p>This page gives a quick introduction to “base” R.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<div id="get-started" class="section level3">
+<h3>Get started</h3>
+<p>Launch R Studio and take stock – find the Console, the Environment/History, and the Files/Plots/Packages/Help.</p>
+<p>Create a new R script using File &gt; New File &gt; R Script. Write a short comment section describing what this is, and follow along with the code below!</p>
+<p>You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console.</p>
+<pre class="r"><code>2 + 3
+## [1] 5
+
+(18/3 + 1*2) ^ (4 - 2) - 6.18273
+## [1] 57.81727</code></pre>
+<p>Before long, you’ll do all your arithmetic in R!</p>
+<p>Computation is great, but you need to be able to assign objects to names.</p>
+<pre class="r"><code>x = (18/3 + 1*2) ^ (4 - 2) - 6.18273
+y = c(1, 3, 6, 9)</code></pre>
+<p>In the preceding, R was “silent” – that is, nothing was printed to the console. When making assignments, R assumes you don’t want to see the result of that assignment. If you want to see the result of an assignment, you’ll have to ask for it.</p>
+<pre class="r"><code>x = c(1, 3, 6, 9)
+x
+## [1] 1 3 6 9</code></pre>
+<p>Note, in the preceding, that we overwrote the previous assignment to <code>r</code>.</p>
+<p>R can handle several data types in addition to numbers, as illustrated in the vectors below.</p>
+<pre class="r"><code>vec1 = 5:8
+vec2 = c(&quot;My&quot;, &quot;name&quot;, &quot;is&quot;, &quot;Jeff&quot;)
+vec3 = c(TRUE, TRUE, TRUE, FALSE)
+vec4 = factor(c(&quot;male&quot;, &quot;male&quot;, &quot;female&quot;, &quot;female&quot;))
+
+class(vec1)
+## [1] &quot;integer&quot;
+class(vec2)
+## [1] &quot;character&quot;
+class(vec3)
+## [1] &quot;logical&quot;
+class(vec4)
+## [1] &quot;factor&quot;</code></pre>
+<p>Of these, factors are the least intuitive. They can be very useful, but they can also do things you don’t expect. This is especially bad when you have factors but think you have characters – which happens more than you’d expect, because R uses factors a lot (<a href="https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/">mostly for historical reasons</a>). Folks get pretty <a href="https://twitter.com/JennyBryan/status/630052228624068609/photo/1">riled</a> <a href="https://cran.r-project.org/web/packages/hellno/hellno.pdf">up</a> about factors.</p>
+<p>Factors are the way to store categorical variables in R. They can take on specific levels (e.g. male and female) which are usually presented as characters but are, in fact, stored by R as integers. These integer values are used by functions throughout R – in making plots, in organizing tables, in determining the “reference” category – but most of the time are hidden by easier-to-read character strings.</p>
+<p>This is the kind of thing that can get you in trouble.</p>
+<pre class="r"><code>vec4
+## [1] male   male   female female
+## Levels: female male
+as.numeric(vec4)
+## [1] 2 2 1 1
+
+vec4 = relevel(vec4, ref = &quot;male&quot;)
+vec4
+## [1] male   male   female female
+## Levels: male female
+as.numeric(vec4)
+## [1] 1 1 2 2</code></pre>
+</div>
+<div id="vectors-matrices-and-subsetting" class="section level3">
+<h3>Vectors, matrices, and subsetting</h3>
+<p>Vectors can be comprised of any single data type (i.e. logical or numeric), as can matrices. In the following we’ll create a first matrix; if you’re not sure how a function (like <code>matrix()</code>) works, use <code>?matrix</code>.</p>
+<pre class="r"><code>mat1 = matrix(1:8, nrow = 2, ncol = 4)
+mat1
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    3    5    7
+## [2,]    2    4    6    8</code></pre>
+<p>We can also create matrices by binding rows or columns, as long as those have the right dimensions.</p>
+<pre class="r"><code>mat2 = rbind(c(7,9,11,13), mat1)
+mat2
+##      [,1] [,2] [,3] [,4]
+## [1,]    7    9   11   13
+## [2,]    1    3    5    7
+## [3,]    2    4    6    8</code></pre>
+<p>Again, every entry in a matrix has to be the same type; R will coerce variables if it has to.</p>
+<pre class="r"><code>mat3 = cbind(vec1, vec2)
+mat3
+##      vec1 vec2  
+## [1,] &quot;5&quot;  &quot;My&quot;  
+## [2,] &quot;6&quot;  &quot;name&quot;
+## [3,] &quot;7&quot;  &quot;is&quot;  
+## [4,] &quot;8&quot;  &quot;Jeff&quot;</code></pre>
+<p>You can access the entries in a vector or matrix using the appropriate indices – entries in a vector are indexed by one number, and entries in a matrix by two numbers.</p>
+<pre class="r"><code>vec1[1]
+## [1] 5
+mat1[2,4]
+## [1] 8</code></pre>
+<p>You can access multiple entries if you need to.</p>
+<pre class="r"><code>vec1[2:3]
+## [1] 6 7
+mat1[1, ]
+## [1] 1 3 5 7</code></pre>
+<p>You can subset using <code>TRUE</code> and <code>FALSE</code> in place of indices, which gives rise to a common approach to filtering vectors.</p>
+<pre class="r"><code>vec1[c(TRUE, FALSE, TRUE, FALSE)]
+## [1] 5 7
+vec1[vec1 &gt; 2]
+## [1] 5 6 7 8
+which(vec1 &gt; 2)
+## [1] 1 2 3 4</code></pre>
+<p>You can overwrite specific entries using subsets.</p>
+<pre class="r"><code>vec1[2:3] = c(14, 15)
+vec1
+## [1]  5 14 15  8
+
+mat1[1,1] = 12; mat1[2,] = 1:4
+mat1
+##      [,1] [,2] [,3] [,4]
+## [1,]   12    3    5    7
+## [2,]    1    2    3    4
+
+vec4[1] = &quot;Male&quot;
+## Warning in `[&lt;-.factor`(`*tmp*`, 1, value = &quot;Male&quot;): invalid factor level,
+## NA generated
+vec4
+## [1] &lt;NA&gt;   male   female female
+## Levels: male female</code></pre>
+<p>Lastly, you can subset by row or column name, if they exist.</p>
+<pre class="r"><code>colnames(mat1) = c(&quot;Col1&quot;, &quot;Col2&quot;, &quot;Col3&quot;, &quot;Col4&quot;)
+mat1[,c(&quot;Col1&quot;, &quot;Col3&quot;)]
+##      Col1 Col3
+## [1,]   12    5
+## [2,]    1    3</code></pre>
+</div>
+<div id="summarizing-and-plotting-vectors" class="section level3">
+<h3>Summarizing and plotting vectors</h3>
+<p>There are several functions that provide a useful look at vectors, some of which we illustrate below. Anytime you have a new vector in R, it’s important to use these (or things like these) to get a sense of what you have in front of you! Some of these are useful for numeric, others for character, factor, or logical. (Don’t forget to look up functions you don’t understand using <code>?str</code> or <code>?sample</code>!)</p>
+<pre class="r"><code>vec = rnorm(1000)
+
+str(vec)
+##  num [1:1000] 0.341 -1.608 -0.782 -0.829 0.531 ...
+length(vec)
+## [1] 1000
+head(vec)
+## [1]  0.34056102 -1.60804622 -0.78211560 -0.82900112  0.53087285  0.07655483
+head(vec, 20)
+##  [1]  0.34056102 -1.60804622 -0.78211560 -0.82900112  0.53087285
+##  [6]  0.07655483 -1.38501121  0.19014941  1.19778850  1.87864738
+## [11]  1.59823736 -1.25563528  1.80068315  0.88876615 -0.69133062
+## [16]  1.40481539 -2.76683046  1.57629361 -0.56440059  0.71287048
+tail(vec)
+## [1]  0.06935943  1.26723869  0.04351364  1.22888283 -1.41301811 -0.60379898
+mean(vec)
+## [1] -0.03867408
+median(vec)
+## [1] -0.02406387
+summary(vec)
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -3.47500 -0.75210 -0.02406 -0.03867  0.68670  3.04100
+
+vec = sample(c(&quot;male&quot;, &quot;female&quot;), 1000, replace = TRUE, prob = c(.3, .7))
+str(vec)
+##  chr [1:1000] &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;male&quot; &quot;male&quot; ...
+table(vec)
+## vec
+## female   male 
+##    692    308</code></pre>
+<p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792.">time</a> Nonetheless, since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
+<pre class="r"><code>x = rnorm(1000)
+y = 1 + 2 * x + rnorm(1000, 0, .4)
+hist(x)</code></pre>
+<p><img src="base_r_files/figure-html/unnamed-chunk-16-1.png" width="384" /></p>
+<pre class="r"><code>plot(x, y)</code></pre>
+<p><img src="base_r_files/figure-html/unnamed-chunk-16-2.png" width="384" /></p>
+</div>
+<div id="lists" class="section level3">
+<h3>Lists</h3>
+<p>In contrast to vectors and matrices, which are limited to a single data class, lists provide a way to store anything you want. This flexibility is great, but is offset by a certain … clunkiness. Lists contain indexed elements, and the indexed elements themselves be scalars, vectors, matrices, or other things entirely.</p>
+<pre class="r"><code>l = list(a = 1:5,
+         b = matrix(1:8, 2, 4),
+         c = TRUE,
+         d = summary(rnorm(1000)))
+l
+## $a
+## [1] 1 2 3 4 5
+## 
+## $b
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    3    5    7
+## [2,]    2    4    6    8
+## 
+## $c
+## [1] TRUE
+## 
+## $d
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -3.27100 -0.65030 -0.02503 -0.01742  0.64540  2.48200</code></pre>
+<p>Lists can be accessed using names or indices, and the things in lists can be accessed in the way you would usually access an object of that type.</p>
+<pre class="r"><code>l$a
+## [1] 1 2 3 4 5
+l[[1]]
+## [1] 1 2 3 4 5
+l[[1]][1:3]
+## [1] 1 2 3</code></pre>
+<p>Lists seem bizarre but are really useful, and there are a lot of functions that assume the main input will be a list of some type. Later in the course we’ll see data frames (in fact, we’ll spend a lot of time on this using data frames) – these look and behave kind of like matrices, but are actually lists. So, they can store variables of multiple types, which is really important in practice.</p>
+</div>
+<div id="na-and-null" class="section level3">
+<h3>NA and NULL</h3>
+<p>One final comment – R stores missing values as <code>NA</code> and non-existent values as <code>NULL</code>.</p>
+<pre class="r"><code>vec = c(1, 2, NA, 4, 5, NULL, 6, 7)
+vec
+## [1]  1  2 NA  4  5  6  7
+mean(vec)
+## [1] NA
+mean(vec, na.rm = TRUE)
+## [1] 4.166667</code></pre>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p>swirl</p>
+<p>jaffe’s notes</p>
+<p><a href="http://stat545.com/block029_factors.html" class="uri">http://stat545.com/block029_factors.html</a></p>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
