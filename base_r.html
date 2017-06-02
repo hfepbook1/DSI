@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -340,9 +340,9 @@ div.tocify {
 <p>This page gives a quick introduction to “base” R.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
-<script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
 <p><br></p>
 </div>
@@ -352,6 +352,12 @@ div.tocify {
 <h3>Get started</h3>
 <p>Launch R Studio and take stock – find the Console, the Environment/History, and the Files/Plots/Packages/Help.</p>
 <p>Create a new R script using File &gt; New File &gt; R Script. Write a short comment section describing what this is, and follow along with the code below!</p>
+<pre class="r"><code>##################################################################
+# June 2, 2017
+# Jeff Goldsmith
+#
+# Script for exploring R!
+##################################################################</code></pre>
 <p>You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console.</p>
 <pre class="r"><code>2 + 3
 ## [1] 5
@@ -467,40 +473,40 @@ mat1[,c(&quot;Col1&quot;, &quot;Col3&quot;)]
 <pre class="r"><code>vec = rnorm(1000)
 
 str(vec)
-##  num [1:1000] 0.341 -1.608 -0.782 -0.829 0.531 ...
+##  num [1:1000] 0.7077 -0.7881 0.9925 0.0776 -0.9245 ...
 length(vec)
 ## [1] 1000
 head(vec)
-## [1]  0.34056102 -1.60804622 -0.78211560 -0.82900112  0.53087285  0.07655483
+## [1]  0.70769497 -0.78808238  0.99246602  0.07760532 -0.92450936 -1.83896305
 head(vec, 20)
-##  [1]  0.34056102 -1.60804622 -0.78211560 -0.82900112  0.53087285
-##  [6]  0.07655483 -1.38501121  0.19014941  1.19778850  1.87864738
-## [11]  1.59823736 -1.25563528  1.80068315  0.88876615 -0.69133062
-## [16]  1.40481539 -2.76683046  1.57629361 -0.56440059  0.71287048
+##  [1]  0.70769497 -0.78808238  0.99246602  0.07760532 -0.92450936
+##  [6] -1.83896305  1.13904784  0.31157750 -0.98223700 -1.73591117
+## [11] -0.67619921  3.03474396 -0.25012034 -0.91964706  0.50220383
+## [16]  0.47597981  1.22718723  0.39735333 -0.76081194 -0.31907023
 tail(vec)
-## [1]  0.06935943  1.26723869  0.04351364  1.22888283 -1.41301811 -0.60379898
+## [1] -0.30073432 -0.07036794  0.21123262 -1.04565792  2.34065454 -0.51330245
 mean(vec)
-## [1] -0.03867408
+## [1] -0.08672453
 median(vec)
-## [1] -0.02406387
+## [1] -0.07682368
 summary(vec)
 ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## -3.47500 -0.75210 -0.02406 -0.03867  0.68670  3.04100
+## -3.14808 -0.78516 -0.07682 -0.08672  0.61364  3.03474
 
 vec = sample(c(&quot;male&quot;, &quot;female&quot;), 1000, replace = TRUE, prob = c(.3, .7))
 str(vec)
-##  chr [1:1000] &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;male&quot; &quot;male&quot; ...
+##  chr [1:1000] &quot;female&quot; &quot;male&quot; &quot;male&quot; &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
 table(vec)
 ## vec
 ## female   male 
-##    692    308</code></pre>
+##    705    295</code></pre>
 <p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792.">time</a> Nonetheless, since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
 <pre class="r"><code>x = rnorm(1000)
 y = 1 + 2 * x + rnorm(1000, 0, .4)
 hist(x)</code></pre>
-<p><img src="base_r_files/figure-html/unnamed-chunk-16-1.png" width="384" /></p>
+<p><img src="base_r_files/figure-html/unnamed-chunk-17-1.png" width="384" /></p>
 <pre class="r"><code>plot(x, y)</code></pre>
-<p><img src="base_r_files/figure-html/unnamed-chunk-16-2.png" width="384" /></p>
+<p><img src="base_r_files/figure-html/unnamed-chunk-17-2.png" width="384" /></p>
 </div>
 <div id="lists" class="section level3">
 <h3>Lists</h3>
@@ -522,8 +528,8 @@ l
 ## [1] TRUE
 ## 
 ## $d
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## -3.27100 -0.65030 -0.02503 -0.01742  0.64540  2.48200</code></pre>
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## -3.882606 -0.684056 -0.008721  0.011032  0.662505  3.411598</code></pre>
 <p>Lists can be accessed using names or indices, and the things in lists can be accessed in the way you would usually access an object of that type.</p>
 <pre class="r"><code>l$a
 ## [1] 1 2 3 4 5
@@ -547,9 +553,18 @@ mean(vec, na.rm = TRUE)
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p>swirl</p>
-<p>jaffe’s notes</p>
-<p><a href="http://stat545.com/block029_factors.html" class="uri">http://stat545.com/block029_factors.html</a></p>
+<p>Like I said, R can take a while to learn. Luckily, tons of people have put together resources to try to make this easier!</p>
+<ul>
+<li><a href="https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf">A (very) short intro to R</a></li>
+<li>The <a href="http://swirlstats.com">swirl</a> package will help you learn R in R</li>
+<li>The <a href="https://cran.r-project.org/doc/contrib/Short-refcard.pdf">R reference card</a> …</li>
+<li>… and a <a href="https://www.rstudio.com/wp-content/uploads/2016/05/base-r.pdf">Base R cheat sheet</a> which is very handy</li>
+</ul>
+<p>There are also some longer references:</p>
+<ul>
+<li>Andrew Jaffe and John Muschelli’s <a href="http://aejaffe.com/summerR_2016/">Introduction to R for Public Health Researchers</a></li>
+<li>Cosma Shalizi and Andrew Thomas’ <a href="https://www.stat.cmu.edu/~cshalizi/statcomp/14/">Statistical Computing 36-350: Beginning to Advanced Techniques in R</a></li>
+</ul>
 </div>
 
 <br><br>
@@ -581,7 +596,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

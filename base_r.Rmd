@@ -18,18 +18,25 @@ knitr::opts_chunk$set(
 
 ## Some slides
 
-<script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script><div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example
 
 ### Get started
 
-Launch R Studio and take stock -- find the Console, the Environment/History, and the
-Files/Plots/Packages/Help.
+Launch R Studio and take stock -- find the Console, the Environment/History, and the Files/Plots/Packages/Help.
 
 Create a new R script using File > New File > R Script. Write a short comment section describing what this is, and follow along with the code below!
+
+```{r}
+##################################################################
+# June 2, 2017
+# Jeff Goldsmith
+#
+# Script for exploring R!
+##################################################################
+```
 
 You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console.
 
@@ -216,14 +223,17 @@ mean(vec, na.rm = TRUE)
 ```
 
 
-
 ## Other materials
 
+Like I said, R can take a while to learn. Luckily, tons of people have put together resources to try to make this easier!
 
-swirl
+* [A (very) short intro to R](https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf)
+* The [swirl](http://swirlstats.com) package will help you learn R in R
+* The [R reference card](https://cran.r-project.org/doc/contrib/Short-refcard.pdf) ...
+* ... and a [Base R cheat sheet](https://www.rstudio.com/wp-content/uploads/2016/05/base-r.pdf) which is very handy
 
-jaffe's notes
+There are also some longer references:
 
-
-http://stat545.com/block029_factors.html
+* Andrew Jaffe and John Muschelli's [Introduction to R for Public Health Researchers](http://aejaffe.com/summerR_2016/)
+* Cosma Shalizi and Andrew Thomas' [Statistical Computing 36-350: Beginning to Advanced Techniques in R](https://www.stat.cmu.edu/~cshalizi/statcomp/14/)
 
