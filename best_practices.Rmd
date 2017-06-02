@@ -1,0 +1,167 @@
+---
+title: "Best Practices"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Here we overview the 
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 8,
+  fig.height = 4
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script><div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+### Revisiting old examples
+
+Last class we introduced several vectors. Looking at these with a critical eye, they're not particularly well-named -- it's impossible to know the relationship between `vec1` and `vec4` without looking at them, and already I've forgotten which vector did what.
+
+```{r}
+vec1 = 5:8
+vec2 = c("My", "name", "is", "Jeff")
+vec3 = c(TRUE, TRUE, TRUE, FALSE)
+vec4 = factor(c("male", "male", "female", "female"))
+```
+
+Let's rename, and tidy up a bit while we're at it -- you really don't want to have a cluttered workspace, because you will forget what things are. 
+
+```{r}
+vec_numeric = 5:8
+vec_char = c("My", "name", "is", "Jeff")
+vec_logical = c(TRUE, TRUE, TRUE, FALSE)
+vec_factor = factor(c("male", "male", "female", "female"))
+
+ls()
+rm(list = c("vec1", "vec2", "vec3", "vec4"))
+ls()
+```
+
+
+### Organizing code into readable scripts
+
+Create two scripts
+
+```{r, eval = FALSE}
+##################################################################
+# June 2, 2017
+# Jeff Goldsmith
+#
+# Script exploring vector classes
+##################################################################
+
+## create vectors
+vec_numeric = 5:8
+vec_char = c("My", "name", "is", "Jeff")
+vec_logical = c(TRUE, TRUE, TRUE, FALSE)
+vec_factor = factor(c("male", "male", "female", "female"))
+
+## check class of vectors
+class(vec_numeric)
+class(vec_char)
+class(vec_logical)
+class(vec_factor)
+
+## convert factor to numeric
+as.numeric(vec_factor)
+```
+
+Note use of snake_case naming convention
+
+```{r, eval = FALSE}
+##################################################################
+# June 2, 2017
+# Jeff Goldsmith
+#
+# Script producing basic plots
+##################################################################
+
+## set seed to ensure reproducibility
+set.seed(198508234)
+
+## define x and y
+x = rnorm(1000)
+y = 1 + 2 * x + rnorm(1000, 0, .4)
+
+## histogram of x
+hist(x)
+
+## scatterplot of y against x
+plot(x, y)
+```
+
+Some notes:
+
+* comment section at outset
+* comments within code
+* reasonable variable names
+* code is easy-to-read -- spacing is reasonable, nothing too cluttered. Turn on code diagnositics if you haven't already.
+
+Bigger picture
+
+* scripts are what's "real".
+* scripts will be useful later, so that you can reproduce previous results (without saving every variable), and also re-use code for later projects
+* to check how "real" your scripts are, clear out your workspace with `rm(list = ls())` and re-run everything (i do this frequently, and often start scripts with that line of code)
+* i also turn off saving workspace on exit, both to ensure reproducibility and to make sure i'm not saving data i don't mean to.
+* not everything is going to make it into your script!! 
+
+
+### Organizing projects
+
+* many times, your project will consist of several related files -- input data, scripts, results. these should all be kept together
+* we do this using R projects
+
+Create a directory and save the previous two scripts into that directory
+
+* script names, like variable names, should be descriptive;
+* directory name should be informative as well
+* set up an r project in the directory. 
+
+see what r projects are like -- quit r studio and double click the new project
+
+(show figure with several projects open across several R instances)
+
+
+### Paths and your working directory
+
+* note: we haven't talked much about outputs yet, but be ready to specify outputs to specific places using commands, not your mouse:
+
+```{r, eval = FALSE}
+pdf(file = "scatter_plot.pdf", height = 4, width = 4)
+plot(x, y)
+dev.off()
+```
+
+### Workflow
+
+For every new project (and I mean _every new project_), do the following:
+
+* Create a directory with a reasonable name and path (e.g. `~/Documents/School/DSI/Homework_1/`)
+* Put an R Project in there
+* Keep everything related to the analysis -- data inputs, scripts, reports, output -- in there
+* Periodically check for reproducibility of the analysis
+
+
+## Other materials
+
+https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects
+
+http://stat545.com/block002_hello-r-workspace-wd-project.html
+
+https://www.slideshare.net/jenniferbryan5811/cm002-deep-thoughts
+
+http://r4ds.had.co.nz/workflow-scripts.html and http://r4ds.had.co.nz/workflow-projects.html
+
+https://beh.columbia.edu/2016/08/03/commandments-for-variable-naming-and-data-management/
+
+

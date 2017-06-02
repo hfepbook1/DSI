@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Best Practices</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_tidy_data.html">Tidy Data</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_EDA.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_more_advanced_r.html">More Advanced R</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_other.html">Other Topics</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="papers.html">Homework</a>
+</li>
+<li>
+  <a href="teaching.html">Datasets</a>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Best Practices</h1>
+
+</div>
+
+
+<p>Here we overview the</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<div id="revisiting-old-examples" class="section level3">
+<h3>Revisiting old examples</h3>
+<p>Last class we introduced several vectors. Looking at these with a critical eye, they’re not particularly well-named – it’s impossible to know the relationship between <code>vec1</code> and <code>vec4</code> without looking at them, and already I’ve forgotten which vector did what.</p>
+<pre class="r"><code>vec1 = 5:8
+vec2 = c(&quot;My&quot;, &quot;name&quot;, &quot;is&quot;, &quot;Jeff&quot;)
+vec3 = c(TRUE, TRUE, TRUE, FALSE)
+vec4 = factor(c(&quot;male&quot;, &quot;male&quot;, &quot;female&quot;, &quot;female&quot;))</code></pre>
+<p>Let’s rename, and tidy up a bit while we’re at it – you really don’t want to have a cluttered workspace, because you will forget what things are.</p>
+<pre class="r"><code>vec_numeric = 5:8
+vec_char = c(&quot;My&quot;, &quot;name&quot;, &quot;is&quot;, &quot;Jeff&quot;)
+vec_logical = c(TRUE, TRUE, TRUE, FALSE)
+vec_factor = factor(c(&quot;male&quot;, &quot;male&quot;, &quot;female&quot;, &quot;female&quot;))
+
+ls()
+##  [1] &quot;l&quot;           &quot;mat1&quot;        &quot;mat2&quot;        &quot;mat3&quot;        &quot;vec&quot;        
+##  [6] &quot;vec_char&quot;    &quot;vec_factor&quot;  &quot;vec_logical&quot; &quot;vec_numeric&quot; &quot;vec1&quot;       
+## [11] &quot;vec2&quot;        &quot;vec3&quot;        &quot;vec4&quot;        &quot;x&quot;           &quot;y&quot;
+rm(list = c(&quot;vec1&quot;, &quot;vec2&quot;, &quot;vec3&quot;, &quot;vec4&quot;))
+ls()
+##  [1] &quot;l&quot;           &quot;mat1&quot;        &quot;mat2&quot;        &quot;mat3&quot;        &quot;vec&quot;        
+##  [6] &quot;vec_char&quot;    &quot;vec_factor&quot;  &quot;vec_logical&quot; &quot;vec_numeric&quot; &quot;x&quot;          
+## [11] &quot;y&quot;</code></pre>
+</div>
+<div id="organizing-code-into-readable-scripts" class="section level3">
+<h3>Organizing code into readable scripts</h3>
+<p>Create two scripts</p>
+<pre class="r"><code>##################################################################
+# June 2, 2017
+# Jeff Goldsmith
+#
+# Script exploring vector classes
+##################################################################
+
+## create vectors
+vec_numeric = 5:8
+vec_char = c(&quot;My&quot;, &quot;name&quot;, &quot;is&quot;, &quot;Jeff&quot;)
+vec_logical = c(TRUE, TRUE, TRUE, FALSE)
+vec_factor = factor(c(&quot;male&quot;, &quot;male&quot;, &quot;female&quot;, &quot;female&quot;))
+
+## check class of vectors
+class(vec_numeric)
+class(vec_char)
+class(vec_logical)
+class(vec_factor)
+
+## convert factor to numeric
+as.numeric(vec_factor)</code></pre>
+<p>Note use of snake_case naming convention</p>
+<pre class="r"><code>##################################################################
+# June 2, 2017
+# Jeff Goldsmith
+#
+# Script producing basic plots
+##################################################################
+
+## set seed to ensure reproducibility
+set.seed(198508234)
+
+## define x and y
+x = rnorm(1000)
+y = 1 + 2 * x + rnorm(1000, 0, .4)
+
+## histogram of x
+hist(x)
+
+## scatterplot of y against x
+plot(x, y)</code></pre>
+<p>Some notes:</p>
+<ul>
+<li>comment section at outset</li>
+<li>comments within code</li>
+<li>reasonable variable names</li>
+<li>code is easy-to-read – spacing is reasonable, nothing too cluttered. Turn on code diagnositics if you haven’t already.</li>
+</ul>
+<p>Bigger picture</p>
+<ul>
+<li>scripts are what’s “real”.</li>
+<li>scripts will be useful later, so that you can reproduce previous results (without saving every variable), and also re-use code for later projects</li>
+<li>to check how “real” your scripts are, clear out your workspace with <code>rm(list = ls())</code> and re-run everything (i do this frequently, and often start scripts with that line of code)</li>
+<li>i also turn off saving workspace on exit, both to ensure reproducibility and to make sure i’m not saving data i don’t mean to.</li>
+<li>not everything is going to make it into your script!!</li>
+</ul>
+</div>
+<div id="organizing-projects" class="section level3">
+<h3>Organizing projects</h3>
+<ul>
+<li>many times, your project will consist of several related files – input data, scripts, results. these should all be kept together</li>
+<li>we do this using R projects</li>
+</ul>
+<p>Create a directory and save the previous two scripts into that directory</p>
+<ul>
+<li>script names, like variable names, should be descriptive;</li>
+<li>directory name should be informative as well</li>
+<li>set up an r project in the directory.</li>
+</ul>
+<p>see what r projects are like – quit r studio and double click the new project</p>
+<p>(show figure with several projects open across several R instances)</p>
+</div>
+<div id="paths-and-your-working-directory" class="section level3">
+<h3>Paths and your working directory</h3>
+<ul>
+<li>note: we haven’t talked much about outputs yet, but be ready to specify outputs to specific places using commands, not your mouse:</li>
+</ul>
+<pre class="r"><code>pdf(file = &quot;scatter_plot.pdf&quot;, height = 4, width = 4)
+plot(x, y)
+dev.off()</code></pre>
+</div>
+<div id="workflow" class="section level3">
+<h3>Workflow</h3>
+<p>For every new project (and I mean <em>every new project</em>), do the following:</p>
+<ul>
+<li>Create a directory with a reasonable name and path (e.g. <code>~/Documents/School/DSI/Homework_1/</code>)</li>
+<li>Put an R Project in there</li>
+<li>Keep everything related to the analysis – data inputs, scripts, reports, output – in there</li>
+<li>Periodically check for reproducibility of the analysis</li>
+</ul>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p><a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects" class="uri">https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects</a></p>
+<p><a href="http://stat545.com/block002_hello-r-workspace-wd-project.html" class="uri">http://stat545.com/block002_hello-r-workspace-wd-project.html</a></p>
+<p><a href="https://www.slideshare.net/jenniferbryan5811/cm002-deep-thoughts" class="uri">https://www.slideshare.net/jenniferbryan5811/cm002-deep-thoughts</a></p>
+<p><a href="http://r4ds.had.co.nz/workflow-scripts.html" class="uri">http://r4ds.had.co.nz/workflow-scripts.html</a> and <a href="http://r4ds.had.co.nz/workflow-projects.html" class="uri">http://r4ds.had.co.nz/workflow-projects.html</a></p>
+<p><a href="https://beh.columbia.edu/2016/08/03/commandments-for-variable-naming-and-data-management/" class="uri">https://beh.columbia.edu/2016/08/03/commandments-for-variable-naming-and-data-management/</a></p>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
