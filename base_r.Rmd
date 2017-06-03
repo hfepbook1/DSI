@@ -38,7 +38,7 @@ Create a new R script using File > New File > R Script. Write a short comment se
 ##################################################################
 ```
 
-You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console.
+You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console. Note that you can execute commands (e.g. the line with the cursor or highlighted code) in the console from a script using Command+Enter (Mac) or Ctrl+Enter (Windows).
 
 ```{r}
 2 + 3
@@ -62,9 +62,9 @@ x = c(1, 3, 6, 9)
 x
 ```
 
-Note, in the preceding, that we overwrote the previous assignment to `r`. 
+Note, in the preceding, that we overwrote the previous assignment to `x`. 
 
-R can handle several data types in addition to numbers, as illustrated in the vectors below. 
+R can handle several data types in addition to numbers, as illustrated in the vectors below.
 
 ```{r}
 vec1 = 5:8

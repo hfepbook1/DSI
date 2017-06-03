@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8" />
+<meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -358,7 +358,7 @@ div.tocify {
 #
 # Script for exploring R!
 ##################################################################</code></pre>
-<p>You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console.</p>
+<p>You can do basic computations in R, either on the command line (in the console) or by writing things in the script and executing the code in the console. Note that you can execute commands (e.g. the line with the cursor or highlighted code) in the console from a script using Command+Enter (Mac) or Ctrl+Enter (Windows).</p>
 <pre class="r"><code>2 + 3
 ## [1] 5
 
@@ -372,7 +372,7 @@ y = c(1, 3, 6, 9)</code></pre>
 <pre class="r"><code>x = c(1, 3, 6, 9)
 x
 ## [1] 1 3 6 9</code></pre>
-<p>Note, in the preceding, that we overwrote the previous assignment to <code>r</code>.</p>
+<p>Note, in the preceding, that we overwrote the previous assignment to <code>x</code>.</p>
 <p>R can handle several data types in addition to numbers, as illustrated in the vectors below.</p>
 <pre class="r"><code>vec1 = 5:8
 vec2 = c(&quot;My&quot;, &quot;name&quot;, &quot;is&quot;, &quot;Jeff&quot;)
@@ -473,33 +473,33 @@ mat1[,c(&quot;Col1&quot;, &quot;Col3&quot;)]
 <pre class="r"><code>vec = rnorm(1000)
 
 str(vec)
-##  num [1:1000] 1.196 1.351 -1.871 -0.45 0.546 ...
+##  num [1:1000] -1.115 1.849 0.339 1.225 -1.019 ...
 length(vec)
 ## [1] 1000
 head(vec)
-## [1]  1.1955651  1.3507590 -1.8707729 -0.4498727  0.5458080 -0.9340542
+## [1] -1.1150168  1.8485862  0.3390993  1.2248799 -1.0194506  1.2831390
 head(vec, 20)
-##  [1]  1.19556507  1.35075895 -1.87077291 -0.44987272  0.54580798
-##  [6] -0.93405424 -0.30655463  1.25703559  0.07307338  1.10528828
-## [11]  0.11794443  1.22633127 -0.93736123  0.75584571 -0.37686400
-## [16] -0.70361248 -1.17715988  0.00568115 -0.18496578 -2.63025416
+##  [1] -1.1150168  1.8485862  0.3390993  1.2248799 -1.0194506  1.2831390
+##  [7] -0.1489232 -0.6668460 -0.1963105 -0.9452132 -1.0900046  0.2317889
+## [13]  0.2584556 -0.5812369  0.1368382 -0.8741811 -1.1674956 -1.5218458
+## [19]  0.8799231 -0.3205017
 tail(vec)
-## [1] -1.09777001  0.46554917  0.03633097  0.94888011  0.15831612 -0.33283122
+## [1] -0.94657914  0.19216784  0.54636669 -0.02204965 -0.50255138  0.11384922
 mean(vec)
-## [1] -0.03817924
+## [1] 0.002591695
 median(vec)
-## [1] -0.03057989
+## [1] -0.0101731
 summary(vec)
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## -3.50472 -0.74040 -0.03058 -0.03818  0.65923  3.65952
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## -3.061000 -0.651100 -0.010170  0.002592  0.639600  2.720000
 
 vec = sample(c(&quot;male&quot;, &quot;female&quot;), 1000, replace = TRUE, prob = c(.3, .7))
 str(vec)
-##  chr [1:1000] &quot;male&quot; &quot;male&quot; &quot;female&quot; &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
+##  chr [1:1000] &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
 table(vec)
 ## vec
 ## female   male 
-##    716    284</code></pre>
+##    724    276</code></pre>
 <p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792.">time</a> Nonetheless, since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
 <pre class="r"><code>set.seed(1)
 
@@ -531,7 +531,7 @@ l
 ## 
 ## $d
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -3.539586 -0.633734 -0.005496  0.015309  0.715155  2.862143</code></pre>
+## -3.540000 -0.633700 -0.005496  0.015310  0.715200  2.862000</code></pre>
 <p>Lists can be accessed using names or indices, and the things in lists can be accessed in the way you would usually access an object of that type.</p>
 <pre class="r"><code>l$a
 ## [1] 1 2 3 4 5
@@ -598,7 +598,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
