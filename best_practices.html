@@ -340,9 +340,9 @@ div.tocify {
 <p>Before starting more complex analyses and projects, it’s good to establish some good habits.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
-<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="74bdf749fff0470a8b61662d7dc31edc" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Best Practices" target="_blank">Best Practices</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
 <p><br></p>
 </div>
@@ -437,7 +437,7 @@ plot(x, y)</code></pre>
 <p>If you’ve opened your R Project, that should be your working directory. That’s great! Another bit of encouragement to keep your stuff organized. This means that anything you output will be written to this directory:</p>
 <pre class="r"><code>plot(x, y)
 dev.print(pdf, &quot;scatter_plot.pdf&quot;, height = 4, width = 4)</code></pre>
-<p>With larger projects, it can be useful to create sub-directories for your project (e.g. <code>Data</code> and <code>Figures</code>), but you don’t need to worry about that for now.</p>
+<p>With larger projects, it can be useful to create sub-directories for your project (e.g. <code>Data</code> and <code>Figures</code>) – you don’t need to worry about that for now, but when you do this use relative paths to keep everything self-contained.</p>
 <p>Note that we exported a figure using a command, rather than clicking the Export in the Plots tab. This is intentional – whatever your script produces, it should do so exclusively from the code you’ve written.</p>
 </div>
 <div id="workflow" class="section level3">

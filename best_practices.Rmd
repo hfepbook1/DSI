@@ -18,7 +18,8 @@ knitr::opts_chunk$set(
 
 ## Some slides
 
-<script async class="speakerdeck-embed" data-id="e741a909805341d6b1f5e806146a613c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script><div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-base-r" title="Base R" target="_blank">Base R</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<script async class="speakerdeck-embed" data-id="74bdf749fff0470a8b61662d7dc31edc" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Best Practices" target="_blank">Best Practices</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example
@@ -137,7 +138,7 @@ If you've opened your R Project, that should be your working directory. That's g
 plot(x, y)
 dev.print(pdf, "scatter_plot.pdf", height = 4, width = 4)
 ```
-With larger projects, it can be useful to create sub-directories for your project (e.g. `Data` and `Figures`), but you don't need to worry about that for now.
+With larger projects, it can be useful to create sub-directories for your project (e.g. `Data` and `Figures`) -- you don't need to worry about that for now, but when you do this use relative paths to keep everything self-contained.
 
 Note that we exported a figure using a command, rather than clicking the Export in the Plots tab. This is intentional -- whatever your script produces, it should do so exclusively from the code you've written.
 
