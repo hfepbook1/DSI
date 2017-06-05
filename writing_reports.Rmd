@@ -1,0 +1,86 @@
+---
+title: "Writing reports"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+You will typically (if not always) need to summarize your analyses in a clear report. This page describes how to do so using R Markdown. 
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 8,
+  fig.height = 4
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="74bdf749fff0470a8b61662d7dc31edc" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Best Practices" target="_blank">Best Practices</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+Note about default RStudio treatment of RMD. They turn on previews -- behaves like a notebook. I don't like this (and i don't think i'm the [only one](https://twitter.com/hspter/status/793552089771233280)), but I might just be old. These can be turned off using preferences > R Markdown > Show output inline
+
+### Basic RMD
+
+Below is a first RMD file.
+
+Three major components:
+
+* **YAML header:**
+* **Text + inline R:**
+* **Code chunks:**
+
+### Code chunk options
+
+Although code is organized in chunks, you can still run it in the console. I do this to write my code (and use RMD more than scripts). 
+
+Name
+
+* `eval`
+* `echo`
+* `include`
+* `message` and `warning`
+* `results` and `fig.show`
+
+Use these to be judicious about what you include in your report
+
+Caching can save time, but can also make your life harder. Be very careful about using this -- there are very few things that I cache, and even then I use it sparingly. Need to set up a dependson thing too. 
+
+### Output formats
+
+* HTML
+* PDF
+* Word 
+* Slides (e.g. ioslides and beamer)
+
+Controlled through YAML section. These can have sub options (show some popular ones). Note YAML does a lot of other stuff, but we'll worry about that if / when we get to it. 
+
+### Formatting text
+
+Lots of stuff you can do. See the cheatsheets or readings below for a long list. 
+
+### New workflow
+
+Slight modification to previous workflow:
+
+* Create a directory with a reasonable name and path (e.g. `~/Documents/School/DSI/Homework_2/`)
+* Put an R Project in the directory
+* Keep everything related to the analysis -- data inputs, scripts, reports, output -- in there, and use R Markdown as much as possible
+* Periodically check for reproducibility of the analysis
+
+## Other materials
+
+https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf
+
+http://r4ds.had.co.nz/r-markdown.html and http://r4ds.had.co.nz/r-markdown-formats.html and http://r4ds.had.co.nz/r-markdown-workflow.html
+
+http://rmarkdown.rstudio.com/articles_intro.html (lots of overlap with the preceding, but still good)
+
+https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/ and https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/
+

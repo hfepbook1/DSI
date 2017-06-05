@@ -2,11 +2,11 @@
 title: "Building Blocks"
 ---
 
-The first part of this course will get you up and running. These are the essentials that are necessary for basic analysis development in R. We'll cover some R fundamentals, including the command line and scripts, data types, variable assignments, and some useful functions; we'll talk about best practices for coding in general, including how to ensure readability, name variables and files, and keep things organized; and we'll introduce R Markdown as a framework for producing reproducible reports. 
+The first part of this course will get you up and running. These are the essentials that are necessary for basic analysis development in R. We'll cover some R fundamentals, including the command line and scripts, data types, variable assignments, and some useful functions; we'll talk about best practices for coding in general, including how to ensure readability, name variables and files, and keep things organized; and we'll introduce R Markdown as a framework for writing reproducible reports. 
 
 The topic is made up of the following components:
 
 * [Base R](base_r.html)
 * [Best practices](best_practices.html)
-* [R Markdown](r_markdown.html)
+* [Writing reports](writing_reports.html)
 

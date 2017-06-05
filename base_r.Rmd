@@ -232,10 +232,12 @@ Like I said, R can take a while to learn. Luckily, tons of people have put toget
 * [A (very) short intro to R](https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf)
 * The [swirl](http://swirlstats.com) package will help you learn R in R
 * The [R reference card](https://cran.r-project.org/doc/contrib/Short-refcard.pdf) ...
-* ... and a [Base R cheat sheet](https://www.rstudio.com/wp-content/uploads/2016/05/base-r.pdf) which is very handy
+* ... and a [Base R cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/05/base-r.pdf) which is very handy
+* Not about R specifically, but the [RStudio cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf) might be handy!
 
-There are also some longer references:
+There are also some longer  or more advanced references:
 
+* R Programming for Data Science goes into a lot of detail, but these [two](https://bookdown.org/rdpeng/rprogdatascience/r-nuts-and-bolts.html) [chapters](https://bookdown.org/rdpeng/rprogdatascience/subsetting-r-objects.html) are very relevant! Note that many of the included sections also have videos to help you.
 * Andrew Jaffe and John Muschelli's [Introduction to R for Public Health Researchers](http://aejaffe.com/summerR_2016/)
 * Cosma Shalizi and Andrew Thomas' [Statistical Computing 36-350: Beginning to Advanced Techniques in R](https://www.stat.cmu.edu/~cshalizi/statcomp/14/)
 

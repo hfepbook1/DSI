@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-Before starting more complex analyses and projects, it's good to establish some good habits.
+Before starting more complex analyses and projects, you should establish some good habits.
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(

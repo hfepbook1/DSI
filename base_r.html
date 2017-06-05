@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -473,33 +473,33 @@ mat1[,c(&quot;Col1&quot;, &quot;Col3&quot;)]
 <pre class="r"><code>vec = rnorm(1000)
 
 str(vec)
-##  num [1:1000] -1.115 1.849 0.339 1.225 -1.019 ...
+##  num [1:1000] -0.2365 -0.9553 0.0356 0.7947 0.0383 ...
 length(vec)
 ## [1] 1000
 head(vec)
-## [1] -1.1150168  1.8485862  0.3390993  1.2248799 -1.0194506  1.2831390
+## [1] -0.23654369 -0.95529333  0.03564213  0.79467346  0.03831368  0.95204835
 head(vec, 20)
-##  [1] -1.1150168  1.8485862  0.3390993  1.2248799 -1.0194506  1.2831390
-##  [7] -0.1489232 -0.6668460 -0.1963105 -0.9452132 -1.0900046  0.2317889
-## [13]  0.2584556 -0.5812369  0.1368382 -0.8741811 -1.1674956 -1.5218458
-## [19]  0.8799231 -0.3205017
+##  [1] -0.23654369 -0.95529333  0.03564213  0.79467346  0.03831368
+##  [6]  0.95204835  0.32796210 -0.44042030 -0.97267452  0.16647396
+## [11]  1.81907519 -0.81513978 -0.06810786  0.39145365 -1.18114305
+## [16]  0.14932740  0.25037619  0.67364797 -0.67600451  0.64333740
 tail(vec)
-## [1] -0.94657914  0.19216784  0.54636669 -0.02204965 -0.50255138  0.11384922
+## [1]  0.7929761  0.0832563 -0.2934164  0.2242241 -0.8363671  0.4263774
 mean(vec)
-## [1] 0.002591695
+## [1] -0.004989379
 median(vec)
-## [1] -0.0101731
+## [1] 0.003136845
 summary(vec)
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -3.061000 -0.651100 -0.010170  0.002592  0.639600  2.720000
+## -3.054457 -0.654891  0.003137 -0.004989  0.655837  3.101984
 
 vec = sample(c(&quot;male&quot;, &quot;female&quot;), 1000, replace = TRUE, prob = c(.3, .7))
 str(vec)
-##  chr [1:1000] &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
+##  chr [1:1000] &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;male&quot; &quot;female&quot; &quot;male&quot; &quot;male&quot; ...
 table(vec)
 ## vec
 ## female   male 
-##    724    276</code></pre>
+##    660    340</code></pre>
 <p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792.">time</a> Nonetheless, since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
 <pre class="r"><code>set.seed(1)
 
@@ -531,7 +531,7 @@ l
 ## 
 ## $d
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -3.540000 -0.633700 -0.005496  0.015310  0.715200  2.862000</code></pre>
+## -3.539586 -0.633734 -0.005496  0.015309  0.715155  2.862143</code></pre>
 <p>Lists can be accessed using names or indices, and the things in lists can be accessed in the way you would usually access an object of that type.</p>
 <pre class="r"><code>l$a
 ## [1] 1 2 3 4 5
@@ -560,10 +560,12 @@ mean(vec, na.rm = TRUE)
 <li><a href="https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf">A (very) short intro to R</a></li>
 <li>The <a href="http://swirlstats.com">swirl</a> package will help you learn R in R</li>
 <li>The <a href="https://cran.r-project.org/doc/contrib/Short-refcard.pdf">R reference card</a> …</li>
-<li>… and a <a href="https://www.rstudio.com/wp-content/uploads/2016/05/base-r.pdf">Base R cheat sheet</a> which is very handy</li>
+<li>… and a <a href="https://www.rstudio.com/wp-content/uploads/2016/05/base-r.pdf">Base R cheatsheet</a> which is very handy</li>
+<li>Not about R specifically, but the <a href="https://www.rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf">RStudio cheatsheet</a> might be handy!</li>
 </ul>
-<p>There are also some longer references:</p>
+<p>There are also some longer or more advanced references:</p>
 <ul>
+<li>R Programming for Data Science goes into a lot of detail, but these <a href="https://bookdown.org/rdpeng/rprogdatascience/r-nuts-and-bolts.html">two</a> <a href="https://bookdown.org/rdpeng/rprogdatascience/subsetting-r-objects.html">chapters</a> are very relevant! Note that many of the included sections also have videos to help you.</li>
 <li>Andrew Jaffe and John Muschelli’s <a href="http://aejaffe.com/summerR_2016/">Introduction to R for Public Health Researchers</a></li>
 <li>Cosma Shalizi and Andrew Thomas’ <a href="https://www.stat.cmu.edu/~cshalizi/statcomp/14/">Statistical Computing 36-350: Beginning to Advanced Techniques in R</a></li>
 </ul>
@@ -598,7 +600,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
