@@ -163,6 +163,8 @@ mat1[,c("Col1", "Col3")]
 There are several functions that provide a useful look at vectors, some of which we illustrate below. Anytime you have a new vector in R, it's important to use these (or things like these) to get a sense of what you have in front of you! Some of these are useful for numeric, others for character, factor, or logical. (Don't forget to look up functions you don't understand using `?str` or `?sample`!)
 
 ```{r}
+set.seed(1)
+
 vec = rnorm(1000)
 
 str(vec)

@@ -470,36 +470,38 @@ mat1[,c(&quot;Col1&quot;, &quot;Col3&quot;)]
 <div id="summarizing-and-plotting-vectors" class="section level3">
 <h3>Summarizing and plotting vectors</h3>
 <p>There are several functions that provide a useful look at vectors, some of which we illustrate below. Anytime you have a new vector in R, it’s important to use these (or things like these) to get a sense of what you have in front of you! Some of these are useful for numeric, others for character, factor, or logical. (Don’t forget to look up functions you don’t understand using <code>?str</code> or <code>?sample</code>!)</p>
-<pre class="r"><code>vec = rnorm(1000)
+<pre class="r"><code>set.seed(1)
+
+vec = rnorm(1000)
 
 str(vec)
-##  num [1:1000] -0.2365 -0.9553 0.0356 0.7947 0.0383 ...
+##  num [1:1000] -0.626 0.184 -0.836 1.595 0.33 ...
 length(vec)
 ## [1] 1000
 head(vec)
-## [1] -0.23654369 -0.95529333  0.03564213  0.79467346  0.03831368  0.95204835
+## [1] -0.6264538  0.1836433 -0.8356286  1.5952808  0.3295078 -0.8204684
 head(vec, 20)
-##  [1] -0.23654369 -0.95529333  0.03564213  0.79467346  0.03831368
-##  [6]  0.95204835  0.32796210 -0.44042030 -0.97267452  0.16647396
-## [11]  1.81907519 -0.81513978 -0.06810786  0.39145365 -1.18114305
-## [16]  0.14932740  0.25037619  0.67364797 -0.67600451  0.64333740
+##  [1] -0.62645381  0.18364332 -0.83562861  1.59528080  0.32950777
+##  [6] -0.82046838  0.48742905  0.73832471  0.57578135 -0.30538839
+## [11]  1.51178117  0.38984324 -0.62124058 -2.21469989  1.12493092
+## [16] -0.04493361 -0.01619026  0.94383621  0.82122120  0.59390132
 tail(vec)
-## [1]  0.7929761  0.0832563 -0.2934164  0.2242241 -0.8363671  0.4263774
+## [1]  0.1210582 -0.3132929 -0.8806707 -0.4192869 -1.4827517 -0.6973182
 mean(vec)
-## [1] -0.004989379
+## [1] -0.01164814
 median(vec)
-## [1] 0.003136845
+## [1] -0.03532423
 summary(vec)
-##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -3.054457 -0.654891  0.003137 -0.004989  0.655837  3.101984
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -3.00805 -0.69737 -0.03532 -0.01165  0.68843  3.81028
 
 vec = sample(c(&quot;male&quot;, &quot;female&quot;), 1000, replace = TRUE, prob = c(.3, .7))
 str(vec)
-##  chr [1:1000] &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;male&quot; &quot;female&quot; &quot;male&quot; &quot;male&quot; ...
+##  chr [1:1000] &quot;male&quot; &quot;male&quot; &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
 table(vec)
 ## vec
 ## female   male 
-##    660    340</code></pre>
+##    710    290</code></pre>
 <p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792.">time</a> Nonetheless, since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
 <pre class="r"><code>set.seed(1)
 
