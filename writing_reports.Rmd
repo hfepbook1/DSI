@@ -24,17 +24,21 @@ knitr::opts_chunk$set(
 
 ## Example
 
-Note about default RStudio treatment of RMD. They turn on previews -- behaves like a notebook. I don't like this (and i don't think i'm the [only one](https://twitter.com/hspter/status/793552089771233280)), but I might just be old. These can be turned off using preferences > R Markdown > Show output inline
+Before jumping in, one short note about the default RStudio treatment of R Markdown documents -- it behaves like a "notebook" and shows output mixed in with the code, rather than in the console or viewer. I don't like this (and I don't think I'm the [only one](https://twitter.com/hspter/status/793552089771233280)), but I might just be old and set in my ways. These can be turned off using preferences > R Markdown > Show output inline.
 
 ### Basic RMD
 
-Below is a first RMD file.
+Below is a first RMD file. To follow along, create a .Rmd file using File > New File > R Markdown; replace the default text with what's below, and save the file somewhere that makes sense (e.g. in a new directory). 
 
-Three major components:
+```{r, echo = FALSE, comment = ""}
+cat(htmltools::includeText("resources/template.Rmd"))
+```
 
-* **YAML header:**
-* **Text + inline R:**
-* **Code chunks:**
+There are three major components to this file:
+
+* **YAML header:** The segment at the beginning of the document bracketed by `---`s. 
+* **Text + inline R:** 
+* **Code chunks:** 
 
 ### Code chunk options
 

@@ -348,13 +348,29 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Note about default RStudio treatment of RMD. They turn on previews – behaves like a notebook. I don’t like this (and i don’t think i’m the <a href="https://twitter.com/hspter/status/793552089771233280">only one</a>), but I might just be old. These can be turned off using preferences &gt; R Markdown &gt; Show output inline</p>
+<p>Before jumping in, one short note about the default RStudio treatment of R Markdown documents – it behaves like a “notebook” and shows output mixed in with the code, rather than in the console or viewer. I don’t like this (and I don’t think I’m the <a href="https://twitter.com/hspter/status/793552089771233280">only one</a>), but I might just be old and set in my ways. These can be turned off using preferences &gt; R Markdown &gt; Show output inline.</p>
 <div id="basic-rmd" class="section level3">
 <h3>Basic RMD</h3>
-<p>Below is a first RMD file.</p>
-<p>Three major components:</p>
+<p>Below is a first RMD file. To follow along, create a .Rmd file using File &gt; New File &gt; R Markdown; replace the default text with what’s below, and save the file somewhere that makes sense (e.g. in a new directory).</p>
+<pre><code>---
+title: &quot;Simple document&quot;
+output: html_document
+---
+
+I&#39;m an R Markdown document! 
+
+Here&#39;s a code chunk:
+
+```{r}
+samp = rnorm(100)
+length(samp)
+```
+
+I can take the mean, too: the
+mean is `r mean(samp)`.</code></pre>
+<p>There are three major components to this file:</p>
 <ul>
-<li><strong>YAML header:</strong></li>
+<li><strong>YAML header:</strong> The segment at the beginning of the document bracketed by <code>---</code>s.</li>
 <li><strong>Text + inline R:</strong></li>
 <li><strong>Code chunks:</strong></li>
 </ul>
