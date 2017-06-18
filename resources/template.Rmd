@@ -5,12 +5,13 @@ output: html_document
 
 I'm an R Markdown document! 
 
-Here's a code chunk:
+Here's a code chunk that samples from 
+a normal distribution:
 
 ```{r}
 samp = rnorm(100)
 length(samp)
 ```
 
-I can take the mean, too: the
-mean is `r mean(samp)`.
+I can take the mean of the sample, too!
+The mean is `r mean(samp)`.

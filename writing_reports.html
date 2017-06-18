@@ -314,8 +314,17 @@ div.tocify {
 <li>
   <a href="papers.html">Homework</a>
 </li>
-<li>
-  <a href="teaching.html">Datasets</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Datasets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_mr_trash_wheel.html">Mr. Trash Wheel</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="http://github.com/jeff-goldsmith/DSI/">
@@ -359,15 +368,16 @@ output: html_document
 
 I&#39;m an R Markdown document! 
 
-Here&#39;s a code chunk:
+Here&#39;s a code chunk that samples from 
+a normal distribution:
 
 ```{r}
 samp = rnorm(100)
 length(samp)
 ```
 
-I can take the mean, too: the
-mean is `r mean(samp)`.</code></pre>
+I can take the mean of the sample, too!
+The mean is `r mean(samp)`.</code></pre>
 <p>There are three major components to this file:</p>
 <ul>
 <li><strong>YAML header:</strong> The segment at the beginning of the document bracketed by <code>---</code>s.</li>

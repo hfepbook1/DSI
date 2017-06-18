@@ -24,7 +24,9 @@ navbar:
     - text: "Homework"
       href: papers.html
     - text: "Datasets"
-      href: teaching.html
+      menu: 
+        - text: "Mr. Trash Wheel"
+          href: data_mr_trash_wheel.html
     - icon: fa-github fa-lg
       href: http://github.com/jeff-goldsmith/DSI/
 output:

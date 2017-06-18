@@ -11,7 +11,7 @@
 
 
 
-<title>Other Topics</title>
+<title>Mr. Trash Wheel</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -243,19 +341,32 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Other Topics</h1>
+<h1 class="title toc-ignore">Mr. Trash Wheel</h1>
 
 </div>
 
 
-<p>Brief overview of content</p>
-<p>Overall topic is made up of the following components:</p>
-<ul>
-<li><a href="making_websites.html">Websites</a></li>
-<li>Getting data from the web</li>
-<li>Profiling code</li>
-<li>Packages</li>
-</ul>
+<p>The version of the Mr. Trash Wheel data we’ll use for this class is available <a href="./data/HealthyHarborWaterWheelTotals2017-3.xlsx">here</a>.</p>
+<div id="context" class="section level2">
+<h2>Context</h2>
+<p><a href="http://baltimorewaterfront.com/healthy-harbor/water-wheel/">Mr. Trash Wheel</a> is “a <a href="https://en.wikipedia.org/wiki/Mr._Trash_Wheel">water-wheel vessel</a> that removes trash from the Inner Harbor in Baltimore, Maryland.” It (or he) sits at an intake into the Inner Harbor and intercepts litter and debris carried by the Jones Falls River toward the harbor. It has removed over a million pounds of litter since May 2014!</p>
+<p>Adam Lindquist, Director of the Healthy Harbor Initiative, describes the operation of the trash wheel and the data collection process below:</p>
+<blockquote>
+<p>Trash collected by the Trash Wheel is immediately dumped into a dumpster sitting on a separate barge at the back of the device. Each time the dumpster fills it is removed by boat and replaced with an empty dumpster. The full dumpster is transported to a waste-to-energy plant with the trash is incinerated to make electricity for Maryland homes.</p>
+</blockquote>
+<blockquote>
+<p>The amount of trash the device receives is highly dependent on rainfall. When the City receives a large storm we can fill multiple dumpsters in a single day. If it doesn’t rain, it may take days or weeks to fill a single dumpster.</p>
+</blockquote>
+<blockquote>
+<p>Trash totals are estimated based on observations of what is going up a section of the conveyor belt at various times through the collection process. For example, the beginning of a storm brings more cigarette butts, while the middle of a storm brings more plastic bags. The tail end of a storm brings heavy logs.</p>
+</blockquote>
+<p>Mr. Trash Wheel is on <a href="https://twitter.com/mrtrashwheel/">twitter</a>.</p>
+</div>
+<div id="data-description" class="section level2">
+<h2>Data description</h2>
+<p>Data collected by Mr. Trash Wheel is publicly available as a .xlsx document. The version used linked to above was accessed in June 2017.</p>
+<p>The Mr. Trash Wheel spreadsheet is largely self-explanatory, and includes information on the dumpter number, date of collection, amount of total litter and litter type. Additional spreadsheets for Professor Trash wheel and for precipitation amounts are also included in the document.</p>
+</div>
 
 <br><br>
 <footer>
@@ -263,6 +374,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 
