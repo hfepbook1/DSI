@@ -324,6 +324,9 @@ div.tocify {
     <li>
       <a href="data_mr_trash_wheel.html">Mr. Trash Wheel</a>
     </li>
+    <li>
+      <a href="data_restaurant_inspections.html">NYC Restaurant Inspections</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -502,11 +505,11 @@ median(vec)
 ## [1] -0.03532423
 summary(vec)
 ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## -3.00800 -0.69740 -0.03532 -0.01165  0.68840  3.81000
+## -3.00805 -0.69737 -0.03532 -0.01165  0.68843  3.81028
 
 vec = sample(c(&quot;male&quot;, &quot;female&quot;), 1000, replace = TRUE, prob = c(.3, .7))
 str(vec)
-##  chr [1:1000] &quot;male&quot; &quot;male&quot; &quot;male&quot; &quot;female&quot; &quot;female&quot; ...
+##  chr [1:1000] &quot;male&quot; &quot;male&quot; &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
 table(vec)
 ## vec
 ## female   male 
@@ -542,7 +545,7 @@ l
 ## 
 ## $d
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -3.540000 -0.633700 -0.005496  0.015310  0.715200  2.862000</code></pre>
+## -3.539586 -0.633734 -0.005496  0.015309  0.715155  2.862143</code></pre>
 <p>Lists can be accessed using names or indices, and the things in lists can be accessed in the way you would usually access an object of that type.</p>
 <pre class="r"><code>l$a
 ## [1] 1 2 3 4 5
