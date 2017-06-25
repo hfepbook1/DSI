@@ -12,7 +12,7 @@ navbar:
         - text: "Tidy Data"
           href: topic_tidy_data.html
         - text: "Visualization and EDA"
-          href: topic_visualization_and_EDA.html
+          href: topic_visualization_and_eda.html
         - text: "Collaboration"
           href: topic_collaboration.html
         - text: "More Advanced R"
