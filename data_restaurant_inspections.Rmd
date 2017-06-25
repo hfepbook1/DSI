@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-The version of the DOHMH New York City Restaurant Inspection Results data we will use for this class is available [here](./data/DOHMH_New_York_City_Restaurant_Inspection_Results.csv).
+The version of the DOHMH New York City Restaurant Inspection Results data we will use for this class is available [here](./data/DOHMH_New_York_City_Restaurant_Inspection_Results.zip).
 
 
 ## Context
