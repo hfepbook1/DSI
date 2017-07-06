@@ -29,6 +29,8 @@ navbar:
           href: data_mr_trash_wheel.html
         - text: "NYC Restaurant Inspections"
           href: data_restaurant_inspections.html
+        - text: "Instacart"
+          href: data_instacart.html
     - icon: fa-github fa-lg
       href: http://github.com/jeff-goldsmith/DSI/
 output:
