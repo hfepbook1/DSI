@@ -1,5 +1,5 @@
 ---
-title: "Writing reports"
+title: "Writing with data"
 output:
   html_document: 
     toc: true
@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
 
 ## Some slides
 
-<script async class="speakerdeck-embed" data-id="74bdf749fff0470a8b61662d7dc31edc" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Best Practices" target="_blank">Best Practices</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<script async class="speakerdeck-embed" data-id="de4ee4acc2bd475eb3051304590f196c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Writing with data" target="_blank">Writing with datas</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example

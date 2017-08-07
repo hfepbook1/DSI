@@ -8,5 +8,5 @@ The topic is made up of the following components:
 
 * [Base R](base_r.html)
 * [Best practices](best_practices.html)
-* [Writing reports](writing_reports.html)
+* [Writing reports](writing_with_data.html)
 

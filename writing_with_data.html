@@ -11,7 +11,7 @@
 
 
 
-<title>Instacart</title>
+<title>Writing with data</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -350,46 +350,95 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Instacart</h1>
+<h1 class="title toc-ignore">Writing with data</h1>
 
 </div>
 
 
-<p>“The Instacart Online Grocery Shopping Dataset 2017”, Accessed from <a href="https://www.instacart.com/datasets/grocery-shopping-2017" class="uri">https://www.instacart.com/datasets/grocery-shopping-2017</a> on June 24, 2017.</p>
-<p>The version of the Instacart data that we will use in this class can be found <a href="./data/instacart_train_data.RData">here</a>.</p>
-<div id="context" class="section level2">
-<h2>Context</h2>
-<p><a href="https://www.instacart.com/">Instacart</a> is an online grocery service that allows you to shop online from local stores. In New York City, partner stores include Whole Foods, Fairway, and The Food Emporium. Instacart offers same-day delivery, and items that users purchase are delivered within 2 hours.</p>
-<p>“The Instacart Online Grocery Shopping Dataset 2017” is an anonymized dataset with over 3 million online grocery orders from more than 200,000 Instacart users. However the dataset does not represent a random sampling of products, users, or purchases. Therefore, while the data allow examination of trends in online grocery purchasing, the results may not be generalizable to Instacart users more broadly.</p>
-<p>“The Instacart Online Grocery Shopping Dataset 2017” <a href="https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2">website</a> provides some summary results of interesting findings, including:</p>
+<p>You will typically (if not always) need to summarize your analyses in a clear report. This page describes how to do so using R Markdown.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="de4ee4acc2bd475eb3051304590f196c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Writing with data" target="_blank">Writing with datas</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Before jumping in, one short note about the default RStudio treatment of R Markdown documents – it behaves like a “notebook” and shows output mixed in with the code, rather than in the console or viewer. I don’t like this (and I don’t think I’m the <a href="https://twitter.com/hspter/status/793552089771233280">only one</a>), but I might just be old and set in my ways. These can be turned off using preferences &gt; R Markdown &gt; Show output inline.</p>
+<div id="basic-rmd" class="section level3">
+<h3>Basic RMD</h3>
+<p>Below is a first RMD file. To follow along, create a .Rmd file using File &gt; New File &gt; R Markdown; replace the default text with what’s below, and save the file somewhere that makes sense (e.g. in a new directory).</p>
+<pre><code>---
+title: &quot;Simple document&quot;
+output: html_document
+---
+
+I&#39;m an R Markdown document! 
+
+Here&#39;s a code chunk that samples from 
+a normal distribution:
+
+```{r}
+samp = rnorm(100)
+length(samp)
+```
+
+I can take the mean of the sample, too!
+The mean is `r mean(samp)`.</code></pre>
+<p>There are three major components to this file:</p>
 <ul>
-<li>Fruits are reordered more frequently than vegetables</li>
-<li>Soups and baking ingredients are least likely to be reordered</li>
-<li>Healthier snacks and staples tend to be purchased earlier in the day</li>
-<li>Ice cream and frozen pizza are the most frequently ordered products late at night</li>
+<li><strong>YAML header:</strong> The segment at the beginning of the document bracketed by <code>---</code>s.</li>
+<li><strong>Text + inline R:</strong></li>
+<li><strong>Code chunks:</strong></li>
 </ul>
 </div>
-<div id="data-description" class="section level2">
-<h2>Data description</h2>
-<p>The original data is quite extensive, and the data linked to at the top of this page for use in the class represents a cleaned and limited version of the data. The dataset contains 1,384,617 observations of 131,209 unique users, where each row in the dataset is a product from an order. There is a single order per user in this dataset.</p>
-<p>There are 15 variables in this dataset:</p>
+<div id="code-chunk-options" class="section level3">
+<h3>Code chunk options</h3>
+<p>Although code is organized in chunks, you can still run it in the console. I do this to write my code (and use RMD more than scripts).</p>
+<p>Name</p>
 <ul>
-<li><code>order_id</code>: order identifier</li>
-<li><code>product_id</code>: product identifier</li>
-<li><code>add_to_cart_order</code>: order in which each product was added to cart</li>
-<li><code>reordered</code>: 1 if this prodcut has been ordered by this user in the past, 0 otherwise</li>
-<li><code>user_id</code>: customer identifier</li>
-<li><code>eval_set</code>: which evaluation set this order belongs in (<em>Note that the data for use in this class is exclusively from the “train” <code>eval_set</code></em>)</li>
-<li><code>order_number</code>: the order sequence number for this user (1=first, n=nth)</li>
-<li><code>order_dow</code>: the day of the week on which the order was placed</li>
-<li><code>order_hour_of_day</code>: the hour of the day on which the order was placed</li>
-<li><code>days_since_prior_order</code>: days since the last order, capped at 30, NA if <code>order_number</code>=1</li>
-<li><code>product_name</code>: name of the product</li>
-<li><code>aisle_id</code>: aisle identifier</li>
-<li><code>department_id</code>: department identifier</li>
-<li><code>aisle</code>: the name of the aisle</li>
-<li><code>department</code>: the name of the department</li>
+<li><code>eval</code></li>
+<li><code>echo</code></li>
+<li><code>include</code></li>
+<li><code>message</code> and <code>warning</code></li>
+<li><code>results</code> and <code>fig.show</code></li>
 </ul>
+<p>Use these to be judicious about what you include in your report</p>
+<p>Caching can save time, but can also make your life harder. Be very careful about using this – there are very few things that I cache, and even then I use it sparingly. Need to set up a dependson thing too.</p>
+</div>
+<div id="output-formats" class="section level3">
+<h3>Output formats</h3>
+<ul>
+<li>HTML</li>
+<li>PDF</li>
+<li>Word</li>
+<li>Slides (e.g. ioslides and beamer)</li>
+</ul>
+<p>Controlled through YAML section. These can have sub options (show some popular ones). Note YAML does a lot of other stuff, but we’ll worry about that if / when we get to it.</p>
+</div>
+<div id="formatting-text" class="section level3">
+<h3>Formatting text</h3>
+<p>Lots of stuff you can do. See the cheatsheets or readings below for a long list.</p>
+</div>
+<div id="new-workflow" class="section level3">
+<h3>New workflow</h3>
+<p>Slight modification to previous workflow:</p>
+<ul>
+<li>Create a directory with a reasonable name and path (e.g. <code>~/Documents/School/DSI/Homework_2/</code>)</li>
+<li>Put an R Project in the directory</li>
+<li>Keep everything related to the analysis – data inputs, scripts, reports, output – in there, and use R Markdown as much as possible</li>
+<li>Periodically check for reproducibility of the analysis</li>
+</ul>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf" class="uri">https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf</a></p>
+<p><a href="http://r4ds.had.co.nz/r-markdown.html" class="uri">http://r4ds.had.co.nz/r-markdown.html</a> and <a href="http://r4ds.had.co.nz/r-markdown-formats.html" class="uri">http://r4ds.had.co.nz/r-markdown-formats.html</a> and <a href="http://r4ds.had.co.nz/r-markdown-workflow.html" class="uri">http://r4ds.had.co.nz/r-markdown-workflow.html</a></p>
+<p><a href="http://rmarkdown.rstudio.com/articles_intro.html" class="uri">http://rmarkdown.rstudio.com/articles_intro.html</a> (lots of overlap with the preceding, but still good)</p>
+<p><a href="https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/" class="uri">https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/</a> and <a href="https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/" class="uri">https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/</a></p>
 </div>
 
 <br><br>
