@@ -6,9 +6,11 @@ output:
     toc_float: true
 ---
 
-You will typically (if not always) need to summarize your analyses in a clear report. This page describes how to do so using R Markdown. 
+You will typically (if not always) need to summarize your work in writing. This page describes how to do so using R Markdown. 
 
 ```{r, echo = FALSE}
+inline <- function(x = "") paste0("`` `r ", x, "` ``")
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   fig.width = 8,
@@ -37,54 +39,90 @@ cat(htmltools::includeText("resources/template.Rmd"))
 There are three major components to this file:
 
 * **YAML header:** The segment at the beginning of the document bracketed by `---`s. 
-* **Text + inline R:** 
-* **Code chunks:** 
+* **Text + inline R:** Written text with simple formatting like `# heading`, `**bold**`, and `_italic_`
+* **Code chunks:** Blocks of code surrounded by ` ``` `
 
-### Code chunk options
+The combination of these elements allows you a great deal of flexibility and power as an author. 
 
-Although code is organized in chunks, you can still run it in the console. I do this to write my code (and use RMD more than scripts). 
+R Markdown documents are rendered to produce complete reports with text, formatting, and code results by "knitting". You can knit your document using the RStudio GUI or CMD / Ctrl + Shift + K; these options execute `knitr::knit` (which you can run directly from the command line if you prefer). Behind the scenes, `knitr` is creating a Markdown document and pandoc is translating that to the output format you specify (e.g. HTML, .pdf, .docx).
 
-Name
+### Code chunks and snippets
 
-* `eval`
-* `echo`
-* `include`
-* `message` and `warning`
-* `results` and `fig.show`
+We'll start with code chunks, since these are the distinguishing feature of R Markdown documents. The code chunks take the place of scripts in that they hold the code you use to produce your results. However, they tend to be briefer and more self-contained: you're nestling these bits of code among the text the supports them and the results they produce. You can still execute code in chunks using Cmd/Ctrl + Enter, and you will still develop code by writing and refining until you have something you're happy with.
 
-Use these to be judicious about what you include in your report
+Although the benefits will mostly become apparently later, I recommend you get in the habit of naming your code chunks now using ` ```{r code_name} `. 
 
-Caching can save time, but can also make your life harder. Be very careful about using this -- there are very few things that I cache, and even then I use it sparingly. Need to set up a dependson thing too. 
+Beyond the name, you can customize the behavior of your code chunk via options defined in the chunk header. Some common options are:
 
-### Output formats
+* `eval = FALSE`: code will be displayed but not executed; results are not included. 
+* `echo = FALSE`: code will be executed but not displayed; results are included. 
+* `include = FALSE`: code will not be executed or displayed; results are not included.
+* `message = FALSE` and `warning = FALSE`: prevents messages and warnings from being displayed.
+* `results = hide` and `fig.show = hide`: prevents results and figures from being shown, respectively.
 
-* HTML
-* PDF
-* Word 
-* Slides (e.g. ioslides and beamer)
+Use these options to be judicious about what you include in your report. Remember to keep your audience in mind: how much do they want or need to see?
 
-Controlled through YAML section. These can have sub options (show some popular ones). Note YAML does a lot of other stuff, but we'll worry about that if / when we get to it. 
+You can also cache the results of a code chunk, but we will largely avoid this. Caching can save time by saving the results of a code chunk instead of re-executing when the document is knit. However, you have to be careful when using this option since downstream code can depend on upstream changes. Controlling this behavior through the `dependson` option can help, but if you cache code you'll want to periodically clear you cache to ensure you're getting reproducible results. 
+
+Inserting brief code snippets inline is often helpful; I frequently use these to give the sample size or summary statistics in text. You can insert code inline using `r inline()`, often in conjunction with the `format()` function to clean up your output. 
 
 ### Formatting text
 
-Lots of stuff you can do. See the cheatsheets or readings below for a long list. 
+There are a huge number of ways to format your documents. The overview below is essentially copied from [R for Data Science](http://r4ds.had.co.nz/r-markdown.html); a link to a handy cheatsheet is below.
 
-### New workflow
+```{r, echo = FALSE, comment = ""}
+cat(readr::read_file("resources/rmarkdown_formatting.Rmd"))
+```
 
-Slight modification to previous workflow:
+You'll need to refer to this list (or to similar resources) pretty often at first, but most of it will become second-nature after you've written a few documents. 
+
+### YAML and output formats
+
+The YAML header controls global features of the document. I generally will include both the `author` and `date` in each document I produce.
+```yaml
+author: "Jeff Goldsmith"
+date: 2017-08-08
+```
+
+We're mostly concerned with the output format, which is controlled through the `output:` field. 
+
+The snippet below will produce an HTML document. Notice that this has subfields to add a table of contents, and float that table alongside the content. These lines are used throughout the course website. 
+```yaml
+output:
+  html_document:
+    toc: true
+    toc_float: true
+```
+HTML documents are great because they allow interactivity in a way that static formats (PDF, Word) do not. For example, adding the subfield `code_folding: hide` under `html_document` will hide all the code in the document until the reader clicks to show it. 
+
+That said, some collaborators will need or prefer static documents. You can create these using the YAML snippet below, which will produce both a PDF and a Word document when knitted. 
+```yaml
+output:
+  pdf_document: default
+  word_document: default
+```
+The formatting for both PDF and Word documents can be controlled through options as well, although these can be tricky to control (especially for Word documents).
+
+Later in the course we'll talk about some other output formats, especially dashboards and websites, and will introduce other YAML options as needed.
+
+## New workflow
+
+All of this suggests a slight modification to the previous workflow:
 
 * Create a directory with a reasonable name and path (e.g. `~/Documents/School/DSI/Homework_2/`)
 * Put an R Project in the directory
 * Keep everything related to the analysis -- data inputs, scripts, reports, output -- in there, and use R Markdown as much as possible
 * Periodically check for reproducibility of the analysis
 
+This should become your default behavior when starting any new project.
+
 ## Other materials
 
-https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf
+Constructing useful documents that combine text and code is the subject of several online guides. See below for a sampling:
 
-http://r4ds.had.co.nz/r-markdown.html and http://r4ds.had.co.nz/r-markdown-formats.html and http://r4ds.had.co.nz/r-markdown-workflow.html
+* The R Markdown [cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf) is a useful resource once you have the basics down
+* R For Data Science devotes chapters to [R Markdown](http://r4ds.had.co.nz/r-markdown.html), [additional output formats](http://r4ds.had.co.nz/r-markdown-formats.html), and a useful [workflow](http://r4ds.had.co.nz/r-markdown-workflow.html).
+* The [Intro to R Markdown](http://rmarkdown.rstudio.com/articles_intro.html) from RStudio overlaps a lot with the previous bullet, but is also handy to review
+* If Webinars are more to your liking, this [intro](https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/) and this [follow-up](https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/) are good
 
-http://rmarkdown.rstudio.com/articles_intro.html (lots of overlap with the preceding, but still good)
-
-https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/ and https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/
-
+You'll also find a lot of stuff online that has been written using R Markdown and, with a little digging, can often find the .RMD file as well. This is a great way to spot new tools and figure out how to incorporate them in your own documents!!
