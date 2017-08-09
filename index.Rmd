@@ -2,14 +2,14 @@
 title: "Data Science I"
 ---
 
+Contemporary biostatistics and data analysis depends on the mastery of tools for computation, eploratory analysis, visualization, dissemination, and reproducibility in addition to proficiency in traditional statistical techniques. The goal of this course is to provide training in the elements of a complete pipeline for data analysis. We will develop skills in data wrangling, reproducible research, software development, collaboration, and effective communication; all programming will be done in R. Although there are no formal prerequisites for this course, some familiarity with statistics and basic programming knowledge will be helpful.
 
-### Synopsis
+This course is being offered in the Fall of 2017 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](resources/2017_DSI_Syllabus.pdf).
 
-Gonna make a data science class; this page will eventually host the course material.
+### People
 
-<br>
-
-### Details
-
-Instructor, TAs, class location, link to syllabus. 
-
+* Jeff Goldsmith (Instructor; [email Jeff](mailto:jeff.goldsmith@columbia.edu))
+* Zixuan Chen ([email Zixuan](mailto:zc2361@cumc.columbia.edu))
+* Julia Wrobel ([email Julia](mailto:jw3134@cumc.columbia.edu))
+* Alan Wu ([email Alan](mailto:aw3013@cumc.columbia.edu))
+* Emily Zabor ([email Emily](mailto:ecz2108@cumc.columbia.edu))

@@ -11,7 +11,7 @@
 
 
 
-<title>Tidy Data</title>
+<title>Data Import</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -194,7 +292,7 @@ $(document).ready(function () {
       <a href="topic_building_blocks.html">Building Blocks</a>
     </li>
     <li>
-      <a href="topic_tidy_data.html">Tidy Data</a>
+      <a href="topic_data_wrangling.html">Data Wrangling</a>
     </li>
     <li>
       <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
@@ -252,17 +350,32 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Tidy Data</h1>
+<h1 class="title toc-ignore">Data Import</h1>
 
 </div>
 
 
-<p>Brief overview of content</p>
-<p>Overall topic is made up of the following components:</p>
-<ul>
-<li>Tidy data (definition; dplyr; piping)</li>
-<li>Data input (from various sources, including csv, xslx, sas7bdat; cleaning and merging)</li>
-</ul>
+<p>Importing is the first step in wrangling.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="de4ee4acc2bd475eb3051304590f196c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Writing with data" target="_blank">Writing with datas</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<div id="basic-rmd" class="section level3">
+<h3>Basic RMD</h3>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p><a href="http://r4ds.had.co.nz/tibbles.html" class="uri">http://r4ds.had.co.nz/tibbles.html</a> and <a href="http://r4ds.had.co.nz/data-import.html" class="uri">http://r4ds.had.co.nz/data-import.html</a>; <a href="http://tibble.tidyverse.org/index.html" class="uri">http://tibble.tidyverse.org/index.html</a></p>
+<p><a href="https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html</a></p>
+<p><a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html" class="uri">https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html</a></p>
+</div>
 
 <br><br>
 <footer>
@@ -270,6 +383,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 

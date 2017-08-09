@@ -9,8 +9,8 @@ navbar:
           href: topic_what_is_data_science.html
         - text: "Building Blocks"
           href: topic_building_blocks.html
-        - text: "Tidy Data"
-          href: topic_tidy_data.html
+        - text: "Data Wrangling"
+          href: topic_data_wrangling.html
         - text: "Visualization and EDA"
           href: topic_visualization_and_eda.html
         - text: "Collaboration"

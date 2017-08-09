@@ -1,0 +1,40 @@
+---
+title: "Data Import"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Importing is the first step in wrangling.
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 8,
+  fig.height = 4
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="de4ee4acc2bd475eb3051304590f196c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Writing with data" target="_blank">Writing with datas</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+
+
+### Basic RMD
+
+
+
+## Other materials
+
+
+http://r4ds.had.co.nz/tibbles.html and http://r4ds.had.co.nz/data-import.html; http://tibble.tidyverse.org/index.html 
+
+https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html and https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html
+
+https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html
