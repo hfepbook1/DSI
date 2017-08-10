@@ -358,23 +358,252 @@ div.tocify {
 <p>Importing is the first step in wrangling.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
-<script async class="speakerdeck-embed" data-id="de4ee4acc2bd475eb3051304590f196c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="e75fb41a3142444f9cde9fb3110a1858" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-best-practices" title="Writing with data" target="_blank">Writing with datas</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-import" title="Data Import" target="_blank">Data Import</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
 <p><br></p>
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<div id="basic-rmd" class="section level3">
-<h3>Basic RMD</h3>
+<p>We’re going to figure out how to import the three datasets in this zip file. First, create a directory for today’s work, add an R Project, move the data to your directory, and start an R Markdown file. We’re also going to be making extensive use of the <code>tidyverse</code> package, so we can go ahead and load that.</p>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats</code></pre>
+<div id="paths" class="section level3">
+<h3>Paths</h3>
+<p>We’ve mentioned paths and your working directory in passing (when talking about <a href="best_practices.html">best practices</a>). A firmer understanding is helpful when you start loading data into R, because to load data R will have to know where to find it.</p>
+<p>There are two kinds of paths:</p>
+<ul>
+<li>Absolute: a file or folder’s “full address” on your computer</li>
+<li>Relative: directions to a file or folder from your current working directory</li>
+</ul>
+<p>Absolute paths are often easier, because you don’t really have to <em>think</em> about them – you’re just giving the complete address, starting from the root directory. These work from any current working directory on the machine. However, absolute paths can take up a lot of space if you use nested directories and they aren’t portable: even someone with the same directory won’t have the same path to that directory. An absolute path example is below:</p>
+<pre><code>&quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI/data/FAS_litters.csv&quot;</code></pre>
+<p>Relative paths, meanwhile, start from your current working directory. These are often much shorter, since the files you want to access are in subdirectories or at least not too far away. They also are portable, in that someone else with the same directory will have the same relative path to the files you care about. For both of these reasons, relative paths are preferred in almost every setting. The code below finds my current working directory:</p>
+<pre class="r"><code>getwd()
+## [1] &quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI&quot;</code></pre>
+<p>A relative path to the same file as above is</p>
+<pre><code>&quot;./data/FAS_litters.csv&quot;</code></pre>
+<p>The table below, copied from <a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#file-and-directory-pathnames">R Programming for Research</a>, gives useful shorthand notation for relative pathnames.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Shorthand</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>~</code></td>
+<td align="left">Home directory</td>
+</tr>
+<tr class="even">
+<td align="left"><code>.</code></td>
+<td align="left">Current working directory</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>..</code></td>
+<td align="left">One directory up from current working directory</td>
+</tr>
+<tr class="even">
+<td align="left"><code>../..</code></td>
+<td align="left">Two directories up from current working directory</td>
+</tr>
+</tbody>
+</table>
+<p>One note: autocomplete in RStudio works with both absolute and relative paths.</p>
+<p>One caveat: if you’re going to both share code and use confidential data, you have to take extra steps to ensure data security. That can mean storing data outside of your shared project directory and using absolute paths. In these cases, set a “parent directory” at the outset of your code and using relative paths subsequently.</p>
+</div>
+<div id="importing-data-tables" class="section level3">
+<h3>Importing data tables</h3>
+<p>Now that we have paths handled, we can start loading data. We’re going to start with rectangular data tables (data in rows and columns, with data separated by a delimiter) saved in a plain text format. Of these, csv (comma separated value) files are most common, and others are handled in basically the same way. To import a csv, we’ll use a function from <code>readr</code>:</p>
+<pre class="r"><code>litters_data = readr::read_csv(file = &quot;./data/FAS_litters.csv&quot;)
+## Parsed with column specification:
+## cols(
+##   Group = col_character(),
+##   Litter.Number = col_character(),
+##   Sex = col_integer(),
+##   GD.of.DOB = col_integer(),
+##   PD.ears = col_integer(),
+##   PD.walk = col_integer()
+## )</code></pre>
+<p>Great – we’ve imported data! The first argument to <code>read_csv</code> is the path to the data, and the line above assigns the result of <code>read_csv</code> to <code>litters_data</code>. This function call also prints information about the column parsing. We’ll talk more about both of these shortly.</p>
+</div>
+<div id="looking-at-data" class="section level3">
+<h3>Looking at data</h3>
+<p>The first thing to do after importing the data (unless <code>read_csv</code> gives warnings) is to look at it. If there are unexpected results during data import, you’ll catch a lot of them here. In addition to printing the data, I often use <code>str</code>, <code>head</code>, and <code>tail</code>:</p>
+<pre class="r"><code>litters_data
+## # A tibble: 313 x 6
+##    Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
+##    &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+##  1  Con7            85     1        20       4      11
+##  2  Con7            85     1        20       4      12
+##  3  Con7      1/2/95/2     1        19       5       9
+##  4  Con7      1/2/95/2     1        19       5      10
+##  5  Con7  5/5/3/83/3-3     1        19       5      10
+##  6  Con7  5/5/3/83/3-3     1        19       5       9
+##  7  Con7    5/4/2/95/2     1        19      NA       9
+##  8  Con7    4/2/95/3-3     1        20       4       8
+##  9  Con7    4/2/95/3-3     1        20       4       9
+## 10  Con7    2/2/95/3-2     1        20       4      10
+## # ... with 303 more rows
+tail(litters_data, 5)
+## # A tibble: 5 x 6
+##   Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
+##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+## 1  Mod8        2/95/2     2        20       3       8
+## 2  Mod8        2/95/2     2        20       3       9
+## 3  Mod8          82/4     2        20       4       9
+## 4  Mod8          82/4     2        20       3       9
+## 5  Mod8          82/4     2        20       3       9</code></pre>
+<p>Another tool that I use often is `<code>skimr::skim</code>. The output is too wide to render well here, but is pretty slick!</p>
+<pre class="r"><code>skimr::skim(litters_data)
+## Numeric Variables
+## # A tibble: 4 x 13
+##         var    type missing complete     n      mean        sd   min
+##       &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1 GD.of.DOB integer       0      313   313 19.686901 0.4644969    19
+## 2   PD.ears integer      18      295   313  3.684746 0.5938499     2
+## 3   PD.walk integer       0      313   313  9.498403 1.3376323     7
+## 4       Sex integer       0      313   313  1.504792 0.5007776     1
+## # ... with 5 more variables: `25% quantile` &lt;dbl&gt;, median &lt;dbl&gt;, `75%
+## #   quantile` &lt;dbl&gt;, max &lt;dbl&gt;, hist &lt;chr&gt;
+## 
+## Character Variables
+## # A tibble: 2 x 9
+##             var      type complete missing empty     n   min   max
+## *         &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1         Group character      313       0     0   313     4     4
+## 2 Litter.Number character      313       0     0   313     2    14
+## # ... with 1 more variables: n_unique &lt;dbl&gt;</code></pre>
+</div>
+<div id="arguments-to-read_" class="section level3">
+<h3>Arguments to <code>read_*</code></h3>
+<p>In the best case, the data are stored in the csv without any weirdness – there are no blank lines or columns, the first row is the variable name, missing values are stored in sensible ways. When this isn’t the case, arguments to <code>read_csv</code> are helpful. The ones I use most frequently are:</p>
+<ul>
+<li><code>col_names</code>: usually <code>TRUE</code>. If <code>FALSE</code>, column names are <code>X1</code>, <code>X1</code>, … . You can also supply column names.</li>
+<li><code>na</code>: string vector containing character expressions for missing values.</li>
+<li><code>skip</code>: number of rows to skip before reading data.</li>
+</ul>
+<p>For example, the call below will skip the first 50 lines of data and not assume the first row are variable names:</p>
+<pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
+  skip = 50, col_names = FALSE)
+## Parsed with column specification:
+## cols(
+##   X1 = col_character(),
+##   X2 = col_character(),
+##   X3 = col_integer(),
+##   X4 = col_integer(),
+##   X5 = col_integer(),
+##   X6 = col_integer()
+## )
+head(litters_data)
+## # A tibble: 6 x 6
+##      X1         X2    X3    X4    X5    X6
+##   &lt;chr&gt;      &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1  Con8 3/5/2/2/95     1    20     4     8
+## 2  Con8 3/5/2/2/95     1    20     4     8
+## 3  Con8 5/4/3/83/3     1    19     4    10
+## 4  Con8 5/4/3/83/3     1    19     4     9
+## 5  Con8 5/4/3/83/3     1    19     4     9
+## 6  Con8 5/4/3/83/3     1    19     4    10</code></pre>
+<p>These arguments generally work for other members of the <code>read_*</code> family of functions.</p>
+</div>
+<div id="parsing-columns" class="section level3">
+<h3>Parsing columns</h3>
+<p>I skipped the <code>col_types</code> argument because it’s worth talking about in some detail. The <code>read_*</code> functions will attempt to guess the data type stored in each column; by default, these guesses are based on the first 1000 rows. The guesses are also usually pretty good. In some cases, though, you’ll want to give explicit column specifications. This is done using the <code>cols</code> function, and each column is given a column type:</p>
+<pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
+  col_types = cols(
+    Group = col_character(),
+    Litter.Number = col_character(),
+    Sex = col_integer(),
+    GD.of.DOB = col_integer(),
+    PD.ears = col_double(),
+    PD.walk = col_double()
+  )
+)
+tail(litters_data)
+## # A tibble: 6 x 6
+##   Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
+##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1  Mod8        2/95/2     2        20       4       9
+## 2  Mod8        2/95/2     2        20       3       8
+## 3  Mod8        2/95/2     2        20       3       9
+## 4  Mod8          82/4     2        20       4       9
+## 5  Mod8          82/4     2        20       3       9
+## 6  Mod8          82/4     2        20       3       9</code></pre>
+<p>Column parsing also allows a shorthand for almost every data type.</p>
+<pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
+  col_types = &quot;ccicdd&quot;
+)
+litters_data
+## # A tibble: 313 x 6
+##    Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
+##    &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+##  1  Con7            85     1        20       4      11
+##  2  Con7            85     1        20       4      12
+##  3  Con7      1/2/95/2     1        19       5       9
+##  4  Con7      1/2/95/2     1        19       5      10
+##  5  Con7  5/5/3/83/3-3     1        19       5      10
+##  6  Con7  5/5/3/83/3-3     1        19       5       9
+##  7  Con7    5/4/2/95/2     1        19      NA       9
+##  8  Con7    4/2/95/3-3     1        20       4       8
+##  9  Con7    4/2/95/3-3     1        20       4       9
+## 10  Con7    2/2/95/3-2     1        20       4      10
+## # ... with 303 more rows</code></pre>
+</div>
+<div id="other-file-formats" class="section level3">
+<h3>Other file formats</h3>
+<p>Non-csv plain text files (e.g. tab delimited files) can be handled using <code>read_table</code>. This is very similar to <code>read_csv</code>, but you have to specify a delimiter.</p>
+<p>CSV format is great, but you’ll encounter a lot of Excel files too. Although you can export these to a csv, don’t – use the <code>readxl</code> package instead! This is part of the tidyverse but you’ll have to download and install it separately. The <code>read_excel</code> function in this package has many of the same arguments as <code>read_csv</code>, including <code>col_names</code>, <code>na</code>, <code>skip</code>, and <code>col_types</code>, and can be used in basically the same way. There is also a <code>sheet</code> option (useful when there are multiple sheets in the Excel file) and the <code>range</code> option (when you want to read in a specific data rectangle). Lastly, in RStudio you can use File &gt; Import Dataset &gt; From Excel for a GUI interface. The code below illustrates <code>read_excel</code>.</p>
+<pre class="r"><code>library(readxl)
+mlb11_data = read_excel(&quot;data/mlb11.xlsx&quot;, n_max = 20)
+head(mlb11_data, 5)
+## # A tibble: 5 x 12
+##                  team  runs at_bats  hits homeruns bat_avg strikeouts
+##                 &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+## 1       Texas Rangers   855    5659  1599      210   0.283        930
+## 2      Boston Red Sox   875    5710  1600      203   0.280       1108
+## 3      Detroit Tigers   787    5563  1540      169   0.277       1143
+## 4  Kansas City Royals   730    5672  1560      129   0.275       1006
+## 5 St. Louis Cardinals   762    5532  1513      162   0.273        978
+## # ... with 5 more variables: stolen_bases &lt;dbl&gt;, wins &lt;dbl&gt;,
+## #   new_onbase &lt;dbl&gt;, new_slug &lt;dbl&gt;, new_obs &lt;dbl&gt;</code></pre>
+<p>The last tidyverse package for data import we’ll note is <code>haven</code>, which is used to import into R data files from SAS, Stata, and SPSS. An example for reading data from SAS follows.</p>
+<pre class="r"><code>library(haven)
+pulse_data = read_sas(&quot;data/pulse.sas7bdat&quot;)
+## Error: &#39;data/pulse.sas7bdat&#39; does not exist in current working directory (&#39;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI&#39;).
+head(pulse_data, 5)
+## Error in head(pulse_data, 5): object &#39;pulse_data&#39; not found</code></pre>
+<p>You can read in data that isn’t coming as a flat file, but it’s beyond the scope of this course.</p>
+</div>
+<div id="comparison-with-base-r" class="section level3">
+<h3>Comparison with Base R</h3>
+<p>The functions in <code>readr</code> are relatively new, and can be used in place of base R’s <code>read.csv</code>, <code>read.table</code>, and so on. The base R versions tend to be slower (very noticeably for large datasets), and the default options can make less sense for modern datasets. Meanwhile, the <code>readr</code> functions export tibbles, and keep characters as characters (instead of converting to factors …).</p>
+</div>
+<div id="exporting-data" class="section level3">
+<h3>Exporting data</h3>
+<p>As a final point, you will sometimes need to export data after you have imported and cleaned it. The <code>write_*</code> functions in <code>readr</code> address this problem.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p><a href="http://r4ds.had.co.nz/tibbles.html" class="uri">http://r4ds.had.co.nz/tibbles.html</a> and <a href="http://r4ds.had.co.nz/data-import.html" class="uri">http://r4ds.had.co.nz/data-import.html</a>; <a href="http://tibble.tidyverse.org/index.html" class="uri">http://tibble.tidyverse.org/index.html</a></p>
-<p><a href="https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html</a></p>
-<p><a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html" class="uri">https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html</a></p>
+<p>The content in this page draws heavily from several sources; each of the things below goes into more detail in one way or another.</p>
+<ul>
+<li>You can learn more about tibbles from <a href="http://r4ds.had.co.nz/tibbles.html">R for Data Science</a> or the tidyverse <a href="http://tibble.tidyverse.org/index.html">page</a></li>
+<li>R for Data Science has a chapter on <a href="http://r4ds.had.co.nz/data-import.html">data import</a></li>
+<li>R Programming for Data Science gives more detail on data import in <a href="https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html">base R</a> with some information about <a href="https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html">readr</a></li>
+<li>R Programming for Research also discusses <a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html">entering data</a>; the section on pathnames and directories is nicely detailed</li>
+<li>RStudio has recordings of webinars on <a href="https://www.rstudio.com/resources/webinars/getting-your-data-into-r/">Getting data into R</a> and <a href="https://www.rstudio.com/resources/webinars/whats-new-with-readxl/">What’s new with readxl</a></li>
+</ul>
 </div>
 
 <br><br>
