@@ -26,13 +26,13 @@ navbar:
     - text: "Datasets"
       menu: 
         - text: "Mr. Trash Wheel"
-          href: data_mr_trash_wheel.html
+          href: dataset_mr_trash_wheel.html
         - text: "NYC Restaurant Inspections"
-          href: data_restaurant_inspections.html
+          href: dataset_restaurant_inspections.html
         - text: "Instacart"
-          href: data_instacart.html
+          href: dataset_instacart.html
         - text: "FiveThirtyEight"
-          href: data_fivethirtyeight.html
+          href: dataset_fivethirtyeight.html
     - icon: fa-github fa-lg
       href: http://github.com/jeff-goldsmith/DSI/
 output:

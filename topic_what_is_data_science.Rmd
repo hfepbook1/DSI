@@ -26,3 +26,5 @@ We also touched on useful resources for learning data science. Each class sessio
 * Julia Evan's blog also has a useful guide [how to ask good questions](https://jvns.ca/blog/good-questions/) (note: hers has a cartoon!)
 * (Tip: the fact that there are guides on asking questions means it isn't always easy or obvious how to do it well. That's fine! Learning how to ask the right questions is important, and you should practice.)
 * This [blog post](http://mattgemmell.com/what-have-you-tried/) and the follow-up [disavowal](http://mattgemmell.com/hindsight/) are both interesting; one deals with learning to program and asking questions, and the other notes that flippant answers online are discouraging to people who want to learn but regretfully common. 
+
+Lastly, this paper on [good enough practices](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510) for scientific computing gives an idea of what we want to achieve in this course, and why we want to achieve it. 

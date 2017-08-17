@@ -1,0 +1,196 @@
+---
+title: "Data Manipulation with `dplyr`"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Once you've imported data, you're going to need to do some cleaning up.
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 8,
+  fig.height = 4
+)
+
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-manipulation" title="Data Manipulation" target="_blank">Data Manipulation</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+Start by figuring out how this example fits in with what you've done and plan to do -- you may want to start a whole new directory and R Project, but I'd suggest adding a new file to the Project we started last time. 
+
+Once again we're going to be using the `tidyverse`, so we'll load that at the outset. We're going to be looking at a lot of output, so we'll print only three lines of each tibble by default.  Lastly, we'll focus on the "litters" dataset, so we'll load those data and clean up the column names using what we learned in [data import](data_import.html).
+
+```{r}
+library(tidyverse)
+library(janitor)
+
+options(tibble.print_min = 3)
+
+litters_data = read_csv("./data/FAS_litters.csv")
+litters_data = clean_names(litters_data)
+```
+
+### `select`
+
+For a given analysis, you may only need a subset of the columns in a data table; extracting only what you need can helpfully de-clutter, especially when you have large datasets. You can select columns using `select`.
+
+You can specify the columns you want to keep by naming all of them:
+```{r}
+select(litters_data, group, litter_number, sex, pd_walk)
+```
+
+You can specify the specify a range of columns to keep:
+```{r}
+select(litters_data, group:pd_walk)
+```
+
+You can also specify columns you'd like to remove:
+```{r}
+select(litters_data, -pd_ears)
+```
+
+You can rename variables as part of this process:
+```{r}
+select(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
+```
+
+If all you want to do is rename something, you can use `rename` instead of `select`. This will rename the variables you care about, and keep everything else:
+```{r}
+rename(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
+```
+
+There are some handy helper functions for `select`; read about all of them using `?select_helpers`. The one I use most frequently is `everything()`, which is handy for reorganizing columns without discarding anything:
+```{r}
+select(litters_data, litter_number, sex, everything())
+```
+
+Lastly, like other functions in `dplyr`, `select` will export a dataframe even if you only select one column. Mostly this is fine, but sometimes you want the vector stored in the column. To pull a single variable, use `pull`.
+
+
+### `filter`
+
+Some data tables will include rows you don't need for your current analysis. Although you could remove specific row numbers using base R, you shouldn't -- this might break if the raw data are updated, and the thought process isn't transparent. Instead, you should filter rows based on logical expressions using the `filter` function. Like `select`, the first argument to `filter` is the dataframe you're filtering; all subsequent arguments are logical expressions.
+
+You will often filter using comparison operators (`>`, `>=`, `<`, `<=`, `==`, and `!=`). You may also use `%in%` to detect if values appear in a set, and `is.na()` to find missing values. The results of comparisons are logical -- the statement is `TRUE` or `FALSE` depending on the values you compare -- and can be combined with other comparisons using the logical operators `&` and `|`, or negated using `!`. 
+
+Some ways you might filter the litters data are:
+
+* `gd_of_dob == 20`
+* `pd_walk <= 10`
+* `pd_ears != 4`
+* `!(pd_ears == 4)`
+* `group %in% c("Con7", "Con8")`
+* `sex == "male" & pd_walk == 9`
+* `!is.na(pd_ears)`
+
+Filtering can be helpful for limiting a dataset to only those observations needed for an analysis. However, I recommend against the creation of many data subsets (e.g. one for male pups and one for female pups). This can clutter up your workspace, and we'll see good tools for the analysis of subsets before long.
+
+### `mutate`
+
+Sometimes you need to select columns; sometimes you need to change them or create new ones. You can do this using `mutate`. 
+
+The example below creates a new variable measuring the delay between `pd_ears` and `pd_walk`; modifies the existing `group` variable; and creates a new sex variable that takes character values.
+```{r}
+mutate(litters_data,
+  delay = pd_walk - pd_ears,
+  group = tolower(group),
+  sex_ch = "male",
+  sex_ch = replace(sex_ch, sex == 2, "female")
+)
+```
+A few things in this example are worth noting:
+
+* Your new variables can be functions of old variables
+* New variables appear at the end of the dataset in the order that they are created
+* You can overwrite old variables
+* You can create a new variable and immediately refer to (or change) it
+
+Creating a new variable that does exactly what you need can be a challenge; the more functions you know about, the easier this gets. 
+
+### `arrange`
+
+In comparison to the preceding, arranging is pretty straightforward. You can arrange the rows in your data according to the values in one or more columns:
+```{r}
+head(arrange(litters_data, group, pd_walk), 10)
+```
+
+### `%>%`
+
+We've seen several commands you will use regularly for data manipulation and cleaning. You will rarely use them in isolation. For example, suppose you want to load the data, clean the column names, remove `pd_ears`, and create `sex_ch`. There are a couple of options for this kind of multi-step data manipulation:
+
+* define intermediate datasets (or overwrite data at each stage)
+* nest function calls
+
+The following is an example of the first option:
+```{r}
+litters_data_raw = read_csv("./data/FAS_litters.csv")
+litters_data_clean_names = clean_names(litters_data_raw)
+litters_data_selected_cols = select(litters_data_clean_names, -pd_ears)
+litters_data_with_sex = mutate(litters_data_selected_cols, 
+  sex_ch = "male",
+  sex_ch = replace(sex_ch, sex == 2, "female"))
+litters_data_with_sex
+```
+
+Below, we try the second option:
+```{r}
+litters_data_clean = 
+  mutate(
+    select(
+      clean_names(
+        read_csv("./data/FAS_litters.csv")
+      ), 
+    -pd_ears),
+  sex_ch = "male",
+  sex_ch = replace(sex_ch, sex == 2, "female"))
+litters_data_clean
+```
+
+These are both confusing and bad: the first gets confusing and clutters our workspace, and the second has to be read inside out.
+
+Piping solves this problem. It allows you to turn the nested approach into a sequential chain by passing the result of one function call as an argument to the next function call:
+```{r}
+litters_data = read_csv("./data/FAS_litters.csv") %>%
+  clean_names() %>%
+  select(-pd_ears) %>%
+  mutate(sex_ch = "male",
+         sex_ch = replace(sex_ch, sex == 2, "female"))
+litters_data
+```
+All three approaches result in the same dataset, but the piped commands are by far the most straightforward. The easiest way to read `%>%` is "then"; the keyboard shortcuts are Ctrl + Shift + M (Windows) and Cmd + Shift + M (Mac).
+
+The functions in `dplyr` (and much of the `tidyverse`) are designed to work very well with the pipe operator. By default, the pipe will take the result of one function call and use that as the first argument of the next function call; by design, functions in `dplyr` will take a tibble as an input and return a tibble as a result. As a consequence, functions in `dplyr` are easy to connect in a data cleaning chain. You can make this more explicit by using `.` as a placeholder for the result of the preceding call:
+```{r}
+litters_data = read_csv("./data/FAS_litters.csv") %>%
+  clean_names(dat = .) %>%
+  select(.data = ., -pd_ears) %>%
+  mutate(.data = .)
+```
+
+Usually you'll just elide the first argument and be happy with life, but there are some cases where the placeholder will help. For example, to regress `pd_walk` on `sex`, you might use:
+```{r}
+litters_data %>%
+  lm(pd_walk ~ sex, data = .) %>%
+  broom::tidy()
+```
+
+There are limitations to the pipe. You shouldn't have sequences that are too long, there isn't a great way to deal with multiple inputs and outputs, and (since it's not base R) not everyone will know what `%>%` means. That said, compared to days when R users only had the first two options, life is much better!
+
+
+## Other materials
+
+There's lots of stuff out there on how to clean your data using `dplyr`. 
+
+* R for Data Science has a chapter on [data transformation](http://r4ds.had.co.nz/transform.html). The chapter on [pipes](http://r4ds.had.co.nz/pipes.html) may also be useful at this point.
+* R Programming for Research also discusses [data cleaning](https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#data-cleaning).
+* Even R Programming for Data Science, which tends towards base R, has a chapter on [`dplyr`](https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html).
+* The [data transformation cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) is handy once you have a good handle on things.

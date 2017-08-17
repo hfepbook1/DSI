@@ -11,7 +11,7 @@
 
 
 
-<title></title>
+<title>Tidy data and relational datasets</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -252,29 +350,33 @@ $(document).ready(function () {
 
 
 
+<h1 class="title toc-ignore">Tidy data and relational datasets</h1>
 
 </div>
 
 
-<p><link rel="stylesheet" href="styles.css" type="text/css" /> <br></p>
-<p>This page has some stuff about Git / GitHub / GitHub with R, and is the basis for a computing club meeting.</p>
-<p>People will get the most out of that meeting if they’ve installed relevant software (git, RStudio, a git client) and created a GitHub account before showing up. Instructions for doing all that can be found in Chapters 4-9 of <a href="http://happygitwithr.com">this book</a> (note – all the rest of those chapters are also awesome).</p>
+<p>The overarching goal of data wrangling is to have a tidy, easy-to-use dataset.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
-<script async class="speakerdeck-embed" data-id="b1f65532f0644b8fb5301f8fd6934b01" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="e75fb41a3142444f9cde9fb3110a1858" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/git-slides" title="Git stuff" target="_blank">Git stuff</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-data" title="Tidy Data" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
-<p>After going through these slides we’ll shift to an interactive demostration.</p>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p>There’s a lot of stuff to help with git in general, and with git for R in particular. This is a non-exhaustive list:</p>
-<ul>
-<li>Jenny Bryan’s <a href="http://happygitwithr.com">book</a> (same as the link above)</li>
-<li>The <a href="https://guides.github.com/activities/hello-world/">GitHub</a> guide</li>
-<li>Version control with <a href="https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN">RStudio</a></li>
-</ul>
+<p>(NOTE: some of this is about manipulation; some about tidying. needs to be cleaned up)</p>
+<p>There’s lots of stuff out there on how to tidy your data…</p>
+<p><a href="http://r4ds.had.co.nz/transform.html" class="uri">http://r4ds.had.co.nz/transform.html</a> and <a href="http://r4ds.had.co.nz/tidy-data.html" class="uri">http://r4ds.had.co.nz/tidy-data.html</a>; also the paper <a href="http://www.jstatsoft.org/v59/i10/paper" class="uri">http://www.jstatsoft.org/v59/i10/paper</a></p>
+<p><a href="http://r4ds.had.co.nz/pipes.html" class="uri">http://r4ds.had.co.nz/pipes.html</a></p>
+<p><a href="https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html</a></p>
+<p><a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#data-cleaning" class="uri">https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#data-cleaning</a></p>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf" class="uri">https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf</a></p>
+<p>FOR EXPLROATORY ANALYSIS: <a href="http://stat545.com/block010_dplyr-end-single-table.html#general-summarization" class="uri">http://stat545.com/block010_dplyr-end-single-table.html#general-summarization</a></p>
 </div>
 
 <br><br>
@@ -283,6 +385,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 

@@ -322,16 +322,16 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="data_mr_trash_wheel.html">Mr. Trash Wheel</a>
+      <a href="dataset_mr_trash_wheel.html">Mr. Trash Wheel</a>
     </li>
     <li>
-      <a href="data_restaurant_inspections.html">NYC Restaurant Inspections</a>
+      <a href="dataset_restaurant_inspections.html">NYC Restaurant Inspections</a>
     </li>
     <li>
-      <a href="data_instacart.html">Instacart</a>
+      <a href="dataset_instacart.html">Instacart</a>
     </li>
     <li>
-      <a href="data_fivethirtyeight.html">FiveThirtyEight</a>
+      <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
     </li>
   </ul>
 </li>
@@ -436,13 +436,21 @@ div.tocify {
 ##   PD.walk = col_integer()
 ## )</code></pre>
 <p>Great – we’ve imported data! The first argument to <code>read_csv</code> is the path to the data, and the line above assigns the result of <code>read_csv</code> to <code>litters_data</code>. This function call also prints information about the column parsing. We’ll talk more about both of these shortly.</p>
+<p>I (almost always) use <code>janitor::clean_names()</code> to clean up variable names after importing data. Doing so will take whatever the column names are and convert them to lower snake case.</p>
+<pre class="r"><code>names(litters_data)
+## [1] &quot;Group&quot;         &quot;Litter.Number&quot; &quot;Sex&quot;           &quot;GD.of.DOB&quot;    
+## [5] &quot;PD.ears&quot;       &quot;PD.walk&quot;
+litters_data = janitor::clean_names(litters_data)
+names(litters_data)
+## [1] &quot;group&quot;         &quot;litter_number&quot; &quot;sex&quot;           &quot;gd_of_dob&quot;    
+## [5] &quot;pd_ears&quot;       &quot;pd_walk&quot;</code></pre>
 </div>
 <div id="looking-at-data" class="section level3">
 <h3>Looking at data</h3>
 <p>The first thing to do after importing the data (unless <code>read_csv</code> gives warnings) is to look at it. If there are unexpected results during data import, you’ll catch a lot of them here. In addition to printing the data, I often use <code>str</code>, <code>head</code>, and <code>tail</code>:</p>
 <pre class="r"><code>litters_data
 ## # A tibble: 313 x 6
-##    Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
+##    group litter_number   sex gd_of_dob pd_ears pd_walk
 ##    &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
 ##  1  Con7            85     1        20       4      11
 ##  2  Con7            85     1        20       4      12
@@ -457,23 +465,23 @@ div.tocify {
 ## # ... with 303 more rows
 tail(litters_data, 5)
 ## # A tibble: 5 x 6
-##   Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
+##   group litter_number   sex gd_of_dob pd_ears pd_walk
 ##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
 ## 1  Mod8        2/95/2     2        20       3       8
 ## 2  Mod8        2/95/2     2        20       3       9
 ## 3  Mod8          82/4     2        20       4       9
 ## 4  Mod8          82/4     2        20       3       9
 ## 5  Mod8          82/4     2        20       3       9</code></pre>
-<p>Another tool that I use often is `<code>skimr::skim</code>. The output is too wide to render well here, but is pretty slick!</p>
+<p>Another tool that I use often is `<code>skimr::skim</code>. The output is too wide to render well here, but is pretty slick! Note this isn’t available from CRAN, so installation is a bit more <a href="https://github.com/ropenscilabs/skimr">involved</a>.</p>
 <pre class="r"><code>skimr::skim(litters_data)
 ## Numeric Variables
 ## # A tibble: 4 x 13
 ##         var    type missing complete     n      mean        sd   min
 ##       &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
-## 1 GD.of.DOB integer       0      313   313 19.686901 0.4644969    19
-## 2   PD.ears integer      18      295   313  3.684746 0.5938499     2
-## 3   PD.walk integer       0      313   313  9.498403 1.3376323     7
-## 4       Sex integer       0      313   313  1.504792 0.5007776     1
+## 1 gd_of_dob integer       0      313   313 19.686901 0.4644969    19
+## 2   pd_ears integer      18      295   313  3.684746 0.5938499     2
+## 3   pd_walk integer       0      313   313  9.498403 1.3376323     7
+## 4       sex integer       0      313   313  1.504792 0.5007776     1
 ## # ... with 5 more variables: `25% quantile` &lt;dbl&gt;, median &lt;dbl&gt;, `75%
 ## #   quantile` &lt;dbl&gt;, max &lt;dbl&gt;, hist &lt;chr&gt;
 ## 
@@ -481,8 +489,8 @@ tail(litters_data, 5)
 ## # A tibble: 2 x 9
 ##             var      type complete missing empty     n   min   max
 ## *         &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1         Group character      313       0     0   313     4     4
-## 2 Litter.Number character      313       0     0   313     2    14
+## 1         group character      313       0     0   313     4     4
+## 2 litter_number character      313       0     0   313     2    14
 ## # ... with 1 more variables: n_unique &lt;dbl&gt;</code></pre>
 </div>
 <div id="arguments-to-read_" class="section level3">
@@ -603,6 +611,8 @@ head(pulse_data, 5)
 <li>R Programming for Data Science gives more detail on data import in <a href="https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html">base R</a> with some information about <a href="https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html">readr</a></li>
 <li>R Programming for Research also discusses <a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html">entering data</a>; the section on pathnames and directories is nicely detailed</li>
 <li>RStudio has recordings of webinars on <a href="https://www.rstudio.com/resources/webinars/getting-your-data-into-r/">Getting data into R</a> and <a href="https://www.rstudio.com/resources/webinars/whats-new-with-readxl/">What’s new with readxl</a></li>
+<li>There are pages on the tidyverse website for <a href="readr" class="uri">readr</a>, <a href="http://readxl.tidyverse.org">readxl</a>, and <a href="http://haven.tidyverse.org">haven</a></li>
+<li>The <a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf">data import cheatsheet</a> is handy once you have a good handle on things</li>
 </ul>
 </div>
 

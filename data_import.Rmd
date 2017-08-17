@@ -77,6 +77,13 @@ litters_data = readr::read_csv(file = "./data/FAS_litters.csv")
 
 Great -- we've imported data! The first argument to `read_csv` is the path to the data, and the line above assigns the result of `read_csv` to `litters_data`. This function call also prints information about the column parsing. We'll talk more about both of these shortly.
 
+I (almost always) use `janitor::clean_names()` to clean up variable names after importing data. Doing so will take whatever the column names are and convert them to lower snake case.
+```{r}
+names(litters_data)
+litters_data = janitor::clean_names(litters_data)
+names(litters_data)
+```
+
 ### Looking at data
 
 The first thing to do after importing the data (unless `read_csv` gives warnings) is to look at it. If there are unexpected results during data import, you'll catch a lot of them here. In addition to printing the data, I often use `str`, `head`, and `tail`:
@@ -86,7 +93,7 @@ litters_data
 tail(litters_data, 5)
 ```
 
-Another tool that I use often is ``skimr::skim`. The output is too wide to render well here, but is pretty slick!
+Another tool that I use often is ``skimr::skim`. The output is too wide to render well here, but is pretty slick! Note this isn't available from CRAN, so installation is a bit more [involved](https://github.com/ropenscilabs/skimr).
 ```{r}
 skimr::skim(litters_data)
 ```
@@ -172,5 +179,6 @@ The content in this page draws heavily from several sources; each of the things 
 * R Programming for Data Science gives more detail on data import in [base R](https://bookdown.org/rdpeng/rprogdatascience/getting-data-in-and-out-of-r.html) with some information about [readr](https://bookdown.org/rdpeng/rprogdatascience/using-the-readr-package.html)
 * R Programming for Research also discusses [entering data](https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html); the section on pathnames and directories is nicely detailed
 * RStudio has recordings of webinars on [Getting data into R](https://www.rstudio.com/resources/webinars/getting-your-data-into-r/) and [What's new with readxl](https://www.rstudio.com/resources/webinars/whats-new-with-readxl/)
-
+* There are pages on the tidyverse website for [readr](readr), [readxl](http://readxl.tidyverse.org), and [haven](http://haven.tidyverse.org)
+* The [data import cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf) is handy once you have a good handle on things
 

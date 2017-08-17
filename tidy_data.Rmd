@@ -1,0 +1,46 @@
+---
+title: "Tidy data and relational datasets"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+The overarching goal of data wrangling is to have a tidy, easy-to-use dataset. 
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 8,
+  fig.height = 4
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="e75fb41a3142444f9cde9fb3110a1858" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-data" title="Tidy Data" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+
+
+## Other materials
+
+(NOTE: some of this is about manipulation; some about tidying. needs to be cleaned up)
+
+There's lots of stuff out there on how to tidy your data...
+
+http://r4ds.had.co.nz/transform.html and http://r4ds.had.co.nz/tidy-data.html; also the paper http://www.jstatsoft.org/v59/i10/paper
+
+http://r4ds.had.co.nz/pipes.html
+
+https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html
+
+https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#data-cleaning
+
+https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf
+
+
+FOR EXPLROATORY ANALYSIS: http://stat545.com/block010_dplyr-end-single-table.html#general-summarization
