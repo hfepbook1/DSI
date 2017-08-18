@@ -373,16 +373,8 @@ library(janitor)
 
 options(tibble.print_min = 3)
 
-litters_data = read_csv(&quot;./data/FAS_litters.csv&quot;)
-## Parsed with column specification:
-## cols(
-##   Group = col_character(),
-##   Litter.Number = col_character(),
-##   Sex = col_integer(),
-##   GD.of.DOB = col_integer(),
-##   PD.ears = col_integer(),
-##   PD.walk = col_integer()
-## )
+litters_data = read_csv(&quot;./data/FAS_litters.csv&quot;,
+  col_types = &quot;ccdddd&quot;)
 litters_data = clean_names(litters_data)</code></pre>
 <div id="select" class="section level3">
 <h3><code>select</code></h3>
@@ -391,7 +383,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <pre class="r"><code>select(litters_data, group, litter_number, sex, pd_walk)
 ## # A tibble: 313 x 4
 ##   group litter_number   sex pd_walk
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;   &lt;int&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;
 ## 1  Con7            85     1      11
 ## 2  Con7            85     1      12
 ## 3  Con7      1/2/95/2     1       9
@@ -400,7 +392,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <pre class="r"><code>select(litters_data, group:pd_walk)
 ## # A tibble: 313 x 6
 ##   group litter_number   sex gd_of_dob pd_ears pd_walk
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ## 1  Con7            85     1        20       4      11
 ## 2  Con7            85     1        20       4      12
 ## 3  Con7      1/2/95/2     1        19       5       9
@@ -409,7 +401,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <pre class="r"><code>select(litters_data, -pd_ears)
 ## # A tibble: 313 x 5
 ##   group litter_number   sex gd_of_dob pd_walk
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1  Con7            85     1        20      11
 ## 2  Con7            85     1        20      12
 ## 3  Con7      1/2/95/2     1        19       9
@@ -427,7 +419,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <pre class="r"><code>rename(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
 ## # A tibble: 313 x 6
 ##   GROUP LiTtEr_NuMbEr   sex gd_of_dob pd_ears pd_walk
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ## 1  Con7            85     1        20       4      11
 ## 2  Con7            85     1        20       4      12
 ## 3  Con7      1/2/95/2     1        19       5       9
@@ -436,7 +428,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <pre class="r"><code>select(litters_data, litter_number, sex, everything())
 ## # A tibble: 313 x 6
 ##   litter_number   sex group gd_of_dob pd_ears pd_walk
-##           &lt;chr&gt; &lt;int&gt; &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+##           &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ## 1            85     1  Con7        20       4      11
 ## 2            85     1  Con7        20       4      12
 ## 3      1/2/95/2     1  Con7        19       5       9
@@ -471,7 +463,7 @@ litters_data = clean_names(litters_data)</code></pre>
 )
 ## # A tibble: 313 x 8
 ##   group litter_number   sex gd_of_dob pd_ears pd_walk delay sex_ch
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt;  &lt;chr&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;chr&gt;
 ## 1  con7            85     1        20       4      11     7   male
 ## 2  con7            85     1        20       4      12     8   male
 ## 3  con7      1/2/95/2     1        19       5       9     4   male
@@ -491,7 +483,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <pre class="r"><code>head(arrange(litters_data, group, pd_walk), 10)
 ## # A tibble: 10 x 6
 ##    group  litter_number   sex gd_of_dob pd_ears pd_walk
-##    &lt;chr&gt;          &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+##    &lt;chr&gt;          &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ##  1  Con7     4/2/95/3-3     2        20       4       7
 ##  2  Con7     4/2/95/3-3     1        20       4       8
 ##  3  Con7     4/2/95/3-3     2        20       4       8
@@ -511,16 +503,8 @@ litters_data = clean_names(litters_data)</code></pre>
 <li>nest function calls</li>
 </ul>
 <p>The following is an example of the first option:</p>
-<pre class="r"><code>litters_data_raw = read_csv(&quot;./data/FAS_litters.csv&quot;)
-## Parsed with column specification:
-## cols(
-##   Group = col_character(),
-##   Litter.Number = col_character(),
-##   Sex = col_integer(),
-##   GD.of.DOB = col_integer(),
-##   PD.ears = col_integer(),
-##   PD.walk = col_integer()
-## )
+<pre class="r"><code>litters_data_raw = read_csv(&quot;./data/FAS_litters.csv&quot;,
+  col_types = &quot;ccdddd&quot;)
 litters_data_clean_names = clean_names(litters_data_raw)
 litters_data_selected_cols = select(litters_data_clean_names, -pd_ears)
 litters_data_with_sex = mutate(litters_data_selected_cols, 
@@ -529,7 +513,7 @@ litters_data_with_sex = mutate(litters_data_selected_cols,
 litters_data_with_sex
 ## # A tibble: 313 x 6
 ##   group litter_number   sex gd_of_dob pd_walk sex_ch
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;  &lt;chr&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;chr&gt;
 ## 1  Con7            85     1        20      11   male
 ## 2  Con7            85     1        20      12   male
 ## 3  Con7      1/2/95/2     1        19       9   male
@@ -539,67 +523,43 @@ litters_data_with_sex
   mutate(
     select(
       clean_names(
-        read_csv(&quot;./data/FAS_litters.csv&quot;)
+        read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccdddd&quot;)
       ), 
     -pd_ears),
   sex_ch = &quot;male&quot;,
   sex_ch = replace(sex_ch, sex == 2, &quot;female&quot;))
-## Parsed with column specification:
-## cols(
-##   Group = col_character(),
-##   Litter.Number = col_character(),
-##   Sex = col_integer(),
-##   GD.of.DOB = col_integer(),
-##   PD.ears = col_integer(),
-##   PD.walk = col_integer()
-## )
 litters_data_clean
 ## # A tibble: 313 x 6
 ##   group litter_number   sex gd_of_dob pd_walk sex_ch
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;  &lt;chr&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;chr&gt;
 ## 1  Con7            85     1        20      11   male
 ## 2  Con7            85     1        20      12   male
 ## 3  Con7      1/2/95/2     1        19       9   male
 ## # ... with 310 more rows</code></pre>
 <p>These are both confusing and bad: the first gets confusing and clutters our workspace, and the second has to be read inside out.</p>
 <p>Piping solves this problem. It allows you to turn the nested approach into a sequential chain by passing the result of one function call as an argument to the next function call:</p>
-<pre class="r"><code>litters_data = read_csv(&quot;./data/FAS_litters.csv&quot;) %&gt;%
+<pre class="r"><code>litters_data = 
+  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccdddd&quot;) %&gt;%
   clean_names() %&gt;%
   select(-pd_ears) %&gt;%
   mutate(sex_ch = &quot;male&quot;,
          sex_ch = replace(sex_ch, sex == 2, &quot;female&quot;))
-## Parsed with column specification:
-## cols(
-##   Group = col_character(),
-##   Litter.Number = col_character(),
-##   Sex = col_integer(),
-##   GD.of.DOB = col_integer(),
-##   PD.ears = col_integer(),
-##   PD.walk = col_integer()
-## )
+
 litters_data
 ## # A tibble: 313 x 6
 ##   group litter_number   sex gd_of_dob pd_walk sex_ch
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;  &lt;chr&gt;
+##   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;chr&gt;
 ## 1  Con7            85     1        20      11   male
 ## 2  Con7            85     1        20      12   male
 ## 3  Con7      1/2/95/2     1        19       9   male
 ## # ... with 310 more rows</code></pre>
 <p>All three approaches result in the same dataset, but the piped commands are by far the most straightforward. The easiest way to read <code>%&gt;%</code> is “then”; the keyboard shortcuts are Ctrl + Shift + M (Windows) and Cmd + Shift + M (Mac).</p>
 <p>The functions in <code>dplyr</code> (and much of the <code>tidyverse</code>) are designed to work very well with the pipe operator. By default, the pipe will take the result of one function call and use that as the first argument of the next function call; by design, functions in <code>dplyr</code> will take a tibble as an input and return a tibble as a result. As a consequence, functions in <code>dplyr</code> are easy to connect in a data cleaning chain. You can make this more explicit by using <code>.</code> as a placeholder for the result of the preceding call:</p>
-<pre class="r"><code>litters_data = read_csv(&quot;./data/FAS_litters.csv&quot;) %&gt;%
+<pre class="r"><code>litters_data = 
+  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccdddd&quot;) %&gt;%
   clean_names(dat = .) %&gt;%
   select(.data = ., -pd_ears) %&gt;%
-  mutate(.data = .)
-## Parsed with column specification:
-## cols(
-##   Group = col_character(),
-##   Litter.Number = col_character(),
-##   Sex = col_integer(),
-##   GD.of.DOB = col_integer(),
-##   PD.ears = col_integer(),
-##   PD.walk = col_integer()
-## )</code></pre>
+  mutate(.data = .)</code></pre>
 <p>Usually you’ll just elide the first argument and be happy with life, but there are some cases where the placeholder will help. For example, to regress <code>pd_walk</code> on <code>sex</code>, you might use:</p>
 <pre class="r"><code>litters_data %&gt;%
   lm(pd_walk ~ sex, data = .) %&gt;%

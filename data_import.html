@@ -550,12 +550,12 @@ tail(litters_data)
 ## 6  Mod8          82/4     2        20       3       9</code></pre>
 <p>Column parsing also allows a shorthand for almost every data type.</p>
 <pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
-  col_types = &quot;ccicdd&quot;
+  col_types = &quot;ccdddd&quot;
 )
 litters_data
 ## # A tibble: 313 x 6
 ##    Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
-##    &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+##    &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ##  1  Con7            85     1        20       4      11
 ##  2  Con7            85     1        20       4      12
 ##  3  Con7      1/2/95/2     1        19       5       9
@@ -587,10 +587,16 @@ head(mlb11_data, 5)
 ## #   new_onbase &lt;dbl&gt;, new_slug &lt;dbl&gt;, new_obs &lt;dbl&gt;</code></pre>
 <p>The last tidyverse package for data import we’ll note is <code>haven</code>, which is used to import into R data files from SAS, Stata, and SPSS. An example for reading data from SAS follows.</p>
 <pre class="r"><code>library(haven)
-pulse_data = read_sas(&quot;data/pulse.sas7bdat&quot;)
-## Error: &#39;data/pulse.sas7bdat&#39; does not exist in current working directory (&#39;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI&#39;).
+pulse_data = read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;)
 head(pulse_data, 5)
-## Error in head(pulse_data, 5): object &#39;pulse_data&#39; not found</code></pre>
+## # A tibble: 5 x 7
+##      ID      age   Sex BDIScore_BL BDIScore_01m BDIScore_06m BDIScore_12m
+##   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1 10003 48.03836  male           7            1            2            0
+## 2 10015 72.47123  male           6           NA           NA           NA
+## 3 10022 58.50959  male          14            3            8           NA
+## 4 10026 72.72877  male          20            6           18           16
+## 5 10035 60.40274  male           4            0            1            2</code></pre>
 <p>You can read in data that isn’t coming as a flat file, but it’s beyond the scope of this course.</p>
 </div>
 <div id="comparison-with-base-r" class="section level3">

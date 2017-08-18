@@ -137,7 +137,7 @@ Column parsing also allows a shorthand for almost every data type.
 
 ```{r}
 litters_data = read_csv(file = "./data/FAS_litters.csv",
-  col_types = "ccicdd"
+  col_types = "ccdddd"
 )
 litters_data
 ```
@@ -154,9 +154,9 @@ head(mlb11_data, 5)
 ```
 
 The last tidyverse package for data import we'll note is `haven`, which is used to import into R data files from SAS, Stata, and SPSS. An example for reading data from SAS follows.
-```{r, error = TRUE}
+```{r}
 library(haven)
-pulse_data = read_sas("data/pulse.sas7bdat")
+pulse_data = read_sas("./data/public_pulse_data.sas7bdat")
 head(pulse_data, 5)
 ```
 
