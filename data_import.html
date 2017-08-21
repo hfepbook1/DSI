@@ -429,68 +429,75 @@ div.tocify {
 ## Parsed with column specification:
 ## cols(
 ##   Group = col_character(),
-##   Litter.Number = col_character(),
-##   Sex = col_integer(),
-##   GD.of.DOB = col_integer(),
-##   PD.ears = col_integer(),
-##   PD.walk = col_integer()
+##   `Litter Number` = col_character(),
+##   `GD0 weight` = col_double(),
+##   `GD18 weight` = col_double(),
+##   `GD of Birth` = col_integer(),
+##   `Pups born alive` = col_integer(),
+##   `Pups dead @ birth` = col_integer(),
+##   `Pups survive` = col_integer()
 ## )</code></pre>
 <p>Great – we’ve imported data! The first argument to <code>read_csv</code> is the path to the data, and the line above assigns the result of <code>read_csv</code> to <code>litters_data</code>. This function call also prints information about the column parsing. We’ll talk more about both of these shortly.</p>
 <p>I (almost always) use <code>janitor::clean_names()</code> to clean up variable names after importing data. Doing so will take whatever the column names are and convert them to lower snake case.</p>
 <pre class="r"><code>names(litters_data)
-## [1] &quot;Group&quot;         &quot;Litter.Number&quot; &quot;Sex&quot;           &quot;GD.of.DOB&quot;    
-## [5] &quot;PD.ears&quot;       &quot;PD.walk&quot;
+## [1] &quot;Group&quot;             &quot;Litter Number&quot;     &quot;GD0 weight&quot;       
+## [4] &quot;GD18 weight&quot;       &quot;GD of Birth&quot;       &quot;Pups born alive&quot;  
+## [7] &quot;Pups dead @ birth&quot; &quot;Pups survive&quot;
 litters_data = janitor::clean_names(litters_data)
 names(litters_data)
-## [1] &quot;group&quot;         &quot;litter_number&quot; &quot;sex&quot;           &quot;gd_of_dob&quot;    
-## [5] &quot;pd_ears&quot;       &quot;pd_walk&quot;</code></pre>
+## [1] &quot;group&quot;           &quot;litter_number&quot;   &quot;gd0_weight&quot;      &quot;gd18_weight&quot;    
+## [5] &quot;gd_of_birth&quot;     &quot;pups_born_alive&quot; &quot;pups_dead_birth&quot; &quot;pups_survive&quot;</code></pre>
 </div>
 <div id="looking-at-data" class="section level3">
 <h3>Looking at data</h3>
 <p>The first thing to do after importing the data (unless <code>read_csv</code> gives warnings) is to look at it. If there are unexpected results during data import, you’ll catch a lot of them here. In addition to printing the data, I often use <code>str</code>, <code>head</code>, and <code>tail</code>:</p>
 <pre class="r"><code>litters_data
-## # A tibble: 313 x 6
-##    group litter_number   sex gd_of_dob pd_ears pd_walk
-##    &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
-##  1  Con7            85     1        20       4      11
-##  2  Con7            85     1        20       4      12
-##  3  Con7      1/2/95/2     1        19       5       9
-##  4  Con7      1/2/95/2     1        19       5      10
-##  5  Con7  5/5/3/83/3-3     1        19       5      10
-##  6  Con7  5/5/3/83/3-3     1        19       5       9
-##  7  Con7    5/4/2/95/2     1        19      NA       9
-##  8  Con7    4/2/95/3-3     1        20       4       8
-##  9  Con7    4/2/95/3-3     1        20       4       9
-## 10  Con7    2/2/95/3-2     1        20       4      10
-## # ... with 303 more rows
+## # A tibble: 49 x 8
+##    group   litter_number gd0_weight gd18_weight gd_of_birth
+##    &lt;chr&gt;           &lt;chr&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;int&gt;
+##  1  Con7             #85       19.7        34.7          20
+##  2  Con7       #1/2/95/2       27.0        42.0          19
+##  3  Con7   #5/5/3/83/3-3       26.0        41.4          19
+##  4  Con7     #5/4/2/95/2       28.5        44.1          19
+##  5  Con7     #4/2/95/3-3         NA          NA          20
+##  6  Con7     #2/2/95/3-2         NA          NA          20
+##  7  Con7 #1/5/3/83/3-3/2         NA          NA          20
+##  8  Con8       #3/83/3-3         NA          NA          20
+##  9  Con8         #2/95/3         NA          NA          20
+## 10  Con8     #3/5/2/2/95       28.5          NA          20
+## # ... with 39 more rows, and 3 more variables: pups_born_alive &lt;int&gt;,
+## #   pups_dead_birth &lt;int&gt;, pups_survive &lt;int&gt;
 tail(litters_data, 5)
-## # A tibble: 5 x 6
-##   group litter_number   sex gd_of_dob pd_ears pd_walk
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
-## 1  Mod8        2/95/2     2        20       3       8
-## 2  Mod8        2/95/2     2        20       3       9
-## 3  Mod8          82/4     2        20       4       9
-## 4  Mod8          82/4     2        20       3       9
-## 5  Mod8          82/4     2        20       3       9</code></pre>
+## # A tibble: 5 x 8
+##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+##   &lt;chr&gt;         &lt;chr&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;int&gt;           &lt;int&gt;
+## 1  Low8          #100       20.0        39.2          20               8
+## 2  Low8         #4/84       21.8        35.2          20               4
+## 3  Low8          #108       25.6        47.5          20               8
+## 4  Low8           #99       23.5        39.0          20               6
+## 5  Low8          #110       25.5        42.7          20               7
+## # ... with 2 more variables: pups_dead_birth &lt;int&gt;, pups_survive &lt;int&gt;</code></pre>
 <p>Another tool that I use often is `<code>skimr::skim</code>. The output is too wide to render well here, but is pretty slick! Note this isn’t available from CRAN, so installation is a bit more <a href="https://github.com/ropenscilabs/skimr">involved</a>.</p>
 <pre class="r"><code>skimr::skim(litters_data)
 ## Numeric Variables
-## # A tibble: 4 x 13
-##         var    type missing complete     n      mean        sd   min
-##       &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
-## 1 gd_of_dob integer       0      313   313 19.686901 0.4644969    19
-## 2   pd_ears integer      18      295   313  3.684746 0.5938499     2
-## 3   pd_walk integer       0      313   313  9.498403 1.3376323     7
-## 4       sex integer       0      313   313  1.504792 0.5007776     1
-## # ... with 5 more variables: `25% quantile` &lt;dbl&gt;, median &lt;dbl&gt;, `75%
-## #   quantile` &lt;dbl&gt;, max &lt;dbl&gt;, hist &lt;chr&gt;
+## # A tibble: 6 x 13
+##               var    type missing complete     n       mean        sd
+##             &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1     gd_of_birth integer       0       49    49 19.6530612 0.4809288
+## 2      gd0_weight numeric      15       34    49 24.3794118 3.2779132
+## 3     gd18_weight numeric      17       32    49 41.5218750 4.0504667
+## 4 pups_born_alive integer       0       49    49  7.3469388 1.7624677
+## 5 pups_dead_birth integer       0       49    49  0.3265306 0.7468756
+## 6    pups_survive integer       0       49    49  6.4081633 2.0505931
+## # ... with 6 more variables: min &lt;dbl&gt;, `25% quantile` &lt;dbl&gt;,
+## #   median &lt;dbl&gt;, `75% quantile` &lt;dbl&gt;, max &lt;dbl&gt;, hist &lt;chr&gt;
 ## 
 ## Character Variables
 ## # A tibble: 2 x 9
 ##             var      type complete missing empty     n   min   max
 ## *         &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1         group character      313       0     0   313     4     4
-## 2 litter_number character      313       0     0   313     2    14
+## 1         group character       49       0     0    49     4     4
+## 2 litter_number character       49       0     0    49     3    15
 ## # ... with 1 more variables: n_unique &lt;dbl&gt;</code></pre>
 </div>
 <div id="arguments-to-read_" class="section level3">
@@ -503,26 +510,28 @@ tail(litters_data, 5)
 </ul>
 <p>For example, the call below will skip the first 50 lines of data and not assume the first row are variable names:</p>
 <pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
-  skip = 50, col_names = FALSE)
+  skip = 10, col_names = FALSE)
 ## Parsed with column specification:
 ## cols(
 ##   X1 = col_character(),
 ##   X2 = col_character(),
-##   X3 = col_integer(),
-##   X4 = col_integer(),
+##   X3 = col_double(),
+##   X4 = col_double(),
 ##   X5 = col_integer(),
-##   X6 = col_integer()
+##   X6 = col_integer(),
+##   X7 = col_integer(),
+##   X8 = col_integer()
 ## )
 head(litters_data)
-## # A tibble: 6 x 6
-##      X1         X2    X3    X4    X5    X6
-##   &lt;chr&gt;      &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-## 1  Con8 3/5/2/2/95     1    20     4     8
-## 2  Con8 3/5/2/2/95     1    20     4     8
-## 3  Con8 5/4/3/83/3     1    19     4    10
-## 4  Con8 5/4/3/83/3     1    19     4     9
-## 5  Con8 5/4/3/83/3     1    19     4     9
-## 6  Con8 5/4/3/83/3     1    19     4    10</code></pre>
+## # A tibble: 6 x 8
+##      X1              X2    X3    X4    X5    X6    X7    X8
+##   &lt;chr&gt;           &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1  Con8     #3/5/2/2/95  28.5    NA    20     8     0     8
+## 2  Con8     #5/4/3/83/3  28.0    NA    19     9     0     8
+## 3  Con8   #1/6/2/2/95-2    NA    NA    20     7     0     6
+## 4  Con8 #3/5/3/83/3-3-2    NA    NA    20     8     0     8
+## 5  Con8       #2/2/95/2    NA    NA    19     5     0     4
+## 6  Con8   #3/6/2/2/95-3    NA    NA    20     7     0     7</code></pre>
 <p>These arguments generally work for other members of the <code>read_*</code> family of functions.</p>
 </div>
 <div id="parsing-columns" class="section level3">
@@ -531,42 +540,49 @@ head(litters_data)
 <pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
   col_types = cols(
     Group = col_character(),
-    Litter.Number = col_character(),
-    Sex = col_integer(),
-    GD.of.DOB = col_integer(),
-    PD.ears = col_double(),
-    PD.walk = col_double()
+    `Litter Number` = col_character(),
+    `GD0 weight` = col_double(),
+    `GD12 weight` = col_double(),
+    `GD of Birth` = col_integer(),
+    `Pups born alive` = col_integer(),
+    `Pups dead @ birth` = col_integer(),
+    `Pups survive` = col_integer()
   )
 )
+## Warning: The following named parsers don&#39;t match the column names: GD12
+## weight
 tail(litters_data)
-## # A tibble: 6 x 6
-##   Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
-##   &lt;chr&gt;         &lt;chr&gt; &lt;int&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-## 1  Mod8        2/95/2     2        20       4       9
-## 2  Mod8        2/95/2     2        20       3       8
-## 3  Mod8        2/95/2     2        20       3       9
-## 4  Mod8          82/4     2        20       4       9
-## 5  Mod8          82/4     2        20       3       9
-## 6  Mod8          82/4     2        20       3       9</code></pre>
+## # A tibble: 6 x 8
+##   Group `Litter Number` `GD0 weight` `GD18 weight` `GD of Birth`
+##   &lt;chr&gt;           &lt;chr&gt;        &lt;dbl&gt;         &lt;dbl&gt;         &lt;int&gt;
+## 1  Low8             #79         25.4          43.8            19
+## 2  Low8            #100         20.0          39.2            20
+## 3  Low8           #4/84         21.8          35.2            20
+## 4  Low8            #108         25.6          47.5            20
+## 5  Low8             #99         23.5          39.0            20
+## 6  Low8            #110         25.5          42.7            20
+## # ... with 3 more variables: `Pups born alive` &lt;int&gt;, `Pups dead @
+## #   birth` &lt;int&gt;, `Pups survive` &lt;int&gt;</code></pre>
 <p>Column parsing also allows a shorthand for almost every data type.</p>
 <pre class="r"><code>litters_data = read_csv(file = &quot;./data/FAS_litters.csv&quot;,
-  col_types = &quot;ccdddd&quot;
+  col_types = &quot;ccddiiii&quot;
 )
 litters_data
-## # A tibble: 313 x 6
-##    Group Litter.Number   Sex GD.of.DOB PD.ears PD.walk
-##    &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1  Con7            85     1        20       4      11
-##  2  Con7            85     1        20       4      12
-##  3  Con7      1/2/95/2     1        19       5       9
-##  4  Con7      1/2/95/2     1        19       5      10
-##  5  Con7  5/5/3/83/3-3     1        19       5      10
-##  6  Con7  5/5/3/83/3-3     1        19       5       9
-##  7  Con7    5/4/2/95/2     1        19      NA       9
-##  8  Con7    4/2/95/3-3     1        20       4       8
-##  9  Con7    4/2/95/3-3     1        20       4       9
-## 10  Con7    2/2/95/3-2     1        20       4      10
-## # ... with 303 more rows</code></pre>
+## # A tibble: 49 x 8
+##    Group `Litter Number` `GD0 weight` `GD18 weight` `GD of Birth`
+##    &lt;chr&gt;           &lt;chr&gt;        &lt;dbl&gt;         &lt;dbl&gt;         &lt;int&gt;
+##  1  Con7             #85         19.7          34.7            20
+##  2  Con7       #1/2/95/2         27.0          42.0            19
+##  3  Con7   #5/5/3/83/3-3         26.0          41.4            19
+##  4  Con7     #5/4/2/95/2         28.5          44.1            19
+##  5  Con7     #4/2/95/3-3           NA            NA            20
+##  6  Con7     #2/2/95/3-2           NA            NA            20
+##  7  Con7 #1/5/3/83/3-3/2           NA            NA            20
+##  8  Con8       #3/83/3-3           NA            NA            20
+##  9  Con8         #2/95/3           NA            NA            20
+## 10  Con8     #3/5/2/2/95         28.5            NA            20
+## # ... with 39 more rows, and 3 more variables: `Pups born alive` &lt;int&gt;,
+## #   `Pups dead @ birth` &lt;int&gt;, `Pups survive` &lt;int&gt;</code></pre>
 </div>
 <div id="other-file-formats" class="section level3">
 <h3>Other file formats</h3>
@@ -593,8 +609,8 @@ head(pulse_data, 5)
 ##      ID      age   Sex BDIScore_BL BDIScore_01m BDIScore_06m BDIScore_12m
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 10003 48.03836  male           7            1            2            0
-## 2 10015 72.47123  male           6           NA           NA           NA
-## 3 10022 58.50959  male          14            3            8           NA
+## 2 10015 72.47123  male           6          NaN          NaN          NaN
+## 3 10022 58.50959  male          14            3            8          NaN
 ## 4 10026 72.72877  male          20            6           18           16
 ## 5 10035 60.40274  male           4            0            1            2</code></pre>
 <p>You can read in data that isn’t coming as a flat file, but it’s beyond the scope of this course.</p>

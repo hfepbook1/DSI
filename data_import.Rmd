@@ -110,7 +110,7 @@ In the best case, the data are stored in the csv without any weirdness -- there 
 For example, the call below will skip the first 50 lines of data and not assume the first row are variable names:
 ```{r}
 litters_data = read_csv(file = "./data/FAS_litters.csv",
-  skip = 50, col_names = FALSE)
+  skip = 10, col_names = FALSE)
 head(litters_data)
 ```
 
@@ -123,11 +123,13 @@ I skipped the `col_types` argument because it's worth talking about in some deta
 litters_data = read_csv(file = "./data/FAS_litters.csv",
   col_types = cols(
     Group = col_character(),
-    Litter.Number = col_character(),
-    Sex = col_integer(),
-    GD.of.DOB = col_integer(),
-    PD.ears = col_double(),
-    PD.walk = col_double()
+    `Litter Number` = col_character(),
+    `GD0 weight` = col_double(),
+    `GD12 weight` = col_double(),
+    `GD of Birth` = col_integer(),
+    `Pups born alive` = col_integer(),
+    `Pups dead @ birth` = col_integer(),
+    `Pups survive` = col_integer()
   )
 )
 tail(litters_data)
@@ -137,7 +139,7 @@ Column parsing also allows a shorthand for almost every data type.
 
 ```{r}
 litters_data = read_csv(file = "./data/FAS_litters.csv",
-  col_types = "ccdddd"
+  col_types = "ccddiiii"
 )
 litters_data
 ```

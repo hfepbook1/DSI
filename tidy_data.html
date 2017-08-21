@@ -383,8 +383,8 @@ pulse_data
 ##      id      age   sex bdiscore_bl bdiscore_01m bdiscore_06m bdiscore_12m
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 10003 48.03836  male           7            1            2            0
-## 2 10015 72.47123  male           6           NA           NA           NA
-## 3 10022 58.50959  male          14            3            8           NA
+## 2 10015 72.47123  male           6          NaN          NaN          NaN
+## 3 10022 58.50959  male          14            3            8          NaN
 ## 4 10026 72.72877  male          20            6           18           16
 ## 5 10035 60.40274  male           4            0            1            2
 ## # ... with 1,082 more rows</code></pre>
@@ -413,13 +413,13 @@ pulse_tidy_data
 ##  $ bdiscore_bl : atomic  7 6 14 20 4 2 4 5 0 10 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, BL IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_01m: atomic  1 NA 3 6 0 10 0 NA 3 2 ...
+##  $ bdiscore_01m: atomic  1 NaN 3 6 0 10 0 NaN 3 2 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 1 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_06m: atomic  2 NA 8 18 1 12 NA 0 4 11 ...
+##  $ bdiscore_06m: atomic  2 NaN 8 18 1 12 NaN 0 4 11 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 6 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_12m: atomic  0 NA NA 16 2 8 NA 2 0 6 ...
+##  $ bdiscore_12m: atomic  0 NaN NaN 16 2 8 NaN 2 0 6 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 12 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;</code></pre>
 <p>Each BDI score column has a specific label in the SAS dataset; these don’t match, so <code>gather</code> dropped them when creating the <code>bdi</code> column. Not a problem here, but dropping attributes could be an issue if you wanted to preserve dates, factors, or some other feature.</p>
@@ -440,7 +440,7 @@ pulse_tidy_data
 <p>This isn’t really the optimal way to isolate “visit” because I now need an additional <code>select</code> step to remove the unnecessary character variable <code>remove</code>. However, it does illustrate the <code>separate</code> function, and we haven’t yet learned about <code>str_replace</code> and other functions from the <code>stringr</code> package that are better suited to this problem, so …</p>
 <p>In the preceding I’ve saved intermediate datasets to make each step clear. While this can be a helpful crutch as you’re trying out code, it is generally bad practice. There are also some additional transformations needed to wrap up the data wrangling process, like changing <code>bl</code> to <code>00m</code> for consistency across visits and converting <code>visit</code> to a factor variable. (It’s possible that you would want <code>visit</code> to be a numeric variable instead, which could be done with a different call to <code>mutate</code>.) Lastly, it’s nice to organize the data into a reasonable order.</p>
 <p>Altogether, then, the code below will import, tidy, and transform the PULSE dataset into a usable format:</p>
-<pre class="r"><code>pulse_data = read_sas(&quot;~/Desktop/public_pulse_data.sas7bdat&quot;) %&gt;%
+<pre class="r"><code>pulse_data = read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) %&gt;%
   clean_names() %&gt;%
   gather(key = visit, value = bdi, bdiscore_bl:bdiscore_12m) %&gt;%
   separate(visit, into = c(&quot;remove&quot;, &quot;visit&quot;), sep = &quot;_&quot;) %&gt;%
@@ -448,43 +448,54 @@ pulse_tidy_data
   mutate(visit = replace(visit, visit == &quot;bl&quot;, &quot;00m&quot;),
          visit = factor(visit, levels = paste0(c(&quot;00&quot;, &quot;01&quot;, &quot;06&quot;, &quot;12&quot;), &quot;m&quot;))) %&gt;%
   arrange(id, visit)
-## Error: &#39;~/Desktop/public_pulse_data.sas7bdat&#39; does not exist.
+## Warning: attributes are not identical across measure variables; they will
+## be dropped
 
 print(pulse_data, n = 12)
-## # A tibble: 1,087 x 7
-##       id      age    sex bdiscore_bl bdiscore_01m bdiscore_06m
-##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-##  1 10003 48.03836   male           7            1            2
-##  2 10015 72.47123   male           6           NA           NA
-##  3 10022 58.50959   male          14            3            8
-##  4 10026 72.72877   male          20            6           18
-##  5 10035 60.40274   male           4            0            1
-##  6 10050 84.73833   male           2           10           12
-##  7 10078 31.34521   male           4            0           NA
-##  8 10088 56.85205   male           5           NA            0
-##  9 10091 75.99178   male           0            3            4
-## 10 10092 74.23401 female          10            2           11
-## 11 10098 61.29315 female          10            9           NA
-## 12 10103 53.66027 female           5            1           NA
-## # ... with 1,075 more rows, and 1 more variables: bdiscore_12m &lt;dbl&gt;</code></pre>
+## # A tibble: 4,348 x 5
+##       id  visit      age   sex   bdi
+##    &lt;dbl&gt; &lt;fctr&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1 10003    00m 48.03836  male     7
+##  2 10003    01m 48.03836  male     1
+##  3 10003    06m 48.03836  male     2
+##  4 10003    12m 48.03836  male     0
+##  5 10015    00m 72.47123  male     6
+##  6 10015    01m 72.47123  male   NaN
+##  7 10015    06m 72.47123  male   NaN
+##  8 10015    12m 72.47123  male   NaN
+##  9 10022    00m 58.50959  male    14
+## 10 10022    01m 58.50959  male     3
+## 11 10022    06m 58.50959  male     8
+## 12 10022    12m 58.50959  male   NaN
+## # ... with 4,336 more rows</code></pre>
 <p>Before moving on, let’s revisit the <code>group</code> variable in the litters dataset:</p>
-<pre class="r"><code>read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccdddd&quot;) %&gt;% 
+<pre class="r"><code>read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;% 
   clean_names() %&gt;%
   pull(group) %&gt;%
   table()
 ## .
 ## Con7 Con8 Low7 Low8 Mod7 Mod8 
-##   38   57   50   43   70   55</code></pre>
+##    7    8    8    7   12    7</code></pre>
 <p>These data are also untidy: <code>group</code> encodes both dose and day of treatment! Time to fix that …</p>
 <pre class="r"><code>litters_data = 
-  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccdddd&quot;) %&gt;% 
+  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;% 
   clean_names() %&gt;%
   separate(group, into = c(&quot;dose&quot;, &quot;day_of_tx&quot;), sep = 3) %&gt;%
   mutate(dose = tolower(dose),
-         sex_ch = &quot;male&quot;,
-         sex_ch = replace(sex_ch, sex == 2, &quot;female&quot;)) %&gt;%
-  select(litter_number, dose, day_of_tx, sex = sex_ch, gd_of_dob, pd_walk) %&gt;%
-  arrange(litter_number)</code></pre>
+         wt_gain = gd18_weight - gd0_weight) %&gt;%
+  arrange(litter_number)
+
+litters_data
+## # A tibble: 49 x 10
+##    dose day_of_tx   litter_number gd0_weight gd18_weight gd_of_birth
+##   &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;int&gt;
+## 1   con         7       #1/2/95/2         27        42.0          19
+## 2   con         7 #1/5/3/83/3-3/2         NA          NA          20
+## 3   con         8   #1/6/2/2/95-2         NA          NA          20
+## 4   mod         7       #1/82/3-2         NA          NA          19
+## 5   low         8            #100         20        39.2          20
+## # ... with 44 more rows, and 4 more variables: pups_born_alive &lt;int&gt;,
+## #   pups_dead_birth &lt;int&gt;, pups_survive &lt;int&gt;, wt_gain &lt;dbl&gt;</code></pre>
 <p>Now we’re in pretty good shape :-).</p>
 </div>
 <div id="spread" class="section level3">
@@ -518,7 +529,7 @@ analysis_result
 <h3>Binding rows</h3>
 <p>We’ve looked at single-table non-tidy data, but non-tidiness often stems from relevant data spread across multiple tables. In the simplest case, these tables are basically the same and can be stacked to produce a tidy dataset. That’s the setting in <code>LotR_words.xlsx</code>, where the word counts for different races and sexes in each movie in the trilogy are spread across distinct data rectangles (these data are based on <a href="https://github.com/jennybc/lotr-tidy/blob/master/01-intro.md">this example</a>).</p>
 <p>To produce the desired tidy dataset, we first need to read each table and do some cleaning.</p>
-<pre class="r"><code>fellowship = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
+<pre class="r"><code>fellowship_ring = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
   clean_names() %&gt;%
   gather(key = sex, value = words, female:male) %&gt;%
   mutate(race = tolower(race),
@@ -530,14 +541,14 @@ two_towers = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&
   mutate(race = tolower(race),
          movie = &quot;Two Towers&quot;)
 
-return = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;%
+return_king = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;%
   clean_names() %&gt;%
   gather(key = sex, value = words, female:male) %&gt;%
   mutate(race = tolower(race),
          movie = &quot;Return&quot;)</code></pre>
 <p>This illustrates that there’s often some work needed to ensure the separate tables can be reasonably stacked. As an aside, the three code snippets above are all basically the same except for the range and the movie name – later we’ll see a better way to handle cases like this by writing our own functions, but this works for now.</p>
 <p>Once each table is ready to go, we can stack them up using <code>bind_rows</code>:</p>
-<pre class="r"><code>lotr_tidy = bind_rows(fellowship, two_towers, return) %&gt;%
+<pre class="r"><code>lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) %&gt;%
   select(movie, everything()) 
 
 lotr_tidy
@@ -575,15 +586,35 @@ lotr_tidy
 <li>Full: keeps data that appear in either <code>x</code> or <code>y</code></li>
 </ul>
 <p>Left joins are the most common, because they add data from a smaller table <code>y</code> into a larger table <code>x</code> without removing anything from <code>x</code>.</p>
-<p>As an example, consider the data tables in <code>FAS_pups.csv</code> and <code>FAS_litters.csv</code>, which are related through the <code>litter_id</code>. The former contains data unique to each pup, and the latter contains data unique to each litter. We can combine these using a left join of litter data into pup data; doing so retains data on each pup and adds data in new columns.</p>
-<pre class="r"><code>pup_data = 
-litter_data = 
+<p>As an example, consider the data tables in <code>FAS_pups.csv</code> and <code>FAS_litters.csv</code>, which are related through the <code>Litter Number</code> variable. The former contains data unique to each pup, and the latter contains data unique to each litter. We can combine these using a left join of litter data into pup data; doing so retains data on each pup and adds data in new columns.</p>
+<pre class="r"><code>pup_data = read_csv(&quot;./data/FAS_pups.csv&quot;, col_types = &quot;ciiiii&quot;) %&gt;%
+  clean_names() %&gt;%
+  mutate(
+    sex_ch = &quot;male&quot;,
+    sex_ch = replace(sex_ch, sex == 2, &quot;female&quot;)) %&gt;%
+  select(-sex)
 
-FAS_data = left_join(pup_data, litter_data, by = &quot;litter_id&quot;)
-## Error in left_join(pup_data, litter_data, by = &quot;litter_id&quot;): object &#39;pup_data&#39; not found
+litter_data = read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;%
+  clean_names %&gt;%
+  select(-pups_survive) %&gt;%
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = tolower(group))
+
+FAS_data = left_join(pup_data, litter_data, by = &quot;litter_number&quot;)
 FAS_data
-## Error in eval(expr, envir, enclos): object &#39;FAS_data&#39; not found</code></pre>
-<p>Note that we made the key explicit in the join. By default, the <code>*_join</code> functions in <code>dplyr</code> will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.</p>
+## # A tibble: 313 x 13
+##   litter_number pd_ears pd_eyes pd_pivot pd_walk sex_ch group gd0_weight
+##           &lt;chr&gt;   &lt;int&gt;   &lt;int&gt;    &lt;int&gt;   &lt;int&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
+## 1           #85       4      13        7      11   male  con7       19.7
+## 2           #85       4      13        7      12   male  con7       19.7
+## 3     #1/2/95/2       5      13        7       9   male  con7       27.0
+## 4     #1/2/95/2       5      13        8      10   male  con7       27.0
+## 5 #5/5/3/83/3-3       5      13        8      10   male  con7       26.0
+## # ... with 308 more rows, and 5 more variables: gd18_weight &lt;dbl&gt;,
+## #   gd_of_birth &lt;int&gt;, pups_born_alive &lt;int&gt;, pups_dead_birth &lt;int&gt;,
+## #   wt_gain &lt;dbl&gt;</code></pre>
+<p>We made the key explicit in the join. By default, the <code>*_join</code> functions in <code>dplyr</code> will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.</p>
 <p>As a final point, the <code>*_join</code> functions are very much related to SQL syntax, but emphasize operations common to data analysis.</p>
 </div>
 </div>

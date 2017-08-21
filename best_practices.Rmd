@@ -159,6 +159,7 @@ This content draws on the work of others; there are also useful references for a
 
 * Jenny Bryan's [deep thoughts](https://www.slideshare.net/jenniferbryan5811/cm002-deep-thoughts) on data analytic work
 * Also, her intro to [workspaces, the working directory, and R Projects](http://stat545.com/block002_hello-r-workspace-wd-project.html)
+* Also also, her slides on [how to name files](https://speakerdeck.com/jennybc/how-to-name-files)
 * The R for Data Science workflows on [scripts](http://r4ds.had.co.nz/workflow-scripts.html) and [projects](http://r4ds.had.co.nz/workflow-projects.html)
 * RStudio's guide to [using projects](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
 * Lastly, the BEH [Commandments for Variable Naming and Data Management](https://beh.columbia.edu/2016/08/03/commandments-for-variable-naming-and-data-management/) make a ton of sense

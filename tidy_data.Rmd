@@ -69,8 +69,8 @@ This isn't really the optimal way to isolate "visit" because I now need an addit
 In the preceding I've saved intermediate datasets to make each step clear. While this can be a helpful crutch as you're trying out code, it is generally bad practice. There are also some additional transformations needed to wrap up the data wrangling process, like changing `bl` to `00m` for consistency across visits and converting `visit` to a factor variable. (It's possible that you would want `visit` to be a numeric variable instead, which could be done with a different call to `mutate`.) Lastly, it's nice to organize the data into a reasonable order.
 
 Altogether, then, the code below will import, tidy, and transform the PULSE dataset into a usable format:
-```{r, error = TRUE}
-pulse_data = read_sas("~/Desktop/public_pulse_data.sas7bdat") %>%
+```{r}
+pulse_data = read_sas("./data/public_pulse_data.sas7bdat") %>%
   clean_names() %>%
   gather(key = visit, value = bdi, bdiscore_bl:bdiscore_12m) %>%
   separate(visit, into = c("remove", "visit"), sep = "_") %>%
@@ -84,7 +84,7 @@ print(pulse_data, n = 12)
 
 Before moving on, let's revisit the `group` variable in the litters dataset: 
 ```{r}
-read_csv("./data/FAS_litters.csv", col_types = "ccdddd") %>% 
+read_csv("./data/FAS_litters.csv", col_types = "ccddiiii") %>% 
   clean_names() %>%
   pull(group) %>%
   table()
@@ -93,14 +93,14 @@ read_csv("./data/FAS_litters.csv", col_types = "ccdddd") %>%
 These data are also untidy: `group` encodes both dose and day of treatment! Time to fix that ...
 ```{r}
 litters_data = 
-  read_csv("./data/FAS_litters.csv", col_types = "ccdddd") %>% 
+  read_csv("./data/FAS_litters.csv", col_types = "ccddiiii") %>% 
   clean_names() %>%
   separate(group, into = c("dose", "day_of_tx"), sep = 3) %>%
   mutate(dose = tolower(dose),
-         sex_ch = "male",
-         sex_ch = replace(sex_ch, sex == 2, "female")) %>%
-  select(litter_number, dose, day_of_tx, sex = sex_ch, gd_of_dob, pd_walk) %>%
+         wt_gain = gd18_weight - gd0_weight) %>%
   arrange(litter_number)
+
+litters_data
 ```
 
 Now we're in pretty good shape :-).
@@ -134,7 +134,7 @@ We've looked at single-table non-tidy data, but non-tidiness often stems from re
 
 To produce the desired tidy dataset, we first need to read each table and do some cleaning.
 ```{r}
-fellowship = read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
+fellowship_ring = read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
   clean_names() %>%
   gather(key = sex, value = words, female:male) %>%
   mutate(race = tolower(race),
@@ -146,7 +146,7 @@ two_towers = read_excel("./data/LotR_Words.xlsx", range = "F3:H6") %>%
   mutate(race = tolower(race),
          movie = "Two Towers")
 
-return = read_excel("./data/LotR_Words.xlsx", range = "J3:L6") %>%
+return_king = read_excel("./data/LotR_Words.xlsx", range = "J3:L6") %>%
   clean_names() %>%
   gather(key = sex, value = words, female:male) %>%
   mutate(race = tolower(race),
@@ -157,7 +157,7 @@ This illustrates that there's often some work needed to ensure the separate tabl
 
 Once each table is ready to go, we can stack them up using `bind_rows`:
 ```{r}
-lotr_tidy = bind_rows(fellowship, two_towers, return) %>%
+lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) %>%
   select(movie, everything()) 
 
 lotr_tidy
@@ -178,17 +178,30 @@ There are four major ways join dataframes `x` and `y`:
 
 Left joins are the most common, because they add data from a smaller table `y` into a larger table `x` without removing anything from `x`. 
 
-As an example, consider the data tables in `FAS_pups.csv` and `FAS_litters.csv`, which are related through the `litter_id`. The former contains data unique to each pup, and the latter contains data unique to each litter. We can combine these using a left join of litter data into pup data; doing so retains data on each pup and adds data in new columns.
+As an example, consider the data tables in `FAS_pups.csv` and `FAS_litters.csv`, which are related through the `Litter Number` variable. The former contains data unique to each pup, and the latter contains data unique to each litter. We can combine these using a left join of litter data into pup data; doing so retains data on each pup and adds data in new columns.
 
-```{r, error = TRUE}
-pup_data = 
-litter_data = 
+```{r}
+pup_data = read_csv("./data/FAS_pups.csv", col_types = "ciiiii") %>%
+  clean_names() %>%
+  mutate(
+    sex_ch = "male",
+    sex_ch = replace(sex_ch, sex == 2, "female")) %>%
+  select(-sex)
 
-FAS_data = left_join(pup_data, litter_data, by = "litter_id")
+litter_data = read_csv("./data/FAS_litters.csv", col_types = "ccddiiii") %>%
+  clean_names %>%
+  select(-pups_survive) %>%
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = tolower(group))
+
+FAS_data = left_join(pup_data, litter_data, by = "litter_number")
 FAS_data
 ```
 
-Note that we made the key explicit in the join. By default, the `*_join` functions in `dplyr` will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.
+We made the key explicit in the join. By default, the `*_join` functions in `dplyr` will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.
+
+
 
 As a final point, the `*_join` functions are very much related to SQL syntax, but emphasize operations common to data analysis. 
 
