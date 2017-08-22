@@ -456,7 +456,7 @@ litters_data = clean_names(litters_data)</code></pre>
 <div id="mutate" class="section level3">
 <h3><code>mutate</code></h3>
 <p>Sometimes you need to select columns; sometimes you need to change them or create new ones. You can do this using <code>mutate</code>.</p>
-<p>The example below creates a new variable measuring the delay between <code>pd_ears</code> and <code>pd_walk</code>; modifies the existing <code>group</code> variable; and creates a new sex variable that takes character values.</p>
+<p>The example below creates a new variable measuring the delay between <code>pd_ears</code> and <code>pd_walk</code>; modifies the existing <code>group</code> variable; and creates a weight gain variable.</p>
 <pre class="r"><code>mutate(litters_data,
   wt_gain = gd18_weight - gd0_weight,
   group = tolower(group)
@@ -500,7 +500,7 @@ litters_data = clean_names(litters_data)</code></pre>
 </div>
 <div id="section" class="section level3">
 <h3><code>%&gt;%</code></h3>
-<p>We’ve seen several commands you will use regularly for data manipulation and cleaning. You will rarely use them in isolation. For example, suppose you want to load the data, clean the column names, remove <code>pd_ears</code>, and create <code>sex_ch</code>. There are a couple of options for this kind of multi-step data manipulation:</p>
+<p>We’ve seen several commands you will use regularly for data manipulation and cleaning. You will rarely use them in isolation. For example, suppose you want to load the data, clean the column names, remove <code>pups_survive</code>, and create <code>wt_gain</code>. There are a couple of options for this kind of multi-step data manipulation:</p>
 <ul>
 <li>define intermediate datasets (or overwrite data at each stage)</li>
 <li>nest function calls</li>
@@ -569,7 +569,7 @@ litters_data
   mutate(.data = .,
     wt_gain = gd18_weight - gd0_weight,
     group = tolower(group))</code></pre>
-<p>Usually you’ll just elide the first argument and be happy with life, but there are some cases where the placeholder will help. For example, to regress <code>pd_walk</code> on <code>sex</code>, you might use:</p>
+<p>Usually you’ll just elide the first argument and be happy with life, but there are some cases where the placeholder will help. For example, to regress <code>wt_gain</code> on <code>pups_born_alive</code>, you might use:</p>
 <pre class="r"><code>litters_data %&gt;%
   lm(wt_gain ~ pups_born_alive, data = .) %&gt;%
   broom::tidy()

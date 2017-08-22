@@ -99,7 +99,7 @@ Filtering can be helpful for limiting a dataset to only those observations neede
 
 Sometimes you need to select columns; sometimes you need to change them or create new ones. You can do this using `mutate`. 
 
-The example below creates a new variable measuring the delay between `pd_ears` and `pd_walk`; modifies the existing `group` variable; and creates a new sex variable that takes character values.
+The example below creates a new variable measuring the delay between `pd_ears` and `pd_walk`; modifies the existing `group` variable; and creates a weight gain variable.
 ```{r}
 mutate(litters_data,
   wt_gain = gd18_weight - gd0_weight,
@@ -124,7 +124,7 @@ head(arrange(litters_data, group, pups_born_alive), 10)
 
 ### `%>%`
 
-We've seen several commands you will use regularly for data manipulation and cleaning. You will rarely use them in isolation. For example, suppose you want to load the data, clean the column names, remove `pd_ears`, and create `sex_ch`. There are a couple of options for this kind of multi-step data manipulation:
+We've seen several commands you will use regularly for data manipulation and cleaning. You will rarely use them in isolation. For example, suppose you want to load the data, clean the column names, remove `pups_survive`, and create `wt_gain`. There are a couple of options for this kind of multi-step data manipulation:
 
 * define intermediate datasets (or overwrite data at each stage)
 * nest function calls
@@ -182,7 +182,7 @@ litters_data =
     group = tolower(group))
 ```
 
-Usually you'll just elide the first argument and be happy with life, but there are some cases where the placeholder will help. For example, to regress `pd_walk` on `sex`, you might use:
+Usually you'll just elide the first argument and be happy with life, but there are some cases where the placeholder will help. For example, to regress `wt_gain` on `pups_born_alive`, you might use:
 ```{r}
 litters_data %>%
   lm(wt_gain ~ pups_born_alive, data = .) %>%

@@ -183,10 +183,7 @@ As an example, consider the data tables in `FAS_pups.csv` and `FAS_litters.csv`,
 ```{r}
 pup_data = read_csv("./data/FAS_pups.csv", col_types = "ciiiii") %>%
   clean_names() %>%
-  mutate(
-    sex_ch = "male",
-    sex_ch = replace(sex_ch, sex == 2, "female")) %>%
-  select(-sex)
+  mutate(sex = recode(sex, `1` = "male", `2` = "female")) 
 
 litter_data = read_csv("./data/FAS_litters.csv", col_types = "ccddiiii") %>%
   clean_names %>%
@@ -201,7 +198,7 @@ FAS_data
 
 We made the key explicit in the join. By default, the `*_join` functions in `dplyr` will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.
 
-
+Note that joining is not particularly amenable to the `%>%` operator because it is fundamentally non-linear: two separate datasets are coming together, rather than a single dataset being processed in a step-by-step fashion.
 
 As a final point, the `*_join` functions are very much related to SQL syntax, but emphasize operations common to data analysis. 
 

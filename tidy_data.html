@@ -589,10 +589,7 @@ lotr_tidy
 <p>As an example, consider the data tables in <code>FAS_pups.csv</code> and <code>FAS_litters.csv</code>, which are related through the <code>Litter Number</code> variable. The former contains data unique to each pup, and the latter contains data unique to each litter. We can combine these using a left join of litter data into pup data; doing so retains data on each pup and adds data in new columns.</p>
 <pre class="r"><code>pup_data = read_csv(&quot;./data/FAS_pups.csv&quot;, col_types = &quot;ciiiii&quot;) %&gt;%
   clean_names() %&gt;%
-  mutate(
-    sex_ch = &quot;male&quot;,
-    sex_ch = replace(sex_ch, sex == 2, &quot;female&quot;)) %&gt;%
-  select(-sex)
+  mutate(sex = recode(sex, `1` = &quot;male&quot;, `2` = &quot;female&quot;)) 
 
 litter_data = read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;%
   clean_names %&gt;%
@@ -604,17 +601,18 @@ litter_data = read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccd
 FAS_data = left_join(pup_data, litter_data, by = &quot;litter_number&quot;)
 FAS_data
 ## # A tibble: 313 x 13
-##   litter_number pd_ears pd_eyes pd_pivot pd_walk sex_ch group gd0_weight
-##           &lt;chr&gt;   &lt;int&gt;   &lt;int&gt;    &lt;int&gt;   &lt;int&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
-## 1           #85       4      13        7      11   male  con7       19.7
-## 2           #85       4      13        7      12   male  con7       19.7
-## 3     #1/2/95/2       5      13        7       9   male  con7       27.0
-## 4     #1/2/95/2       5      13        8      10   male  con7       27.0
-## 5 #5/5/3/83/3-3       5      13        8      10   male  con7       26.0
+##   litter_number   sex pd_ears pd_eyes pd_pivot pd_walk group gd0_weight
+##           &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;   &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
+## 1           #85  male       4      13        7      11  con7       19.7
+## 2           #85  male       4      13        7      12  con7       19.7
+## 3     #1/2/95/2  male       5      13        7       9  con7       27.0
+## 4     #1/2/95/2  male       5      13        8      10  con7       27.0
+## 5 #5/5/3/83/3-3  male       5      13        8      10  con7       26.0
 ## # ... with 308 more rows, and 5 more variables: gd18_weight &lt;dbl&gt;,
 ## #   gd_of_birth &lt;int&gt;, pups_born_alive &lt;int&gt;, pups_dead_birth &lt;int&gt;,
 ## #   wt_gain &lt;dbl&gt;</code></pre>
 <p>We made the key explicit in the join. By default, the <code>*_join</code> functions in <code>dplyr</code> will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.</p>
+<p>Note that joining is not particularly amenable to the <code>%&gt;%</code> operator because it is fundamentally non-linear: two separate datasets are coming together, rather than a single dataset being processed in a step-by-step fashion.</p>
 <p>As a final point, the <code>*_join</code> functions are very much related to SQL syntax, but emphasize operations common to data analysis.</p>
 </div>
 </div>
