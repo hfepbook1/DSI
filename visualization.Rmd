@@ -178,7 +178,7 @@ ggplot(weather, aes(x = name, y = tmax)) +
   stat_summary(fun.y = median, geom = "point", color = "blue", size = 4)
 ```
 
-Both boxplots and violin plots are currently getting knocked out by joy plots (in the [`ggjoy`](https://github.com/clauswilke/ggjoy) package), though, especially if you have lots of categories!
+Both boxplots and violin plots are currently getting knocked out by joy plots (in the [`ggjoy`](https://github.com/clauswilke/ggjoy) package), though, especially if you have [lots of categories](https://simplystatistics.org/2017/07/13/the-joy-of-no-more-violin-plots/)!
 
 ```{r}
 library(ggjoy)
@@ -288,7 +288,7 @@ We'll learn more about the [`forcats`](http://forcats.tidyverse.org/index.html) 
 
 You will, on occasion, need to save a plot to a specific file. **Don't** use the built-in "Export" button! If you do, your figure is not reproducible -- no one will know how your plot was exported. Instead, use `ggsave()` by explicitly creating the figure and exporting; `ggsave` will guess the file type you prefer and has options for specifying features of the plot. 
 
-```{r, echo = FALSE}
+```{r, eval = FALSE}
 p = ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) + 
   labs(
@@ -316,13 +316,13 @@ Usually you can get by with setting reasonable defaults, but keep a careful eye 
 
 ## Other materials
 
-Oh man is there a lot of stuff for visualization ...
+Oh man is there a lot of stuff about visualization ...
 
 * There are overviews on good and bad graphics
     * Including an early paper on ["How to display data badly"](http://www.jstor.org/stable/2683253?seq=1#page_scan_tab_contents)
     * Karl Broman's [top ten worst graphs](https://www.biostat.wisc.edu/~kbroman/topten_worstgraphs/)
     * ... and Karl's talk on [creating effective figures and table](https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf)
-    * Also an [paper](http://vita.had.co.nz/papers/layered-grammar.pdf) on the philosophy underlying `ggplot`
+    * Also Hadley Wickham's [paper](http://vita.had.co.nz/papers/layered-grammar.pdf) on the philosophy underlying `ggplot`
 * There are tutorials on making graphics using `ggplot`
     * From R for Data Science: [basics](http://r4ds.had.co.nz/data-visualisation.html) and [advanced stuff](and http://r4ds.had.co.nz/graphics-for-communication.html)
     * Jenny Bryan's [intro to ggplot](http://stat545.com/cm006_tibbles-dplyr-ggplot2.html) and her [ggplot tutorial](https://github.com/jennybc/ggplot2-tutorial)

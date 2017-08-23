@@ -11,8 +11,9 @@ The overarching goal of data wrangling is to have a tidy, easy-to-use dataset.
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.width = 8,
-  fig.height = 4
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
 )
 ```
 

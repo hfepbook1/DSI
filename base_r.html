@@ -520,15 +520,15 @@ table(vec)
 ## vec
 ## female   male 
 ##    710    290</code></pre>
-<p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792.">time</a> Nonetheless, since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
+<p>Base R comes equipped with plotting but – just giving you a heads-up – if you <a href="https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">use base R graphics</a> people might give you a <a href="https://twitter.com/drob/status/697858212779806721">hard</a> <a href="https://twitter.com/_inundata/status/868297266913697792">time</a>. Since we haven’t learned a better system yet, though, here are some quick-and-easy plotting functions.</p>
 <pre class="r"><code>set.seed(1)
 
 x = rnorm(1000)
 y = 1 + 2 * x + rnorm(1000, 0, .4)
 hist(x)</code></pre>
-<p><img src="base_r_files/figure-html/unnamed-chunk-17-1.png" width="384" /></p>
+<p><img src="base_r_files/figure-html/unnamed-chunk-17-1.png" width="60%" /></p>
 <pre class="r"><code>plot(x, y)</code></pre>
-<p><img src="base_r_files/figure-html/unnamed-chunk-17-2.png" width="384" /></p>
+<p><img src="base_r_files/figure-html/unnamed-chunk-17-2.png" width="60%" /></p>
 </div>
 <div id="lists" class="section level3">
 <h3>Lists</h3>

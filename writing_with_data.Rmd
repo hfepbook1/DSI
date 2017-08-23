@@ -13,8 +13,9 @@ inline <- function(x = "") paste0("`` `r ", x, "` ``")
 
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.width = 8,
-  fig.height = 4
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
 )
 ```
 

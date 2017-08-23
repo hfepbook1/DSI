@@ -11,8 +11,9 @@ This page gives a quick introduction to "base" R.
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.width = 8,
-  fig.height = 4
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
 )
 ```
 
@@ -181,9 +182,9 @@ str(vec)
 table(vec)
 ```
 
-Base R comes equipped with plotting but -- just giving you a heads-up -- if you [use base R graphics](https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/) people might give you a [hard](https://twitter.com/drob/status/697858212779806721) [time](https://twitter.com/_inundata/status/868297266913697792.) Nonetheless, since we haven't learned a better system yet, though, here are some quick-and-easy plotting functions. 
+Base R comes equipped with plotting but -- just giving you a heads-up -- if you [use base R graphics](https://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/) people might give you a [hard](https://twitter.com/drob/status/697858212779806721) [time](https://twitter.com/_inundata/status/868297266913697792). Since we haven't learned a better system yet, though, here are some quick-and-easy plotting functions. 
 
-```{r, fig.width = 4, fig.height = 4}
+```{r, fig.width = 4, fig.asp = 1, out.width = "60%"}
 set.seed(1)
 
 x = rnorm(1000)

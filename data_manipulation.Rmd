@@ -11,8 +11,9 @@ Once you've imported data, you're going to need to do some cleaning up.
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.width = 8,
-  fig.height = 4
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
 )
 
 ```
