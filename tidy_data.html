@@ -333,6 +333,9 @@ div.tocify {
     <li>
       <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
     </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -390,8 +393,8 @@ pulse_data
 ## # ... with 1,082 more rows</code></pre>
 <p>With our new understanding of tidy data, we quickly recognize a problem: the BDI score is spread across four columns, which correspond to four observation times. We can fix this problem using <code>gather</code>:</p>
 <pre class="r"><code>pulse_tidy_data = gather(pulse_data, key = visit, value = bdi, bdiscore_bl:bdiscore_12m)
-## Warning: attributes are not identical across measure variables; they will
-## be dropped
+## Warning: attributes are not identical across measure variables;
+## they will be dropped
 pulse_tidy_data
 ## # A tibble: 4,348 x 5
 ##      id      age   sex       visit   bdi
@@ -448,8 +451,8 @@ pulse_tidy_data
   mutate(visit = replace(visit, visit == &quot;bl&quot;, &quot;00m&quot;),
          visit = factor(visit, levels = paste0(c(&quot;00&quot;, &quot;01&quot;, &quot;06&quot;, &quot;12&quot;), &quot;m&quot;))) %&gt;%
   arrange(id, visit)
-## Warning: attributes are not identical across measure variables; they will
-## be dropped
+## Warning: attributes are not identical across measure variables;
+## they will be dropped
 
 print(pulse_data, n = 12)
 ## # A tibble: 4,348 x 5
