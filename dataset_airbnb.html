@@ -11,7 +11,7 @@
 
 
 
-<title>FiveThirtyEight: Hack Your Way to Scientific Glory</title>
+<title>Airbnb</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -356,67 +356,61 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">FiveThirtyEight: Hack Your Way to Scientific Glory</h1>
+<h1 class="title toc-ignore">Airbnb</h1>
 
 </div>
 
 
-<p>The version of the data that we will use in this class can be found <a href="./data/fivethirtyeight_datasets.zip">here</a>.</p>
-<div id="context" class="section level2">
-<h2>Context</h2>
-<p>There has recently been a lot of media coverage about a “crisis in science” related to results of scientific studies that can’t be reproduced or studies that make headlines, only to later be retracted for a variety of reasons. <a href="http://fivethirtyeight.com/">FiveThirtyEight</a> is a website originally founded by Nate Silver, a statistician who came to fame first through his work in baseball analytics and later as a political analyst and blogger, which focuses on analytic issues in politics, economics, and sports. In response to this so called crisis, <a href="http://fivethirtyeight.com/">FiveThirtyEight</a> wrote a rebuttal piece pointing out that science isn’t broken, but is actually just very hard to get right. <a href="https://fivethirtyeight.com/features/science-isnt-broken/#part1">Part one</a> of the three part series was about the problem of p-hacking, which occurs when researchers, knowingly or not, play around with the variables included and the form of the data until they find a significant association that supports their beliefs. <a href="https://fivethirtyeight.com/features/science-isnt-broken/#part1">The post</a> includes an interactive tool where the reader can select the political party of interest and then can make a series of choices about both types and forms of variables to consider in the search for a significant association between political party and economic success.</p>
-<p>The data posted here underlies this interactive graphic, and was obtained from the post’s authors.</p>
+<p>These data were accessed from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a> on September 2, 2017. The version of the data that we will use in this class can be found <a href="./data/nyc_airbnb.RData">here</a>.</p>
+<div id="about-inside-airbnb" class="section level2">
+<h2>About <a href="http://insideairbnb.com/about.html">Inside Airbnb</a></h2>
+<blockquote>
+<p>Inside Airbnb is an independent, non-commercial set of tools and data that allows you to explore how Airbnb is really being used in cities around the world.</p>
+</blockquote>
+<blockquote>
+<p>By analyzing publicly available information about a city’s Airbnb’s listings, Inside Airbnb provides filters and key metrics so you can see how Airbnb is being used to compete with the residential housing market.</p>
+</blockquote>
 </div>
 <div id="data-description" class="section level2">
 <h2>Data description</h2>
-<p>There are 6 datasets in csv format.</p>
-<p>The file “cpi” contains 822 observations of 2 variables related to the consumer price index, which is used as a measure of inflation:</p>
+<p>Inside Airbnb provides some visualizations of the NYC Airbnb data <a href="http://insideairbnb.com/new-york-city/">here</a>, where you can see maps showing type of room, activity, availability, and listings per host for all NYC Airbnb listings.</p>
+<p>After downloading both the “listings.csv.gz” and “listings.csv” files, the following code was used to create the provided dataset:</p>
+<pre><code>library(dplyr)
+
+# Uncompress and load the detailed NYC airbnb data
+# But only keep the 2 variables of interest
+zz &lt;- gzfile(&quot;listings.csv.gz&quot;, &#39;rt&#39;)   
+df1 &lt;- read.csv(zz, header = T) %&gt;% 
+  select(id, review_scores_location)
+
+# Read in the summary data for NYC
+df2 &lt;- read.csv(&quot;listings.csv&quot;, stringsAsFactors = FALSE) %&gt;% 
+  mutate(last_review = as.Date(last_review, format = &quot;%Y-%m-%d&quot;))
+
+# Combine the two datasets
+df &lt;- inner_join(df1, df2, by = &quot;id&quot;)
+
+# Save the data
+save(df, file = &quot;nyc_airbnb.RData&quot;)</code></pre>
+<p>The resulting R data file <code>nyc_airbnb</code> contains a single dataframe <code>df</code> with 40,753 rows of data on 17 variables:</p>
 <ul>
-<li><code>DATE</code>: date of the observation</li>
-<li><code>VALUE</code>: the value of the consumer price index on the associated date</li>
-</ul>
-<p>The file “GDP” contains 273 observations of 2 variables related to the gross domestic product (GDP), a measure of economic production:</p>
-<ul>
-<li><code>DATE</code>: date of the observation</li>
-<li><code>VALUE</code>: the GDP on the associated date</li>
-</ul>
-<p>The file “pols-month” contains 822 observations of 9 variables related to the number of national politicians who are democratic or republican at any given time:</p>
-<ul>
-<li><code>mon</code>: date of the count</li>
-<li><code>prez_gop</code>: indicator of whether the president was republican on the associated date (1 = yes, 0 = no)</li>
-<li><code>gov_gop</code>: the number of republican governors on the associated date</li>
-<li><code>sen_gop</code>: the number of republican senators on the associated date</li>
-<li><code>rep_gop</code>: the number of republican representatives on the associated date</li>
-<li><code>prez_dem</code>: indicator of whether the president was democratic on the associated date (1 = yes, 0 = no)</li>
-<li><code>gov_dem</code>: the number of democratic governors on the associated date</li>
-<li><code>sen_dem</code>: the number of democratic senators on the associated date</li>
-<li><code>rep_dem</code>: the number of democratic representatives on the associated date</li>
-</ul>
-<p>The file “recessions” contains 11 observations of 2 variables, representing the dates of 11 individual recessions. Each row of the dataset has a date for the start of a recession and a date for the end of the recession:</p>
-<ul>
-<li><code>start</code>: start date of a recession</li>
-<li><code>end</code>: end date of a recession</li>
-</ul>
-<p>The file “snp” contains 787 observations of 2 variables related to Standard &amp; Poor’s stock market index (S&amp;P), often used as a representative measure of stock market as a whole:</p>
-<ul>
-<li><code>date</code>: the date of the observation</li>
-<li><code>close</code>: the closing values of the S&amp;P stock index on the associated date</li>
-</ul>
-<p>The file “unemployment” contains 68 observations of 13 variables:</p>
-<ul>
-<li><code>Year</code>: the year of the measurements on that row</li>
-<li><code>Jan</code>: percentage of unemployment in January of the associated year</li>
-<li><code>Feb</code>: percentage of unemployment in February of the associated year</li>
-<li><code>Mar</code>: percentage of unemployment in March of the associated year</li>
-<li><code>Apr</code>: percentage of unemployment in April of the associated year</li>
-<li><code>May</code>: percentage of unemployment in May of the associated year</li>
-<li><code>Jun</code>: percentage of unemployment in June of the associated year</li>
-<li><code>Jul</code>: percentage of unemployment in July of the associated year</li>
-<li><code>Aug</code>: percentage of unemployment in August of the associated year</li>
-<li><code>Sep</code>: percentage of unemployment in September of the associated year</li>
-<li><code>Oct</code>: percentage of unemployment in October of the associated year</li>
-<li><code>Nov</code>: percentage of unemployment in November of the associated year</li>
-<li><code>Dec</code>: percentage of unemployment in December of the associated year</li>
+<li><code>id</code>: listing id</li>
+<li><code>review_scores_location</code>: 0-5 stars converted into a 0-10 scale</li>
+<li><code>name</code>: listing name</li>
+<li><code>host_id</code>: host id</li>
+<li><code>host_name</code>: host name</li>
+<li><code>neighbourhood_group</code>: NYC borough</li>
+<li><code>neighbourhood</code>: NYC neighborhood</li>
+<li><code>latitude</code>: listing latitude</li>
+<li><code>longitude</code>: listing longitude</li>
+<li><code>room_type</code>: type of listing (Entire home/apt, Private room, Shared room)</li>
+<li><code>price</code>: listing price</li>
+<li><code>minimum_nights</code>: required minimum nights stay</li>
+<li><code>number_of_reviews</code>: total number of reviews</li>
+<li><code>last_review</code>: date of last review</li>
+<li><code>reviews per month</code>: average number of reviews per month</li>
+<li><code>calculated_host_listings_count</code>: total number of listings for this host</li>
+<li><code>availability_365</code>: number of days listing is available out of 365</li>
 </ul>
 </div>
 
