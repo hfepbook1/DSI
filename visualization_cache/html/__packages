@@ -8,3 +8,6 @@ purrr
 dplyr
 rnoaa
 bindrcpp
+readxl
+haven
+janitor
