@@ -333,6 +333,12 @@ div.tocify {
     <li>
       <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
     </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
+    <li>
+      <a href="dataset_airbnb.html">Airbnb</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -367,7 +373,16 @@ div.tocify {
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>We’re going to figure out how to import the three datasets in this zip file. First, create a directory for today’s work, add an R Project, move the data to your directory, and start an R Markdown file. We’re also going to be making extensive use of the <code>tidyverse</code> package, so we can go ahead and load that.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats</code></pre>
 <div id="paths" class="section level3">
 <h3>Paths</h3>
 <p>We’ve mentioned paths and your working directory in passing (when talking about <a href="best_practices.html">best practices</a>). A firmer understanding is helpful when you start loading data into R, because to load data R will have to know where to find it.</p>
@@ -379,8 +394,8 @@ div.tocify {
 <p>Absolute paths are often easier, because you don’t really have to <em>think</em> about them – you’re just giving the complete address, starting from the root directory. These work from any current working directory on the machine. However, absolute paths can take up a lot of space if you use nested directories and they aren’t portable: even someone with the same directory won’t have the same path to that directory. An absolute path example is below:</p>
 <pre><code>&quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI/data/FAS_litters.csv&quot;</code></pre>
 <p>Relative paths, meanwhile, start from your current working directory. These are often much shorter, since the files you want to access are in subdirectories or at least not too far away. They also are portable, in that someone else with the same directory will have the same relative path to the files you care about. For both of these reasons, relative paths are preferred in almost every setting. The code below finds my current working directory:</p>
-<pre class="r"><code>getwd()
 ## [1] &quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI&quot;</code></pre>
+## [1] &quot;C:/Users/zabore/Google Drive/Columbia/DSI/DSI_website/DSI-master&quot;</code></pre>
 <p>A relative path to the same file as above is</p>
 <pre><code>&quot;./data/FAS_litters.csv&quot;</code></pre>
 <p>The table below, copied from <a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#file-and-directory-pathnames">R Programming for Research</a>, gives useful shorthand notation for relative pathnames.</p>

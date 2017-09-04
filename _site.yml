@@ -33,6 +33,10 @@ navbar:
           href: dataset_instacart.html
         - text: "FiveThirtyEight"
           href: dataset_fivethirtyeight.html
+        - text: "NOAA"
+          href: dataset_noaa.html
+        - text: "Airbnb"
+          href: dataset_airbnb.html
     - icon: fa-github fa-lg
       href: http://github.com/jeff-goldsmith/DSI/
 output:

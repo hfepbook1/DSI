@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Airbnb</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling.html">Data Wrangling</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_more_advanced_r.html">More Advanced R</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_other.html">Other Topics</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="papers.html">Homework</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Datasets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dataset_mr_trash_wheel.html">Mr. Trash Wheel</a>
+    </li>
+    <li>
+      <a href="dataset_restaurant_inspections.html">NYC Restaurant Inspections</a>
+    </li>
+    <li>
+      <a href="dataset_instacart.html">Instacart</a>
+    </li>
+    <li>
+      <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
+    </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
+    <li>
+      <a href="dataset_airbnb.html">Airbnb</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Airbnb</h1>
+
+</div>
+
+
+<p>These data were accessed from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a> on September 2, 2017. The version of the data that we will use in this class can be found <a href="./data/nyc_airbnb.RData">here</a>.</p>
+<div id="about-inside-airbnb" class="section level2">
+<h2>About <a href="http://insideairbnb.com/about.html">Inside Airbnb</a></h2>
+<blockquote>
+<p>Inside Airbnb is an independent, non-commercial set of tools and data that allows you to explore how Airbnb is really being used in cities around the world.</p>
+</blockquote>
+<blockquote>
+<p>By analyzing publicly available information about a city’s Airbnb’s listings, Inside Airbnb provides filters and key metrics so you can see how Airbnb is being used to compete with the residential housing market.</p>
+</blockquote>
+</div>
+<div id="data-description" class="section level2">
+<h2>Data description</h2>
+<p>Inside Airbnb provides some visualizations of the NYC Airbnb data <a href="http://insideairbnb.com/new-york-city/">here</a>, where you can see maps showing type of room, activity, availability, and listings per host for all NYC Airbnb listings.</p>
+<p>After downloading both the “listings.csv.gz” and “listings.csv” files, the following code was used to create the provided dataset:</p>
+<pre><code>library(dplyr)
+
+# Uncompress and load the detailed NYC airbnb data
+# But only keep the 2 variables of interest
+zz &lt;- gzfile(&quot;listings.csv.gz&quot;, &#39;rt&#39;)   
+df1 &lt;- read.csv(zz, header = T) %&gt;% 
+  select(id, review_scores_location)
+
+# Read in the summary data for NYC
+df2 &lt;- read.csv(&quot;listings.csv&quot;, stringsAsFactors = FALSE) %&gt;% 
+  mutate(last_review = as.Date(last_review, format = &quot;%Y-%m-%d&quot;))
+
+# Combine the two datasets
+df &lt;- inner_join(df1, df2, by = &quot;id&quot;)
+
+# Save the data
+save(df, file = &quot;nyc_airbnb.RData&quot;)</code></pre>
+<p>The resulting R data file <code>nyc_airbnb</code> contains a single dataframe <code>df</code> with 40,753 rows of data on 17 variables:</p>
+<ul>
+<li><code>id</code>: listing id</li>
+<li><code>review_scores_location</code>: 0-5 stars converted into a 0-10 scale</li>
+<li><code>name</code>: listing name</li>
+<li><code>host_id</code>: host id</li>
+<li><code>host_name</code>: host name</li>
+<li><code>neighbourhood_group</code>: NYC borough</li>
+<li><code>neighbourhood</code>: NYC neighborhood</li>
+<li><code>latitude</code>: listing latitude</li>
+<li><code>longitude</code>: listing longitude</li>
+<li><code>room_type</code>: type of listing (Entire home/apt, Private room, Shared room)</li>
+<li><code>price</code>: listing price</li>
+<li><code>minimum_nights</code>: required minimum nights stay</li>
+<li><code>number_of_reviews</code>: total number of reviews</li>
+<li><code>last_review</code>: date of last review</li>
+<li><code>reviews per month</code>: average number of reviews per month</li>
+<li><code>calculated_host_listings_count</code>: total number of listings for this host</li>
+<li><code>availability_365</code>: number of days listing is available out of 365</li>
+</ul>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
