@@ -457,10 +457,7 @@ p</code></pre>
 <p><img src="visualization_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
 <p>When you’re making a scatterplot with lots of data, there’s a limit to how much you can avoid overplotting using alpha levels and transparency. In these cases <code>geom_hex()</code>, <code>geom_bin2d()</code>, or <code>geom_density2d()</code> can be handy:</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmax, y = tmin)) + 
-  geom_hex()
-## Warning: Computation failed in `stat_binhex()`:
-## Package `hexbin` required for `stat_binhex`.
-## Please install and try again.</code></pre>
+  geom_hex()</code></pre>
 <p><img src="visualization_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
 <p>There are lots of aesthetics, and these depend to some extent on the geom – <code>color</code> worked for both <code>geom_point()</code> and <code>stat_smooth()</code>, but <code>shape</code> only applies to points. The help page for each geom includes a list of understood aesthetics.</p>
 <p>In the preceding, we set the alpha aesthetic “by hand” instead of mapping it to a variable. This is possible for other aesthetics too – you just have to assign the aesthetic value outside of <code>aes()</code>. To check your understanding of this point, try to explain why the two lines below don’t produce the same result:</p>
