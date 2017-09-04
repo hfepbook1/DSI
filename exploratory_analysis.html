@@ -372,7 +372,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Stay in the same project. Use a similar dataset – weather from three stations last year – and add a variable <code>month</code>.</p>
+<p>We’ll continue in the same project that we used for visualization, and use essentially the same dataset – the only exception is the addition of <code>month</code> variable, created using <code>lubridate::floor_date()</code>.</p>
 <pre class="r"><code>library(rnoaa)
 
 weather = 
@@ -405,14 +405,26 @@ weather
 ## # ... with 1,088 more rows</code></pre>
 <div id="group_by" class="section level3">
 <h3><code>group_by</code></h3>
-<p>Central idea here is grouping by a variable or collection of variables. Adds a partition to your data and allows you to apply functions within those partitions.</p>
-<p>summarizing within groups</p>
-<p>mutating within groups</p>
-<p>Sometimes you have a grouping and you need to remove it; use <code>ungroup()</code>.</p>
+<p>Datasets are often comprised of groups defined by one or more (categorical) variable; <code>group_by()</code> makes these groupings explicit so that they can be included in subsequent operations. For example, we might group <code>weather</code> by <code>name</code> and <code>month</code>:</p>
+<pre class="r"><code>weather %&gt;%
+  group_by(name, month)
+## # A tibble: 1,098 x 7
+## # Groups:   name, month [36]
+##             name          id       date      month  prcp  tmax  tmin
+##            &lt;chr&gt;       &lt;chr&gt;     &lt;date&gt;     &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 CentralPark_NY USW00094728 2016-01-01 2016-01-01     0   5.6   1.1
+## 2 CentralPark_NY USW00094728 2016-01-02 2016-01-01     0   4.4   0.0
+## 3 CentralPark_NY USW00094728 2016-01-03 2016-01-01     0   7.2   1.7
+## 4 CentralPark_NY USW00094728 2016-01-04 2016-01-01     0   2.2  -9.9
+## 5 CentralPark_NY USW00094728 2016-01-05 2016-01-01     0  -1.6 -11.6
+## 6 CentralPark_NY USW00094728 2016-01-06 2016-01-01     0   5.0  -3.8
+## # ... with 1,092 more rows</code></pre>
+<p>Several important functions respect grouping structures. You will frequently use <code>summarize</code> to create one-number summaries within each group, or use <code>mutate</code> to define variables within groups. The rest of this example shows these functions in action.</p>
+<p>Because these (and other) functions will use grouping information if it exists, it is sometimes necessary to remove groups using <code>ungroup()</code>.</p>
 </div>
 <div id="counting-things" class="section level3">
 <h3>Counting things</h3>
-<p>As an intro to summarize, let’s count the number of observations in each month.</p>
+<p>As an intro to <code>summarize</code>, let’s count the number of observations in each month in the complete <code>weather</code> dataset.</p>
 <pre class="r"><code>weather %&gt;%
   group_by(month) %&gt;%
   summarize(n = n())
@@ -431,8 +443,8 @@ weather
 ## 10 2016-10-01    93
 ## 11 2016-11-01    90
 ## 12 2016-12-01    93</code></pre>
-<p>Note this returns a dataframe that includes the grouping variable and the summary.</p>
-<p>Could use <code>count()</code>, if you remember it exists. It’s a handy specialized function.</p>
+<p>The result is a dataframe that includes the grouping variable and the desired summary.</p>
+<p>In this case, you could use <code>count()</code> in place of <code>group_by()</code> and <code>summarize()</code> if you remember that this function exists.</p>
 <pre class="r"><code>weather %&gt;%
   count(month)
 ## # A tibble: 12 x 2
@@ -450,7 +462,7 @@ weather
 ## 10 2016-10-01    93
 ## 11 2016-11-01    90
 ## 12 2016-12-01    93</code></pre>
-<p>Can count both total observations and distinct occurances of another variable</p>
+<p>You can use <code>summarize()</code> to compute multiple summaries within each group. As an example, we count the number of observations in each month and the number of distinct values of <code>date</code> in each month.</p>
 <pre class="r"><code>weather %&gt;%
   group_by(month) %&gt;%
   summarize(n_obs = n(),
@@ -473,27 +485,29 @@ weather
 </div>
 <div id="general-summaries" class="section level3">
 <h3>General summaries</h3>
-<p>Lots of functions return a single number; many of these are standard statistical quantities: <code>mean()</code>, <code>median()</code>, <code>var()</code>, <code>sd()</code>, <code>mad()</code>, <code>IQR()</code>, <code>min()</code>, and <code>max()</code>. To use these, you’ll also have to indicate the variable to which they apply.</p>
+<p>Standard statistical summaries are regularly computed in <code>summarize()</code> using functions like <code>mean()</code>, <code>median()</code>, <code>var()</code>, <code>sd()</code>, <code>mad()</code>, <code>IQR()</code>, <code>min()</code>, and <code>max()</code>. To use these, you indicate the variable to which they apply and include any additional arguments as necessary.</p>
 <pre class="r"><code>weather %&gt;%
   group_by(month) %&gt;%
   summarize(mean_tmax = mean(tmax),
-            median_tmax = median(tmax))
-## # A tibble: 12 x 3
-##         month mean_tmax median_tmax
-##        &lt;date&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-##  1 2016-01-01  11.55269         5.0
-##  2 2016-02-01  13.20920         8.8
-##  3 2016-03-01  15.35161        13.3
-##  4 2016-04-01  18.61667        18.3
-##  5 2016-05-01  20.92688        21.1
-##  6 2016-06-01  23.36889        28.3
-##  7 2016-07-01  25.11828        29.4
-##  8 2016-08-01  25.99892        30.0
-##  9 2016-09-01  22.73444        26.7
-## 10 2016-10-01  18.10645        18.3
-## 11 2016-11-01  15.38778        14.7
-## 12 2016-12-01  10.40645         7.8</code></pre>
-<p>You can also group by more than one variable if you need more refined summaries.</p>
+            mean_prec = mean(prcp, na.rm = TRUE),
+            median_tmax = median(tmax),
+            sd_tmax = sd(tmax))
+## # A tibble: 12 x 5
+##         month mean_tmax mean_prec median_tmax   sd_tmax
+##        &lt;date&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 2016-01-01  11.55269  50.44086         5.0 12.395543
+##  2 2016-02-01  13.20920  38.85057         8.8 12.125407
+##  3 2016-03-01  15.35161  42.87097        13.3 11.226140
+##  4 2016-04-01  18.61667  11.47778        18.3  9.625951
+##  5 2016-05-01  20.92688  15.82796        21.1  8.921580
+##  6 2016-06-01  23.36889  16.58889        28.3  8.610284
+##  7 2016-07-01  25.11828  39.46237        29.4  8.142667
+##  8 2016-08-01  25.99892  11.52688        30.0  7.017455
+##  9 2016-09-01  22.73444  19.10227        26.7  8.735452
+## 10 2016-10-01  18.10645  51.52688        18.3 10.518574
+## 11 2016-11-01  15.38778  72.11111        14.7 10.830386
+## 12 2016-12-01  10.40645  36.47312         7.8 13.097866</code></pre>
+<p>You can group by more than one variable.</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name, month) %&gt;%
   summarize(mean_tmax = mean(tmax),
@@ -505,32 +519,35 @@ weather
 ## 1 CentralPark_NY 2016-01-01  4.893548         5.0
 ## 2 CentralPark_NY 2016-02-01  7.137931         5.0
 ## 3 CentralPark_NY 2016-03-01 14.109677        13.3
-## # ... with 33 more rows</code></pre>
-<p>The fact that this is producing a dataframe is important – you can incorporate grouping and summarizing within broader analysis pipelines. For example, we can take the previous example and plot it.</p>
+## 4 CentralPark_NY 2016-04-01 16.796667        16.7
+## 5 CentralPark_NY 2016-05-01 21.454839        21.1
+## 6 CentralPark_NY 2016-06-01 27.176667        28.3
+## # ... with 30 more rows</code></pre>
+<p>The fact that <code>summarize()</code> produces a dataframe is important (and consistent with other functions in the <code>tidyverse</code>). You can incorporate grouping and summarizing within broader analysis pipelines. For example, we can take create a plot based on the monthly summary:</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name, month) %&gt;%
-  summarize(mean_tmax = mean(tmax),
-            median_tmax = median(tmax)) %&gt;%
+  summarize(mean_tmax = mean(tmax)) %&gt;%
   ggplot(aes(x = month, y = mean_tmax, color = name)) + 
     geom_point() + geom_line() + 
     theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
 </div>
 <div id="grouped-mutate" class="section level3">
 <h3>Grouped <code>mutate</code></h3>
-<p>In contrast to summarize, we can create new variables based on our grouping.</p>
-<p>Suppose we wanted to see the change in max temperature within each month.</p>
+<p>Summarizing collapses groups into single data points. In contrast, using <code>mutate()</code> in conjuntion with <code>group_by()</code> will retain all original data points and add new variables computed within groups.</p>
+<p>Suppose you want to compare the daily max temperature to the annual average max temperature for each station separately, and to plot the result. You could do so using:</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name) %&gt;%
-  mutate(change_tmax = tmax - mean(tmax)) %&gt;% 
-  ggplot(aes(x = date, y = change_tmax, color = name)) + 
+  mutate(centered_tmax = tmax - mean(tmax)) %&gt;% 
+  ggplot(aes(x = date, y = centered_tmax, color = name)) + 
     geom_point() </code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
 </div>
 <div id="window-functions" class="section level3">
 <h3>Window functions</h3>
-<p>Here we’ve used mean() to compute the mean within each group (a single number) and taken the difference. Window functions, in contrast, use <code>n</code> inputs and return <code>n</code> outputs, and the outputs depend on all the inputs. You’re most likely to need ranking functions and offsets, which we illustrate below.</p>
-<p>Find temperature ranking within month.</p>
+<p>The previous example used <code>mean()</code> to compute the mean within each group, which was then subtracted from the observed max tempurature. <code>mean()</code> takes <code>n</code> inputs and produces a single output.</p>
+<p>Window functions, in contrast, take <code>n</code> inputs and return <code>n</code> outputs, and the outputs depend on all the inputs. There are several categories of window functions; you’re most likely to need ranking functions and offsets, which we illustrate below.</p>
+<p>First, we can find the max temperature ranking within month.</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name, month) %&gt;%
   mutate(temp_ranking = min_rank(tmax))
@@ -541,8 +558,11 @@ weather
 ## 1 CentralPark_NY USW00094728 2016-01-01 2016-01-01     0   5.6   1.1
 ## 2 CentralPark_NY USW00094728 2016-01-02 2016-01-01     0   4.4   0.0
 ## 3 CentralPark_NY USW00094728 2016-01-03 2016-01-01     0   7.2   1.7
-## # ... with 1,095 more rows, and 1 more variables: temp_ranking &lt;int&gt;</code></pre>
-<p>Retain the coldest day within each month:</p>
+## 4 CentralPark_NY USW00094728 2016-01-04 2016-01-01     0   2.2  -9.9
+## 5 CentralPark_NY USW00094728 2016-01-05 2016-01-01     0  -1.6 -11.6
+## 6 CentralPark_NY USW00094728 2016-01-06 2016-01-01     0   5.0  -3.8
+## # ... with 1,092 more rows, and 1 more variables: temp_ranking &lt;int&gt;</code></pre>
+<p>This sort of ranking is useful when filtering data based on rank. We could, for example, keep only the day with the lowest max temperature within each month:</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name, month) %&gt;%
   filter(min_rank(tmax) &lt; 2)
@@ -553,21 +573,27 @@ weather
 ## 1 CentralPark_NY USW00094728 2016-01-23 2016-01-01   587  -2.7  -4.3
 ## 2 CentralPark_NY USW00094728 2016-02-14 2016-02-01     0  -9.3 -18.2
 ## 3 CentralPark_NY USW00094728 2016-03-03 2016-03-01     0   2.2  -3.2
-## # ... with 44 more rows</code></pre>
-<p>Retain the warmest day within each month:</p>
+## 4 CentralPark_NY USW00094728 2016-04-05 2016-04-01     0   6.1  -3.2
+## 5 CentralPark_NY USW00094728 2016-04-09 2016-04-01    28   6.1   2.2
+## 6 CentralPark_NY USW00094728 2016-05-01 2016-05-01    41  10.6   7.2
+## # ... with 41 more rows</code></pre>
+<p>We could also keep the three days with the highest max temperature:</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name, month) %&gt;%
-  filter(min_rank(desc(tmax)) &lt; 2)
-## # A tibble: 63 x 7
+  filter(min_rank(desc(tmax)) &lt; 4)
+## # A tibble: 151 x 7
 ## # Groups:   name, month [36]
 ##             name          id       date      month  prcp  tmax  tmin
 ##            &lt;chr&gt;       &lt;chr&gt;     &lt;date&gt;     &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1 CentralPark_NY USW00094728 2016-01-10 2016-01-01   457  15.0   4.4
-## 2 CentralPark_NY USW00094728 2016-02-20 2016-02-01     0  16.1   3.9
-## 3 CentralPark_NY USW00094728 2016-02-25 2016-02-01     5  16.1   2.8
-## # ... with 60 more rows</code></pre>
-<p>In both of these, we’ve skipped a mutate statement that would store the ranking and gone straight to filtering based on the result.</p>
-<p>Find the day-by-day change in temp within each station over the year.</p>
+## 2 CentralPark_NY USW00094728 2016-01-16 2016-01-01    61  11.1   5.6
+## 3 CentralPark_NY USW00094728 2016-01-31 2016-01-01     0  13.3   2.2
+## 4 CentralPark_NY USW00094728 2016-02-20 2016-02-01     0  16.1   3.9
+## 5 CentralPark_NY USW00094728 2016-02-25 2016-02-01     5  16.1   2.8
+## 6 CentralPark_NY USW00094728 2016-02-29 2016-02-01    13  16.1   8.3
+## # ... with 145 more rows</code></pre>
+<p>In both of these, we’ve skipped a <code>mutate()</code> statement that would create a ranking variable, and gone straight to filtering based on the result.</p>
+<p>Offsets, especially lags, are used to compare an observation to it’s previous value. This is useful, for example, to find the day-by-day change in max temperature within each station over the year:</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name) %&gt;%
   mutate(temp_change = tmax - lag(tmax))
@@ -578,8 +604,11 @@ weather
 ## 1 CentralPark_NY USW00094728 2016-01-01 2016-01-01     0   5.6   1.1
 ## 2 CentralPark_NY USW00094728 2016-01-02 2016-01-01     0   4.4   0.0
 ## 3 CentralPark_NY USW00094728 2016-01-03 2016-01-01     0   7.2   1.7
-## # ... with 1,095 more rows, and 1 more variables: temp_change &lt;dbl&gt;</code></pre>
-<p>Which stations have the most variability in temperature? What’s the largest one-day increase?</p>
+## 4 CentralPark_NY USW00094728 2016-01-04 2016-01-01     0   2.2  -9.9
+## 5 CentralPark_NY USW00094728 2016-01-05 2016-01-01     0  -1.6 -11.6
+## 6 CentralPark_NY USW00094728 2016-01-06 2016-01-01     0   5.0  -3.8
+## # ... with 1,092 more rows, and 1 more variables: temp_change &lt;dbl&gt;</code></pre>
+<p>This kind of variable might be used to quantify the day-by-day variability in max temperature, or to identify the largest one-day increase:</p>
 <pre class="r"><code>weather %&gt;%
   group_by(name) %&gt;%
   mutate(temp_change = tmax - lag(tmax)) %&gt;%
@@ -591,18 +620,19 @@ weather
 ## 1 CentralPark_NY       4.278321            12.2
 ## 2     Waikiki_HA       1.146472             5.0
 ## 3   Waterhole_WA       2.817583             9.0</code></pre>
-<p>Note that we included <code>na.rm = TRUE</code> – the lag on the first day isn’t defined.</p>
 </div>
 <div id="limitations" class="section level3">
 <h3>Limitations</h3>
-<p>Can only perform simple operations within a group. This is very high ceiling – you can do tons of stuff using simple operations when you combine them with groupings, mutates, filtering, etc – but it is a ceiling. Later we’ll see how to aggregate data in a more general way, and how to perform complex operations on these sub-datasets.</p>
+<p><code>summarize()</code> can only be used with functions that return a single-number summary. This creates a ceiling, even if it is <strong>very</strong> high. Later we’ll see how to aggregate data in a more general way, and how to perform complex operations on the resulting sub-datasets.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p><a href="http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon" class="uri">http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon</a></p>
-<p><a href="http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise" class="uri">http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise</a> <a href="http://r4ds.had.co.nz/exploratory-data-analysis.html" class="uri">http://r4ds.had.co.nz/exploratory-data-analysis.html</a></p>
-<p><a href="https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html" class="uri">https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html</a></p>
+<ul>
+<li>The preceding is based heavily on Jenny Bryan’s <a href="http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon">group_by</a> material</li>
+<li>R for Data Science has sub-chapters on <a href="http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise">grouped summaries</a> and <a href="http://r4ds.had.co.nz/exploratory-data-analysis.html">exploratory data analysis</a></li>
+<li>A more in-depth overview of window functions is <a href="https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html">here</a></li>
+</ul>
 </div>
 
 <br><br>

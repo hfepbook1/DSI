@@ -8,7 +8,7 @@ output:
 
 Data sets can frequently be partitioned into meaningful groups based on the variables they contain. Making this grouping explicit allows the computation of numeric summaries within groups, which in turn facilitates quantitative comparisons. 
 
-```{r setup, echo = FALSE}
+```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   fig.width = 6,
@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 )
 
 library(tidyverse)
+options(tibble.print_min = 6)
 ```
 
 ## Some slides
@@ -27,7 +28,7 @@ library(tidyverse)
 
 ## Example
 
-Stay in the same project. Use a similar dataset -- weather from three stations last year -- and add a variable `month`.
+We'll continue in the same project that we used for visualization, and use essentially the same dataset -- the only exception is the addition of `month` variable, created using `lubridate::floor_date()`. 
 
 ```{r weather_data_create, cache = TRUE}
 library(rnoaa)
@@ -50,17 +51,20 @@ weather
 
 ### `group_by`
 
-Central idea here is grouping by a variable or collection of variables. Adds a partition to your data and allows you to apply functions within those partitions. 
+Datasets are often comprised of groups defined by one or more (categorical) variable; `group_by()` makes these groupings explicit so that they can be included in subsequent operations. For example, we might group `weather` by `name` and `month`:
 
-summarizing within groups
+```{r}
+weather %>%
+  group_by(name, month)
+```
 
-mutating within groups
+Several important functions respect grouping structures. You will frequently use `summarize` to create one-number summaries within each group, or use `mutate` to define variables within groups. The rest of this example shows these functions in action.
 
-Sometimes you have a grouping and you need to remove it; use `ungroup()`.
+Because these (and other) functions will use grouping information if it exists, it is sometimes necessary to remove groups using `ungroup()`.
 
 ### Counting things
 
-As an intro to summarize, let's count the number of observations in each month.
+As an intro to `summarize`, let's count the number of observations in each month in the complete `weather` dataset.
 
 ```{r}
 weather %>%
@@ -68,16 +72,16 @@ weather %>%
   summarize(n = n())
 ```
 
-Note this returns a dataframe that includes the grouping variable and the summary.
+The result is a dataframe that includes the grouping variable and the desired summary. 
 
-Could use `count()`, if you remember it exists. It's a handy specialized function.
+In this case, you could use `count()` in place of `group_by()` and `summarize()` if you remember that this function exists.
 
 ```{r}
 weather %>%
   count(month)
 ```
 
-Can count both total observations and distinct occurances of another variable
+You can use `summarize()` to compute multiple summaries within each group. As an example, we count the number of observations in each month and the number of distinct values of `date` in each month.
 
 ```{r}
 weather %>%
@@ -86,18 +90,21 @@ weather %>%
             n_days = n_distinct(date))
 ```
 
+
 ### General summaries
 
-Lots of functions return a single number; many of these are standard statistical quantities: `mean()`, `median()`, `var()`, `sd()`, `mad()`, `IQR()`, `min()`, and `max()`. To use these, you'll also have to indicate the variable to which they apply. 
+Standard statistical summaries are regularly computed in `summarize()` using functions like `mean()`, `median()`, `var()`, `sd()`, `mad()`, `IQR()`, `min()`, and `max()`. To use these, you indicate the variable to which they apply and include any additional arguments as necessary. 
 
 ```{r}
 weather %>%
   group_by(month) %>%
   summarize(mean_tmax = mean(tmax),
-            median_tmax = median(tmax))
+            mean_prec = mean(prcp, na.rm = TRUE),
+            median_tmax = median(tmax),
+            sd_tmax = sd(tmax))
 ```
 
-You can also group by more than one variable if you need more refined summaries. 
+You can group by more than one variable. 
 
 ```{r}
 weather %>%
@@ -106,13 +113,12 @@ weather %>%
             median_tmax = median(tmax))
 ```
 
-The fact that this is producing a dataframe is important -- you can incorporate grouping and summarizing within broader analysis pipelines. For example, we can take the previous example and plot it. 
+The fact that `summarize()` produces a dataframe is important (and consistent with other functions in the `tidyverse`). You can incorporate grouping and summarizing within broader analysis pipelines. For example, we can take create a plot based on the monthly summary: 
 
 ```{r}
 weather %>%
   group_by(name, month) %>%
-  summarize(mean_tmax = mean(tmax),
-            median_tmax = median(tmax)) %>%
+  summarize(mean_tmax = mean(tmax)) %>%
   ggplot(aes(x = month, y = mean_tmax, color = name)) + 
     geom_point() + geom_line() + 
     theme(legend.position = "bottom")
@@ -120,48 +126,49 @@ weather %>%
 
 ### Grouped `mutate`
 
-In contrast to summarize, we can create new variables based on our grouping. 
+Summarizing collapses groups into single data points. In contrast, using `mutate()` in conjuntion with `group_by()` will retain all original data points and add new variables computed within groups.
 
-Suppose we wanted to see the change in max temperature within each month. 
+Suppose you want to compare the daily max temperature to the annual average max temperature for each station separately, and to plot the result. You could do so using:
 
 ```{r}
 weather %>%
   group_by(name) %>%
-  mutate(change_tmax = tmax - mean(tmax)) %>% 
-  ggplot(aes(x = date, y = change_tmax, color = name)) + 
+  mutate(centered_tmax = tmax - mean(tmax)) %>% 
+  ggplot(aes(x = date, y = centered_tmax, color = name)) + 
     geom_point() 
 ```
 
 
 ### Window functions
 
-Here we've used mean() to compute the mean within each group (a single number) and taken the difference. Window functions, in contrast, use `n` inputs and return `n` outputs, and the outputs depend on all the inputs. You're most likely to need ranking functions and offsets, which we illustrate below.
+The previous example used `mean()` to compute the mean within each group, which was then subtracted from the observed max tempurature. `mean()` takes `n` inputs and produces a single output. 
 
-Find temperature ranking within month.
+Window functions, in contrast, take `n` inputs and return `n` outputs, and the outputs depend on all the inputs. There are several categories of window functions; you're most likely to need ranking functions and offsets, which we illustrate below.
+
+First, we can find the max temperature ranking within month.
 ```{r}
 weather %>%
   group_by(name, month) %>%
   mutate(temp_ranking = min_rank(tmax))
 ```
 
-Retain the coldest day within each month:
+This sort of ranking is useful when filtering data based on rank. We could, for example, keep only the day with the lowest max temperature within each month:
 ```{r}
 weather %>%
   group_by(name, month) %>%
   filter(min_rank(tmax) < 2)
 ```
 
-Retain the warmest day within each month:
+We could also keep the three days with the highest max temperature:
 ```{r}
 weather %>%
   group_by(name, month) %>%
-  filter(min_rank(desc(tmax)) < 2)
+  filter(min_rank(desc(tmax)) < 4)
 ```
 
-In both of these, we've skipped a mutate statement that would store the ranking and gone straight to filtering based on the result. 
+In both of these, we've skipped a `mutate()` statement that would create a ranking variable, and gone straight to filtering based on the result. 
 
-
-Find the day-by-day change in temp within each station over the year.
+Offsets, especially lags, are used to compare an observation to it's previous value. This is useful, for example, to find the day-by-day change in max temperature within each station over the year:
 
 ```{r}
 weather %>%
@@ -169,7 +176,8 @@ weather %>%
   mutate(temp_change = tmax - lag(tmax))
 ```
 
-Which stations have the most variability in temperature? What's the largest one-day increase?
+This kind of variable might be used to quantify the day-by-day variability in max temperature, or to identify the largest one-day increase:
+
 ```{r}
 weather %>%
   group_by(name) %>%
@@ -178,18 +186,14 @@ weather %>%
             temp_change_max = max(temp_change, na.rm = TRUE))
 ```
 
-Note that we included `na.rm = TRUE` -- the lag on the first day isn't defined.
-
 
 ### Limitations
 
-Can only perform simple operations within a group. This is very high ceiling -- you can do tons of stuff using simple operations when you combine them with groupings, mutates, filtering, etc -- but it is a ceiling. Later we'll see how to aggregate data in a more general way, and how to perform complex operations on these sub-datasets.
+`summarize()` can only be used with functions that return a single-number summary. This creates a ceiling, even if it is **very** high. Later we'll see how to aggregate data in a more general way, and how to perform complex operations on the resulting sub-datasets.
 
 ## Other materials
 
-http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon
-
-http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise http://r4ds.had.co.nz/exploratory-data-analysis.html
-
-https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html
+* The preceding is based heavily on Jenny Bryan's [group_by](http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon) material
+* R for Data Science has sub-chapters on [grouped summaries](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarise) and [exploratory data analysis](http://r4ds.had.co.nz/exploratory-data-analysis.html)
+* A more in-depth overview of window functions is [here](https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html)
 
