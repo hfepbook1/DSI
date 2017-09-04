@@ -383,15 +383,15 @@ pulse_data
 ##      id      age   sex bdiscore_bl bdiscore_01m bdiscore_06m bdiscore_12m
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 10003 48.03836  male           7            1            2            0
-## 2 10015 72.47123  male           6          NaN          NaN          NaN
-## 3 10022 58.50959  male          14            3            8          NaN
+## 2 10015 72.47123  male           6           NA           NA           NA
+## 3 10022 58.50959  male          14            3            8           NA
 ## 4 10026 72.72877  male          20            6           18           16
 ## 5 10035 60.40274  male           4            0            1            2
 ## # ... with 1,082 more rows</code></pre>
 <p>With our new understanding of tidy data, we quickly recognize a problem: the BDI score is spread across four columns, which correspond to four observation times. We can fix this problem using <code>gather</code>:</p>
 <pre class="r"><code>pulse_tidy_data = gather(pulse_data, key = visit, value = bdi, bdiscore_bl:bdiscore_12m)
-## Warning: attributes are not identical across measure variables; they will
-## be dropped
+## Warning: attributes are not identical across measure variables;
+## they will be dropped
 pulse_tidy_data
 ## # A tibble: 4,348 x 5
 ##      id      age   sex       visit   bdi
@@ -413,13 +413,13 @@ pulse_tidy_data
 ##  $ bdiscore_bl : atomic  7 6 14 20 4 2 4 5 0 10 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, BL IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_01m: atomic  1 NaN 3 6 0 10 0 NaN 3 2 ...
+##  $ bdiscore_01m: atomic  1 NA 3 6 0 10 0 NA 3 2 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 1 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_06m: atomic  2 NaN 8 18 1 12 NaN 0 4 11 ...
+##  $ bdiscore_06m: atomic  2 NA 8 18 1 12 NA 0 4 11 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 6 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_12m: atomic  0 NaN NaN 16 2 8 NaN 2 0 6 ...
+##  $ bdiscore_12m: atomic  0 NA NA 16 2 8 NA 2 0 6 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 12 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;</code></pre>
 <p>Each BDI score column has a specific label in the SAS dataset; these don’t match, so <code>gather</code> dropped them when creating the <code>bdi</code> column. Not a problem here, but dropping attributes could be an issue if you wanted to preserve dates, factors, or some other feature.</p>
@@ -448,8 +448,8 @@ pulse_tidy_data
   mutate(visit = replace(visit, visit == &quot;bl&quot;, &quot;00m&quot;),
          visit = factor(visit, levels = paste0(c(&quot;00&quot;, &quot;01&quot;, &quot;06&quot;, &quot;12&quot;), &quot;m&quot;))) %&gt;%
   arrange(id, visit)
-## Warning: attributes are not identical across measure variables; they will
-## be dropped
+## Warning: attributes are not identical across measure variables;
+## they will be dropped
 
 print(pulse_data, n = 12)
 ## # A tibble: 4,348 x 5
@@ -460,13 +460,13 @@ print(pulse_data, n = 12)
 ##  3 10003    06m 48.03836  male     2
 ##  4 10003    12m 48.03836  male     0
 ##  5 10015    00m 72.47123  male     6
-##  6 10015    01m 72.47123  male   NaN
-##  7 10015    06m 72.47123  male   NaN
-##  8 10015    12m 72.47123  male   NaN
+##  6 10015    01m 72.47123  male    NA
+##  7 10015    06m 72.47123  male    NA
+##  8 10015    12m 72.47123  male    NA
 ##  9 10022    00m 58.50959  male    14
 ## 10 10022    01m 58.50959  male     3
 ## 11 10022    06m 58.50959  male     8
-## 12 10022    12m 58.50959  male   NaN
+## 12 10022    12m 58.50959  male    NA
 ## # ... with 4,336 more rows</code></pre>
 <p>Before moving on, let’s revisit the <code>group</code> variable in the litters dataset:</p>
 <pre class="r"><code>read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;% 

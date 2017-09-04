@@ -11,7 +11,7 @@
 
 
 
-<title>Visualization and EDA</title>
+<title>Exploratory analysis using group_by</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -252,19 +350,43 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Visualization and EDA</h1>
+<h1 class="title toc-ignore">Exploratory analysis using <code>group_by</code></h1>
 
 </div>
 
 
-<p>Visualization and exploratory data analysis are the analytic components that immediately follow data wrangling. In addition to helping identify additional necessary wrangling steps, these are your first chance to explore the data in detail: you can explore patterns, identify trends, formulate hypotheses, and be surprised by preliminary findings. We’ll discuss the elements of a good graphic before learning the tools needed to produce them, and then develop a framework for exploratory analyses using data summaries.</p>
-<p>With the completion of this topic, we will have covered quite a bit of ground – a workflow for doing data science in a clear and reproducible way; tools for data wrangling; and and introduction to visualization and exploratory analysis. To tie these together, we’ll finish this topic with a case study.</p>
-<p>The topic is made up of the following components:</p>
-<ul>
-<li><a href="visualization.html">Visualization with <code>ggplot2</code></a></li>
-<li><a href="exploratory_analysis.html">Exploratory analysis</a></li>
-<li><a href="case_study_vix_and_eda.html">Case study</a></li>
-</ul>
+<p>Simple exploratory analysis.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="77a37cf3dcb945a9abd2e09439158d07" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-visualization" title="Visualization" target="_blank">Visualization</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Stay in the same project.</p>
+<pre class="r"><code>library(rnoaa)
+
+weather = 
+  meteo_pull_monitors(c(&quot;USW00094728&quot;, &quot;USC00519397&quot;, &quot;USS0023B17S&quot;),
+                      var = c(&quot;PRCP&quot;, &quot;TMIN&quot;, &quot;TMAX&quot;), 
+                      date_min = &quot;2016-01-01&quot;,
+                      date_max = &quot;2017-01-01&quot;) %&gt;%
+  mutate(
+    name = recode(id, USW00094728 = &quot;CentralPark_NY&quot;, 
+                      USC00519397 = &quot;Waikiki_HA&quot;,
+                      USS0023B17S = &quot;Waterhole_WA&quot;),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %&gt;%
+  select(name, id, everything())
+weather</code></pre>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p><a href="http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon" class="uri">http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon</a></p>
+</div>
 
 <br><br>
 <footer>
@@ -272,6 +394,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 
