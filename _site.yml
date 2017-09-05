@@ -22,7 +22,9 @@ navbar:
         - text: "Other Topics"
           href: topic_other.html
     - text: "Homework"
-      href: papers.html
+      menu:
+        - text: "Homework 0"
+          href: homework_0.html
     - text: "Datasets"
       menu: 
         - text: "Mr. Trash Wheel"
