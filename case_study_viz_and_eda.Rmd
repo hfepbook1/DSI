@@ -30,7 +30,7 @@ library(tidyverse)
 This example is based entirely on live-coding, and uses the [Instacart dataset](dataset_instacart.html). These data can be loaded directly from the course website using:
 
 ```{r eval = FALSE}
-instacart_data = read_csv("http://jeffgoldsmith.com/DSI/data/instacart_train_data.csv.zip")
+instacart_data = read_csv("./data/instacart_train_data.csv.zip")
 ```
 
 After some quick exploratory analyses, we'll brainstorm some questions and try to answer them. 

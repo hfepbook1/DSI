@@ -17,7 +17,7 @@ Lots of folks have opinions about what data science is. Here's a collection of t
 * There was a session at JSM 2015 called "The statistics identity crisis: am I really a data scientist?". All the talks were great; for now, two are especially relevant:
     * Alyssa Frazee's ["Am I a Data Scientist"](https://youtu.be/JLs01Z5baSU?t=102)
     * Chris Volinsky's ["How Industry Views Data Science Education in Statistics Departments"](https://youtu.be/JLs01Z5baSU?t=1063)
-* Hilary Parker's ["Opinionated Analysis Development"](https://www.rstudio.com/resources/videos/opinionated-analysis-development/) is a strong argument in favor of having opinions
+* Hilary Parker's ["Opinionated Analysis Development"](https://www.rstudio.com/resources/videos/opinionated-analysis-development/) is a strong argument in favor of having opinions. There's also her [paper on this topic](https://peerj.com/preprints/3210/).
 * Angela Bassa talks about ["Corporate Data Science"](https://www.youtube.com/watch?v=b9ZLXwAuUyw&app=desktop), which is useful complement to academic data science
 
 We also touched on useful resources for learning data science. Each class session will have relevant readings; the following are useful in giving an overview about how to learn and find help.

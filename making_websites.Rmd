@@ -6,8 +6,7 @@ output:
     toc_float: true
 ---
 
-This page outlines the process of making a basic website using R Markdown, and hosting that website on GitHub. The content assumes some familiarity with both of those. 
-
+This page outlines the process of making a basic website using R Markdown, and hosting that website on GitHub. The content assumes familiarity with both of those. 
 
 ## Some slides
 
@@ -17,9 +16,11 @@ This page outlines the process of making a basic website using R Markdown, and h
 
 ## Example
 
+The example below is built around the construction of a "personal" website, but the steps are the same for any other website you want to create.
+
 ### Create a local directory
 
-This is going to hold everything you want on your website, and the name does matter a bit:
+This is going to hold everything you want on your website, and the name does matter:
 
 * Call it `<YOUR_GH_NAME>.github.io` if you want this to be your personal website
 * Call it whatever you want if it will be something different (tip: website names should be short and easy-to-remember; they're also generally case-sensitive)
@@ -82,7 +83,7 @@ This will load and display `images/image.jpg` (I usually keep my images inside a
 
 ### R Project
 
-At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don't have to add an R Project to the directory, but it doesn't hurt and often helps, and I recommend it.
+At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don't _have to_ add an R Project to the directory, but it doesn't hurt and often helps, and I recommend it.
 
 One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the "build website" button. This is really just a shortcut to `rmarkdown::render_site()`, but it's still nice. 
 
@@ -114,9 +115,18 @@ Moving forward, make edits to your website by editing your .Rmd files or `_site.
 
 The important stuff on your website is the content -- what you say, how clearly you say it, and how easy it is for a reader to find the information they care about. Keeping things up-to-date is critical, and can require frequent tweaking (of e.g. your resume or list of projects). 
 
-Default themes in RStudio (technically, Bootswatch) are pretty good. You can modify these if you want; speaking from experience, you can also fall down a rabbit hole and spend a few days learning CSS to make big stylistic changes. That's probably not a good use of your time, and you will eventually get tired of any styling you do anyway. Instead, add a [default theme](http://bootswatch.com/) to your YAML and change it from time to time.
+Default themes in RStudio (technically, Bootswatch) are pretty good. You can modify these if you want; speaking from experience, you can also fall down a rabbit hole and spend a few days learning CSS to make stylistic changes that seem critical but that, in fact, no one will ever notice. That's probably not a good use of your time, and you will eventually get tired of any styling you do anyway. Instead, add a [default theme](http://bootswatch.com/) to your YAML and change it from time to time.
 
 The best way to extend your website is to copy from other websites you like. You can borrow structurally (e.g. how content is organized) or specific elements (e.g. how that person added a twitter button). People generally understand that this happens (and make their code public to help!), but if you borrow a lot it's friendly to shoot the person an email to say their stuff was useful.
+
+### Websites about projects
+
+As noted, the preceding example is about a personal website but illustrates useful ideas. If you're making a website about a data science project, I recommend including:
+
+* A landing page giving a broad overview of the project
+* A page (or pages) about the data wrangling, including the raw data if appropriate
+* Separate pages for each distinct analysis, possibly organized using menus
+* R and package versions used in the analyses
 
 
 ## Other materials

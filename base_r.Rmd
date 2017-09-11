@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 ### Get started
 
-Launch R Studio and take stock -- find the Console, the Environment/History, and the Files/Plots/Packages/Help.
+Launch R Studio and take stock -- find the Console, the Environment/History, and the Files/Plots/Packages/Help. This is also a good time to set some preferences -- I like to turn off saving the workspace and history, and also turn on a lot of the R code diagnostics.
 
 Create a new R script using File > New File > R Script. Write a short comment section describing what this is, and follow along with the code below!
 
