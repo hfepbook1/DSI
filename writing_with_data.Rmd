@@ -124,6 +124,7 @@ Constructing useful documents that combine text and code is the subject of sever
 * The R Markdown [cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf) is a useful resource once you have the basics down
 * R For Data Science devotes chapters to [R Markdown](http://r4ds.had.co.nz/r-markdown.html), [additional output formats](http://r4ds.had.co.nz/r-markdown-formats.html), and a useful [workflow](http://r4ds.had.co.nz/r-markdown-workflow.html).
 * The [Intro to R Markdown](http://rmarkdown.rstudio.com/articles_intro.html) from RStudio overlaps a lot with the previous bullet, but is also handy to review
+* This [chapter](https://ismayc.github.io/rbasics-book/4-rmarkdown.html) from [R Basics](https://ismayc.github.io/rbasics-book/) is a good intro to R Markdown
 * If Webinars are more to your liking, this [intro](https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/) and this [follow-up](https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/) are good
 
 You'll also find a lot of stuff online that has been written using R Markdown and, with a little digging, can often find the .RMD file as well. This is a great way to spot new tools and figure out how to incorporate them in your own documents!!

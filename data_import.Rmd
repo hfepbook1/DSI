@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-We're going to figure out how to import the three datasets in this zip file. First, create a directory for today's work, add an R Project, move the data to your directory, and start an R Markdown file. We're also going to be making extensive use of the `tidyverse` package, so we can go ahead and load that.
+We're going to figure out how to import the three datasets in [this zip file](./resources/data_import_examples.zip). First, create a directory for today's work, add an R Project, move the data to your directory, and start an R Markdown file. We're also going to be making extensive use of the `tidyverse` package, so we can go ahead and load that.
 
 ```{r}
 library(tidyverse)

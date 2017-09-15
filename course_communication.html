@@ -11,7 +11,7 @@
 
 
 
-<title>Interactivity</title>
+<title>Course Communication</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -270,17 +368,33 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Interactivity</h1>
+<h1 class="title toc-ignore">Course Communication</h1>
 
 </div>
 
 
-<p>Brief overview of content</p>
-<p>Overall topic is made up of the following components:</p>
+<div id="discussion-board" class="section level3">
+<h3>Discussion board</h3>
+<p>The course’s discussion board is hosted on CourseWorks. The discussion board should be used to ask questions about course content – how code works, why it might not, and possible solutions. The teaching team will supervise the discussion board and respond regularly, but students are encouraged to be active in both asking and answering questions.</p>
+<p>Some guidance on how best to ask questions on a discussion board can be found <a href="https://stackoverflow.com/help/how-to-ask">here</a> and <a href="https://jvns.ca/blog/good-questions/">here</a>.</p>
+</div>
+<div id="slack" class="section level3">
+<h3>Slack</h3>
+<p>We will use Slack for communication during lecture sessions. Each topic will have a slack channel (i.e. a discussion thread organized around a topic), which will be monitored during class. This is intended to provide real-time answers to questions in class, and will be used to convey solutions to in-class exercises. Slack channels are not intended to replace the discussion board on CourseWorks for more involved questions about content.</p>
+<p>Sign up for the course Slack workspace <a href="https://join.slack.com/t/p8105-fall2017/shared_invite/MjM1MTY0NDEzNTkxLTE1MDQxMjE1MDMtYzhiMDI4ZDM5YQ">here</a>. You can use Slack from a <a href="https://p8105-fall2017.slack.com/messages/general">web browser</a>, or you can download an app to your <a href="https://slack.com/downloads/osx">Mac</a>, <a href="https://slack.com/downloads/windows">Windows</a>, <a href="https://slack.com/downloads/linux">Linux</a>, <a href="https://slack.com/downloads/android">Android</a>, or <a href="https://slack.com/downloads/ios">iOS</a> device. You can control whether you receive notifications on new posts by going to Preferences, as well as decide which ‘channels’ to subscribe to. You can learn more about Slack features <a href="https://get.slack.help/hc/en-us/articles/218080037-Getting-started-for-new-members">here</a>.</p>
+</div>
+<div id="office-hours" class="section level3">
+<h3>Office hours</h3>
+<p>In addition to the resources above, in-person office hours will be held twice per week:</p>
 <ul>
-<li>Dashboards</li>
-<li>Shiny Apps</li>
+<li>Tuesday 3:00-4:00, ARB Room 638</li>
+<li>Thursday 4:00-5:00, ARB Room 638</li>
 </ul>
+</div>
+<div id="email" class="section level3">
+<h3>Email</h3>
+<p>Email addresses are provided for each member of the teaching team, and we will answer emails promptly. This channel of communication is intended for issues that fall outside of those above, such as questions about course policies or grades.</p>
+</div>
 
 <br><br>
 <footer>
@@ -288,6 +402,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 

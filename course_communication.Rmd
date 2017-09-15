@@ -1,0 +1,32 @@
+---
+title: "Course Communication"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Discussion board
+
+The course's discussion board is hosted on CourseWorks. The discussion board should be used to ask questions about course content -- how code works, why it might not, and possible solutions. The teaching team will supervise the discussion board and respond regularly, but students are encouraged to be active in both asking and answering questions. 
+
+Some guidance on how best to ask questions on a discussion board can be found [here](https://stackoverflow.com/help/how-to-ask) and [here](https://jvns.ca/blog/good-questions/).
+
+### Slack
+
+We will use Slack for communication during lecture sessions. Each topic will have a slack channel (i.e. a discussion thread organized around a topic), which will be monitored during class. This is intended to provide real-time answers to questions in class, and will be used to convey solutions to in-class exercises. Slack channels are not intended to replace the discussion board on CourseWorks for more involved questions about content. 
+
+Sign up for the course Slack workspace [here](https://join.slack.com/t/p8105-fall2017/shared_invite/MjM1MTY0NDEzNTkxLTE1MDQxMjE1MDMtYzhiMDI4ZDM5YQ). You can use Slack from a [web browser](https://p8105-fall2017.slack.com/messages/general), or you can download an app to your [Mac](https://slack.com/downloads/osx), [Windows](https://slack.com/downloads/windows), [Linux](https://slack.com/downloads/linux), [Android](https://slack.com/downloads/android), or [iOS](https://slack.com/downloads/ios) device. You can control whether you receive notifications on new posts by going to Preferences, as well as decide which ‘channels’ to subscribe to. You can learn more about Slack features [here](https://get.slack.help/hc/en-us/articles/218080037-Getting-started-for-new-members).
+
+### Office hours
+
+In addition to the resources above, in-person office hours will be held twice per week:
+
+* Tuesday 3:00-4:00, ARB Room 638
+* Thursday 4:00-5:00, ARB Room 638
+
+### Email
+
+Email addresses are provided for each member of the teaching team, and we will answer emails promptly. This channel of communication is intended for issues that fall outside of those above, such as questions about course policies or grades. 
+
+

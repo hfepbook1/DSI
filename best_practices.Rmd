@@ -36,7 +36,7 @@ vec3 = c(TRUE, TRUE, TRUE, FALSE)
 vec4 = factor(c("male", "male", "female", "female"))
 ```
 
-Let's rename, and tidy up a bit while we're at it -- you really don't want to have a cluttered workspace, because you will forget what things are. This is also a good time to point out Rstudio's tabbed autocompletion -- start typing a variable name and press Tab.
+Let's rename, and tidy up a bit while we're at it -- you really don't want to have a cluttered workspace, because you will forget what things are. This is also a good time to point out RStudio's tabbed autocompletion -- start typing a variable name and press Tab.
 
 ```{r}
 vec_numeric = 5:8
