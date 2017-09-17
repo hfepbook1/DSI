@@ -417,6 +417,7 @@ The mean is `r mean(samp)`.</code></pre>
 </ul>
 <p>The combination of these elements allows you a great deal of flexibility and power as an author.</p>
 <p>R Markdown documents are rendered to produce complete reports with text, formatting, and code results by “knitting”. You can knit your document using the RStudio GUI or CMD / Ctrl + Shift + K; these options execute <code>knitr::knit</code> (which you can run directly from the command line if you prefer). Behind the scenes, <code>knitr</code> is creating a Markdown document and pandoc is translating that to the output format you specify (e.g. HTML, .pdf, .docx).</p>
+<p><strong><em>Learning assessment:</em></strong> Take two minutes and create an R Markdown document as above. Make sure you can knit it and find the result in your local directory.</p>
 </div>
 <div id="code-chunks-and-snippets" class="section level3">
 <h3>Code chunks and snippets</h3>
@@ -433,6 +434,7 @@ The mean is `r mean(samp)`.</code></pre>
 <p>Use these options to be judicious about what you include in your report. Remember to keep your audience in mind: how much do they want or need to see?</p>
 <p>You can also cache the results of a code chunk, but we will largely avoid this. Caching can save time by saving the results of a code chunk instead of re-executing when the document is knit. However, you have to be careful when using this option since downstream code can depend on upstream changes. Controlling this behavior through the <code>dependson</code> option can help, but if you cache code you’ll want to periodically clear you cache to ensure you’re getting reproducible results.</p>
 <p>Inserting brief code snippets inline is often helpful; I frequently use these to give the sample size or summary statistics in text. You can insert code inline using <code>`r `</code>, often in conjunction with the <code>format()</code> function to clean up your output.</p>
+<p><strong><em>Learning assessment:</em></strong> Write a named code chunk that creates a variable containing a sample of size 500 from a random normal variable, takes the absolute value, and produces a histogram of the resulting variable. Add an inline summary giving the median value. What happens if you set <code>eval = FALSE</code> to the code chunk? What about <code>echo = FALSE</code>?</p>
 </div>
 <div id="formatting-text" class="section level3">
 <h3>Formatting text</h3>
@@ -480,6 +482,7 @@ First Header  | Second Header
 Content Cell  | Content Cell
 Content Cell  | Content Cell</code></pre>
 <p>You’ll need to refer to this list (or to similar resources) pretty often at first, but most of it will become second-nature after you’ve written a few documents.</p>
+<p><strong><em>Learning assessment:</em></strong> After the preceding code chunk, write a bullet list given the mean, median, and standard deviation of your random sample.</p>
 </div>
 <div id="yaml-and-output-formats" class="section level3">
 <h3>YAML and output formats</h3>
@@ -511,6 +514,7 @@ date: 2017-08-08</code></pre>
 <li>Periodically check for reproducibility of the analysis</li>
 </ul>
 <p>This should become your default behavior when starting any new project.</p>
+<p><strong><em>Learning assessment:</em></strong> Convert the scripts for exploring vector classes and producing basic plots (from <a href="best_practices.html">best practices</a>) to self-contained R Markdown files.</p>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
