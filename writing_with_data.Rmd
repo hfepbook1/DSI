@@ -104,12 +104,17 @@ output:
 ```
 HTML documents are great because they allow interactivity in a way that static formats (PDF, Word) do not. For example, adding the subfield `code_folding: hide` under `html_document` will hide all the code in the document until the reader clicks to show it. 
 
-That said, some collaborators will need or prefer static documents. You can create these using the YAML snippet below, which will produce both a PDF and a Word document when knitted. 
+That said, some collaborators will need or prefer static documents. You can create these using the YAML snippet below, which will produce a PDF or a Word document when knitted. 
 ```yaml
 output:
   pdf_document: default
+```
+
+```yaml
+output:
   word_document: default
 ```
+
 The formatting for both PDF and Word documents can be controlled through options as well, although these can be tricky to control (especially for Word documents).
 
 Later in the course we'll talk about some other output formats, especially dashboards and websites, and will introduce other YAML options as needed.

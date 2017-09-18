@@ -1,0 +1,91 @@
+---
+title: "Homework 1"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Context
+
+This assignment reinforces ideas in the [building blocks](topic_building_blocks.html) topic. A PDF of this assignment is [here](homework_1.pdf).
+
+### Due date
+
+Due: September 25 at 5:00pm. 
+
+### Points
+
+* Problem 0.1: 25 points
+* Problem 0.2: 25 points
+* Problem 0.3: 5 points
+* Problem 1: 15 points
+* Problem 2: 15 points
+* Problem 3: 15 points
+
+### Problem 0.1
+
+This "problem" focuses on the use of R Markdown to write reproducible reports, and the use of R Projects to organize your work.
+
+To that end: 
+
+* create a directory named `p8105_hw1_YOURUNI` (e.g. `p8105_hw1_ajg2202` for Jeff)
+* put an R project in the directory
+* create a single .Rmd file named `p8105_hw1_YOURUNI.Rmd`
+
+Your solutions to Problems 1+ should be included in your .Rmd file, and your submission for this assignment will be a zip file of this directory.
+
+We will assess adherence to the instructions above and whether we are able to knit your .Rmd -- that is, whether your work is reproducible. 
+
+### Problem 0.2
+
+This "problem" focuses on correct styling for your solutions to Problems 1+. We will look for:
+
+* meaningful variable names
+* readable code (one command per line; adequate whitespace and indentation; etc)
+* the use of both text and code in solutions
+* a lack of superfluous code (e.g. no unused variables are defined)
+
+### Problem 0.3
+
+Please complete the survey [here](https://goo.gl/forms/wSNx0zw7gr4M2A7N2).
+
+### Problem 1
+
+This problem focuses on vector operations and numeric summaries.
+
+* Create a vector containing ten numbers
+* Multiply your vector by 5
+* Add 7 to your vector
+* Create a second vector containing ten integers
+* Add the two vectors
+* Multiply the two vectors
+
+Based on the preceding, comment on R's arithmetic operations when they involve (1) a vector and a scalar, and (2) two vectors. Try to add vectors of length ten and length nine; what happens? What if you add vectors of length ten and length five?
+
+### Problem 2
+
+This problem focuses on subsetting, plotting, and the use of inline R code.
+
+* Create a variable containing a random sample of size 10000 from a uniform[0, 10] distribution (the `runif` function will help)
+* Remove values that are greater than 9.4
+* Write a short description of your vector using inline R code, including:
+    * length of the vector
+    * mean and median
+    * standard deviation
+    * minumum and maximum values
+* Repeat the above for a new random sample of size 5000 from a Normal[5, sd = 5] distribution, omitting values that are less than zero
+* Make a histogram of the new sample. 
+
+### Problem 3
+
+This problem focuses on variable types, coercion, and data structures.
+
+* Create a vector containing five integers and vector containing five character strings
+* Add the two vectors. What happens? 
+* Combine the two vectors into one using `c()`. What is the class of the new vector?
+* Create a vector containing the values `"a"`, `7`, and `42`.
+    * Can you add the second and third values of this vector? Why or why not?
+* Create a list containing the values `"a"`, `7`, and `42`.
+    * Can you add the second and third values of this list? Why or why not?
+
