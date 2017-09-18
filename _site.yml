@@ -25,6 +25,8 @@ navbar:
       menu:
         - text: "Homework 0"
           href: homework_0.html
+        - text: "Homework 1"
+          href: homework_1.html
     - text: "Datasets"
       menu: 
         - text: "Mr. Trash Wheel"
