@@ -425,7 +425,7 @@ The mean is `r mean(samp)`.</code></pre>
 <div id="code-chunks-and-snippets" class="section level3">
 <h3>Code chunks and snippets</h3>
 <p>We’ll start with code chunks, since these are the distinguishing feature of R Markdown documents. The code chunks take the place of scripts in that they hold the code you use to produce your results. However, they tend to be briefer and more self-contained: you’re nestling these bits of code among the text the supports them and the results they produce. You can still execute code in chunks using Cmd/Ctrl + Enter, and you will still develop code by writing and refining until you have something you’re happy with.</p>
-<p>Although the benefits will mostly become apparently later, I recommend you get in the habit of naming your code chunks now using <code>```{r code_name}</code>.</p>
+<p>Although the benefits will mostly become apparently later, I recommend you get in the habit of naming your code chunks now using <code>{r chunk_name}</code>.</p>
 <p>Beyond the name, you can customize the behavior of your code chunk via options defined in the chunk header. Some common options are:</p>
 <ul>
 <li><code>eval = FALSE</code>: code will be displayed but not executed; results are not included.</li>
@@ -433,11 +433,13 @@ The mean is `r mean(samp)`.</code></pre>
 <li><code>include = FALSE</code>: code will not be executed or displayed; results are not included.</li>
 <li><code>message = FALSE</code> and <code>warning = FALSE</code>: prevents messages and warnings from being displayed.</li>
 <li><code>results = hide</code> and <code>fig.show = hide</code>: prevents results and figures from being shown, respectively.</li>
+<li><code>collapse = TRUE</code>: output will be collapsed into a single block at shown at the end of the chunk.</li>
+<li><code>error</code>: errors in code will stop rendering when <code>FALSE</code>; errors in code will be printed in the doc when <code>TRUE</code>. The default is <code>FALSE</code> and you should almost never change it.</li>
 </ul>
 <p>Use these options to be judicious about what you include in your report. Remember to keep your audience in mind: how much do they want or need to see?</p>
 <p>You can also cache the results of a code chunk, but we will largely avoid this. Caching can save time by saving the results of a code chunk instead of re-executing when the document is knit. However, you have to be careful when using this option since downstream code can depend on upstream changes. Controlling this behavior through the <code>dependson</code> option can help, but if you cache code you’ll want to periodically clear you cache to ensure you’re getting reproducible results.</p>
 <p>Inserting brief code snippets inline is often helpful; I frequently use these to give the sample size or summary statistics in text. You can insert code inline using <code>`r `</code>, often in conjunction with the <code>format()</code> function to clean up your output.</p>
-<p><strong><em>Learning assessment:</em></strong> Write a named code chunk that creates a variable containing a sample of size 500 from a random normal variable, takes the absolute value, and produces a histogram of the resulting variable. Add an inline summary giving the median value. What happens if you set <code>eval = FALSE</code> to the code chunk? What about <code>echo = FALSE</code>?</p>
+<p><strong><em>Learning assessment:</em></strong> Write a named code chunk that creates a variable containing a sample of size 500 from a random normal variable, takes the absolute value, and produces a histogram of the resulting variable. Add an inline summary giving the median value rounded to two decimal places. What happens if you set <code>eval = FALSE</code> to the code chunk? What about <code>echo = FALSE</code>?</p>
 </div>
 <div id="formatting-text" class="section level3">
 <h3>Formatting text</h3>
@@ -485,7 +487,7 @@ First Header  | Second Header
 Content Cell  | Content Cell
 Content Cell  | Content Cell</code></pre>
 <p>You’ll need to refer to this list (or to similar resources) pretty often at first, but most of it will become second-nature after you’ve written a few documents.</p>
-<p><strong><em>Learning assessment:</em></strong> After the preceding code chunk, write a bullet list given the mean, median, and standard deviation of your random sample.</p>
+<p><strong><em>Learning assessment:</em></strong> After the previous code chunk, write a bullet list given the mean, median, and standard deviation of your random sample.</p>
 </div>
 <div id="yaml-and-output-formats" class="section level3">
 <h3>YAML and output formats</h3>
@@ -517,7 +519,7 @@ date: 2017-08-08</code></pre>
 <li>Periodically check for reproducibility of the analysis</li>
 </ul>
 <p>This should become your default behavior when starting any new project.</p>
-<p><strong><em>Learning assessment:</em></strong> Convert the scripts for exploring vector classes and producing basic plots (from <a href="best_practices.html">best practices</a>) to self-contained R Markdown files.</p>
+<p><strong><em>Learning assessment:</em></strong> Convert the scripts for exploring vector classes and producing basic plots (from <a href="best_practices.html">best practices</a>) to self-contained R Markdown files that produce PDF documents.</p>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>

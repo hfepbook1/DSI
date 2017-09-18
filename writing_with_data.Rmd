@@ -53,7 +53,7 @@ R Markdown documents are rendered to produce complete reports with text, formatt
 
 We'll start with code chunks, since these are the distinguishing feature of R Markdown documents. The code chunks take the place of scripts in that they hold the code you use to produce your results. However, they tend to be briefer and more self-contained: you're nestling these bits of code among the text the supports them and the results they produce. You can still execute code in chunks using Cmd/Ctrl + Enter, and you will still develop code by writing and refining until you have something you're happy with.
 
-Although the benefits will mostly become apparently later, I recommend you get in the habit of naming your code chunks now using ` ```{r code_name} `. 
+Although the benefits will mostly become apparently later, I recommend you get in the habit of naming your code chunks now using ` {r chunk_name} `. 
 
 Beyond the name, you can customize the behavior of your code chunk via options defined in the chunk header. Some common options are:
 
@@ -62,6 +62,8 @@ Beyond the name, you can customize the behavior of your code chunk via options d
 * `include = FALSE`: code will not be executed or displayed; results are not included.
 * `message = FALSE` and `warning = FALSE`: prevents messages and warnings from being displayed.
 * `results = hide` and `fig.show = hide`: prevents results and figures from being shown, respectively.
+* `collapse = TRUE`: output will be collapsed into a single block at shown at the end of the chunk.
+* `error`: errors in code will stop rendering when `FALSE`; errors in code will be printed in the doc when `TRUE`. The default is `FALSE` and you should almost never change it.
 
 Use these options to be judicious about what you include in your report. Remember to keep your audience in mind: how much do they want or need to see?
 
@@ -69,7 +71,7 @@ You can also cache the results of a code chunk, but we will largely avoid this. 
 
 Inserting brief code snippets inline is often helpful; I frequently use these to give the sample size or summary statistics in text. You can insert code inline using `r inline()`, often in conjunction with the `format()` function to clean up your output. 
 
-**_Learning assessment:_** Write a named code chunk that creates a variable containing a sample of size 500 from a random normal variable, takes the absolute value, and produces a histogram of the resulting variable. Add an inline summary giving the median value. What happens if you set `eval = FALSE` to the code chunk? What about `echo = FALSE`? 
+**_Learning assessment:_** Write a named code chunk that creates a variable containing a sample of size 500 from a random normal variable, takes the absolute value, and produces a histogram of the resulting variable. Add an inline summary giving the median value rounded to two decimal places. What happens if you set `eval = FALSE` to the code chunk? What about `echo = FALSE`? 
 
 ### Formatting text
 
@@ -81,7 +83,7 @@ cat(readr::read_file("resources/rmarkdown_formatting.Rmd"))
 
 You'll need to refer to this list (or to similar resources) pretty often at first, but most of it will become second-nature after you've written a few documents. 
 
-**_Learning assessment:_** After the preceding code chunk, write a bullet list given the mean, median, and standard deviation of your random sample. 
+**_Learning assessment:_** After the previous code chunk, write a bullet list given the mean, median, and standard deviation of your random sample. 
 
 ### YAML and output formats
 
@@ -123,7 +125,7 @@ All of this suggests a slight modification to the previous workflow:
 
 This should become your default behavior when starting any new project.
 
-**_Learning assessment:_** Convert the scripts for exploring vector classes and producing basic plots (from [best practices](best_practices.html)) to self-contained R Markdown files. 
+**_Learning assessment:_** Convert the scripts for exploring vector classes and producing basic plots (from [best practices](best_practices.html)) to self-contained R Markdown files that produce PDF documents. 
 
 ## Other materials
 
