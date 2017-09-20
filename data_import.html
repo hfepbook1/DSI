@@ -390,7 +390,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>We’re going to figure out how to import the three datasets in <a href="./resources/data_import_examples.zip">this zip file</a>. First, create a directory for today’s work, add an R Project, move the data to your directory, and start an R Markdown file. We’re also going to be making extensive use of the <code>tidyverse</code> package, so we can go ahead and load that.</p>
+<p>We’re going to figure out how to import the three datasets in <a href="./resources/data_import_examples.zip">this zip file</a>. First, create a directory for today’s work, add an R Project, move the data to your directory, and start an R Markdown file. We’re also going to be making extensive use of the <code>tidyverse</code> package, so go ahead and load that. Lastly, take a moment to install the packages <code>janitor</code>, <code>haven</code>, and <code>readxl</code>.</p>
 <pre class="r"><code>library(tidyverse)
 ## Loading tidyverse: ggplot2
 ## Loading tidyverse: tibble
@@ -409,9 +409,9 @@ div.tocify {
 <li>Absolute: a file or folder’s “full address” on your computer</li>
 <li>Relative: directions to a file or folder from your current working directory</li>
 </ul>
-<p>Absolute paths are often easier, because you don’t really have to <em>think</em> about them – you’re just giving the complete address, starting from the root directory. These work from any current working directory on the machine. However, absolute paths can take up a lot of space if you use nested directories and they aren’t portable: even someone with the same directory won’t have the same path to that directory. An absolute path example is below:</p>
+<p>Absolute paths are often easier, because you don’t really have to <em>think</em> about them – you’re just giving the complete address, starting from the root directory. These work from any current working directory on the machine. However, absolute paths can take up a lot of space if you use nested directories. And they aren’t portable: someone with the same directory and contents on their machine won’t have the same path to the directory. An absolute path example is below:</p>
 <pre><code>&quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI/data/FAS_litters.csv&quot;</code></pre>
-<p>Relative paths, meanwhile, start from your current working directory. These are often much shorter, since the files you want to access are in subdirectories or at least not too far away. They also are portable, in that someone else with the same directory will have the same relative path to the files you care about. For both of these reasons, relative paths are preferred in almost every setting. The code below finds my current working directory:</p>
+<p>Relative paths, meanwhile, start from your current working directory. These are often much shorter, since the files you want to access are in subdirectories or at least not too far away. They also are portable, in that someone else with the same directory will have the same relative path to the related files. For both of these reasons, relative paths are preferred in almost every setting. The code below finds my current working directory:</p>
 <pre class="r"><code>getwd()
 ## [1] &quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI&quot;</code></pre>
 <p>A relative path to the same file as above is</p>
@@ -471,6 +471,7 @@ litters_data = janitor::clean_names(litters_data)
 names(litters_data)
 ## [1] &quot;group&quot;           &quot;litter_number&quot;   &quot;gd0_weight&quot;      &quot;gd18_weight&quot;    
 ## [5] &quot;gd_of_birth&quot;     &quot;pups_born_alive&quot; &quot;pups_dead_birth&quot; &quot;pups_survive&quot;</code></pre>
+<p><strong><em>Learning Assessment:</em></strong> Make sure you are able to load the <code>FAS_litters.csv</code> dataset. Use both absolute and relative paths. Quit R Studio and move the directory containing your project, data, and R Markdown document. Repeat the previous data import process; do both absolute and relative paths still work?</p>
 </div>
 <div id="looking-at-data" class="section level3">
 <h3>Looking at data</h3>
@@ -607,6 +608,7 @@ litters_data
 ## 10  Con8     #3/5/2/2/95         28.5            NA            20
 ## # ... with 39 more rows, and 3 more variables: `Pups born alive` &lt;int&gt;,
 ## #   `Pups dead @ birth` &lt;int&gt;, `Pups survive` &lt;int&gt;</code></pre>
+<p><strong><em>Learning Assessment:</em></strong> Repeat the data import process above for the file <code>FAS_pups.csv</code>. Make sure the column names are reasonable, and take some quick looks at the dataset. What happens if your specifications for column parsing aren’t reasonable (e.g. character instead of double, or vice versa)?</p>
 </div>
 <div id="other-file-formats" class="section level3">
 <h3>Other file formats</h3>
@@ -642,6 +644,7 @@ head(pulse_data, 5)
 <div id="comparison-with-base-r" class="section level3">
 <h3>Comparison with Base R</h3>
 <p>The functions in <code>readr</code> are relatively new, and can be used in place of base R’s <code>read.csv</code>, <code>read.table</code>, and so on. The base R versions tend to be slower (very noticeably for large datasets), and the default options can make less sense for modern datasets. Meanwhile, the <code>readr</code> functions export tibbles, and keep characters as characters (instead of converting to factors …).</p>
+<p><strong><em>Learning Assessment:</em></strong> Import the <code>FAS_litters.csv</code> dataset using <code>read.csv</code>. Compare the class of this dataset to the one produced by <code>read_csv</code>. Try printing both in the console – what happens? After cleaning up the names, try accessing the <code>group</code> variable using <code>gr</code> (e.g., <code>litters_data$gr</code>). What happens?</p>
 </div>
 <div id="exporting-data" class="section level3">
 <h3>Exporting data</h3>

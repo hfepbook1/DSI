@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-We're going to figure out how to import the three datasets in [this zip file](./resources/data_import_examples.zip). First, create a directory for today's work, add an R Project, move the data to your directory, and start an R Markdown file. We're also going to be making extensive use of the `tidyverse` package, so we can go ahead and load that.
+We're going to figure out how to import the three datasets in [this zip file](./resources/data_import_examples.zip). First, create a directory for today's work, add an R Project, move the data to your directory, and start an R Markdown file. We're also going to be making extensive use of the `tidyverse` package, so go ahead and load that. Lastly, take a moment to install the packages `janitor`, `haven`, and `readxl`. 
 
 ```{r}
 library(tidyverse)
@@ -40,16 +40,20 @@ There are two kinds of paths:
 * Absolute: a file or folder's "full address" on your computer
 * Relative: directions to a file or folder from your current working directory
 
-Absolute paths are often easier, because you don't really have to _think_ about them -- you're just giving the complete address, starting from the root directory. These work from any current working directory on the machine. However, absolute paths can take up a lot of space if you use nested directories and they aren't portable: even someone with the same directory won't have the same path to that directory. An absolute path example is below:
+Absolute paths are often easier, because you don't really have to _think_ about them -- you're just giving the complete address, starting from the root directory. These work from any current working directory on the machine. However, absolute paths can take up a lot of space if you use nested directories. And they aren't portable: someone with the same directory and contents on their machine won't have the same path to the directory. An absolute path example is below:
+
 ```
 "/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/DSI/data/FAS_litters.csv"
 ```
 
-Relative paths, meanwhile, start from your current working directory. These are often much shorter, since the files you want to access are in subdirectories or at least not too far away. They also are portable, in that someone else with the same directory will have the same relative path to the files you care about. For both of these reasons, relative paths are preferred in almost every setting. The code below finds my current working directory:
+Relative paths, meanwhile, start from your current working directory. These are often much shorter, since the files you want to access are in subdirectories or at least not too far away. They also are portable, in that someone else with the same directory will have the same relative path to the related files. For both of these reasons, relative paths are preferred in almost every setting. The code below finds my current working directory:
+
 ```{r}
 getwd()
 ```
+
 A relative path to the same file as above is
+
 ```
 "./data/FAS_litters.csv"
 ```
@@ -72,6 +76,7 @@ One caveat: if you're going to both share code and use confidential data, you ha
 ### Importing data tables
 
 Now that we have paths handled, we can start loading data. We're going to start with rectangular data tables (data in rows and columns, with data separated by a delimiter) saved in a plain text format. Of these, csv (comma separated value) files are most common, and others are handled in basically the same way. To import a csv, we'll use a function from `readr`:
+
 ```{r}
 litters_data = readr::read_csv(file = "./data/FAS_litters.csv")
 ```
@@ -79,11 +84,14 @@ litters_data = readr::read_csv(file = "./data/FAS_litters.csv")
 Great -- we've imported data! The first argument to `read_csv` is the path to the data, and the line above assigns the result of `read_csv` to `litters_data`. This function call also prints information about the column parsing. We'll talk more about both of these shortly.
 
 I (almost always) use `janitor::clean_names()` to clean up variable names after importing data. Doing so will take whatever the column names are and convert them to lower snake case.
+
 ```{r}
 names(litters_data)
 litters_data = janitor::clean_names(litters_data)
 names(litters_data)
 ```
+
+**_Learning Assessment:_** Make sure you are able to load the `FAS_litters.csv` dataset. Use both absolute and relative paths. Quit R Studio and move the directory containing your project, data, and R Markdown document. Repeat the previous data import process; do both absolute and relative paths still work?
 
 ### Looking at data
 
@@ -98,7 +106,6 @@ Another tool that I use often is ``skimr::skim`. The output is too wide to rende
 ```{r}
 skimr::skim(litters_data)
 ```
-
 
 ### Arguments to `read_*`
 
@@ -120,6 +127,7 @@ These arguments generally work for other members of the `read_*` family of funct
 ### Parsing columns
 
 I skipped the `col_types` argument because it's worth talking about in some detail. The `read_*` functions will attempt to guess the data type stored in each column; by default, these guesses are based on the first 1000 rows. The guesses are also usually pretty good. In some cases, though, you'll want to give explicit column specifications. This is done using the `cols` function, and each column is given a column type:
+
 ```{r}
 litters_data = read_csv(file = "./data/FAS_litters.csv",
   col_types = cols(
@@ -145,11 +153,15 @@ litters_data = read_csv(file = "./data/FAS_litters.csv",
 litters_data
 ```
 
+**_Learning Assessment:_** Repeat the data import process above for the file `FAS_pups.csv`. Make sure the column names are reasonable, and take some quick looks at the dataset. What happens if your specifications for column parsing aren't reasonable (e.g. character instead of double, or vice versa)?
+
+
 ### Other file formats
 
 Non-csv plain text files (e.g. tab delimited files) can be handled using `read_table`. This is very similar to `read_csv`, but you have to specify a delimiter.
 
 CSV format is great, but you'll encounter a lot of Excel files too. Although you can export these to a csv, don't -- use the `readxl` package instead! This is part of the tidyverse but you'll have to download and install it separately. The `read_excel` function in this package has many of the same arguments as `read_csv`, including `col_names`, `na`, `skip`, and `col_types`, and can be used in basically the same way. There is also a `sheet` option (useful when there are multiple sheets in the Excel file) and the `range` option (when you want to read in a specific data rectangle). Lastly, in RStudio you can use File > Import Dataset > From Excel for a GUI interface. The code below illustrates `read_excel`.
+
 ```{r}
 library(readxl)
 mlb11_data = read_excel("data/mlb11.xlsx", n_max = 20)
@@ -157,6 +169,7 @@ head(mlb11_data, 5)
 ```
 
 The last tidyverse package for data import we'll note is `haven`, which is used to import into R data files from SAS, Stata, and SPSS. An example for reading data from SAS follows.
+
 ```{r}
 library(haven)
 pulse_data = read_sas("./data/public_pulse_data.sas7bdat")
@@ -168,6 +181,9 @@ You can read in data that isn't coming as a flat file, but it's beyond the scope
 ### Comparison with Base R
 
 The functions in `readr` are relatively new, and can be used in place of base R's `read.csv`, `read.table`, and so on. The base R versions tend to be slower (very noticeably for large datasets), and the default options can make less sense for modern datasets. Meanwhile, the `readr` functions export tibbles, and keep characters as characters (instead of converting to factors ...).
+
+**_Learning Assessment:_** Import the `FAS_litters.csv` dataset using `read.csv`. Compare the class of this dataset to the one produced by `read_csv`. Try printing both in the console -- what happens? After cleaning up the names, try accessing the `group` variable using `gr` (e.g., `litters_data$gr`). What happens?
+
 
 ### Exporting data
 
