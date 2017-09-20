@@ -1,12 +1,12 @@
 ---
-title: "Case Study"
+title: "What is Data Science?"
 output:
   html_document: 
     toc: true
     toc_float: true
 ---
 
-Pulling things together.
+We have, by now, established some fundamental tools for doing data science. It's important to revisit our definition, and especially our discussion of connotation, before moving forward. 
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(

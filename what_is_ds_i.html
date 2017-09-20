@@ -11,7 +11,7 @@
 
 
 
-<title>Data Wrangling</title>
+<title>What is Data Science?</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -194,7 +292,7 @@ $(document).ready(function () {
       <a href="topic_building_blocks.html">Building Blocks</a>
     </li>
     <li>
-      <a href="topic_data_wrangling.html">Data Wrangling</a>
+      <a href="topic_data_wrangling.html">Data Wrangling I</a>
     </li>
     <li>
       <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
@@ -203,13 +301,16 @@ $(document).ready(function () {
       <a href="topic_collaboration.html">Collaboration</a>
     </li>
     <li>
-      <a href="topic_more_advanced_r.html">More Advanced R</a>
+      <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
+    </li>
+    <li>
+      <a href="topic_iteration.html">Iteration</a>
     </li>
     <li>
       <a href="topic_interactivity.html">Interactivity</a>
     </li>
     <li>
-      <a href="topic_other.html">Other Topics</a>
+      <a href="topic_r_packages.html">R Packages</a>
     </li>
   </ul>
 </li>
@@ -273,20 +374,40 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Wrangling</h1>
+<h1 class="title toc-ignore">What is Data Science?</h1>
 
 </div>
 
 
-<p>You can’t do data science without data, and data aren’t going to wrangle themselves…</p>
-<p>Data wrangling is the process of getting data in whatever form they exist and, through a variety of processes, turning those data into a form that suits your current needs. We’ll talk about how to get data in several common formats into R; how to transform, manage, and manipulate data in a cohesive way using <code>dplyr</code>; what it means for data to be “tidy” and how to make them so; and what to do when your data are spread across multiple tables.</p>
-<p>The topic is made up of the following components:</p>
+<p>In this, we’ll provide a basic definition of “data science” and discuss the connotation of the term in several contexts.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="5d70b1a8ec6344729af32f4821a312c5" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-what-is-data-science" title="What is data science?" target="_blank">What is Data Science?</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p>Lots of folks have opinions about what data science is. Here’s a collection of things that are worth reading (or watching).</p>
 <ul>
-<li><a href="data_import.html">Data import with <code>readr</code> et al</a></li>
-<li><a href="data_manipulation.html">Data manipulation with <code>dplyr</code></a></li>
-<li><a href="tidy_data.html">Tidy data and relational datasets</a></li>
+<li>There was a session at JSM 2015 called “The statistics identity crisis: am I really a data scientist?”. All the talks were great; for now, two are especially relevant:
+<ul>
+<li>Alyssa Frazee’s <a href="https://youtu.be/JLs01Z5baSU?t=102">“Am I a Data Scientist”</a></li>
+<li>Chris Volinsky’s <a href="https://youtu.be/JLs01Z5baSU?t=1063">“How Industry Views Data Science Education in Statistics Departments”</a></li>
+</ul></li>
+<li>Hilary Parker’s <a href="https://www.rstudio.com/resources/videos/opinionated-analysis-development/">“Opinionated Analysis Development”</a> is a strong argument in favor of having opinions. There’s also her <a href="https://peerj.com/preprints/3210/">paper on this topic</a>.</li>
+<li>Angela Bassa talks about <a href="https://www.youtube.com/watch?v=b9ZLXwAuUyw&amp;app=desktop">“Corporate Data Science”</a>, which is useful complement to academic data science</li>
 </ul>
-<p>It has been argued that <a href="http://www.mimno.org/articles/carpentry/">data carpentry</a> is a better term than data wrangling. I like the analogy to carpentry a lot, but most folks call this data wrangling anyway.</p>
+<p>We also touched on useful resources for learning data science. Each class session will have relevant readings; the following are useful in giving an overview about how to learn and find help.</p>
+<ul>
+<li>stackoverflow has a useful guide on <a href="https://stackoverflow.com/help/how-to-ask">how to ask a good question</a></li>
+<li>Julia Evan’s blog also has a useful guide <a href="https://jvns.ca/blog/good-questions/">how to ask good questions</a> (note: hers has a cartoon!)</li>
+<li>(Tip: the fact that there are guides on asking questions means it isn’t always easy or obvious how to do it well. That’s fine! Learning how to ask the right questions is important, and you should practice.)</li>
+<li>This <a href="http://mattgemmell.com/what-have-you-tried/">blog post</a> and the follow-up <a href="http://mattgemmell.com/hindsight/">disavowal</a> are both interesting; one deals with learning to program and asking questions, and the other notes that flippant answers online are discouraging to people who want to learn but regretfully common.</li>
+</ul>
+</div>
 
 <br><br>
 <footer>
@@ -294,6 +415,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 

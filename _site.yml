@@ -9,18 +9,20 @@ navbar:
           href: topic_what_is_data_science.html
         - text: "Building Blocks"
           href: topic_building_blocks.html
-        - text: "Data Wrangling"
+        - text: "Data Wrangling I"
           href: topic_data_wrangling.html
         - text: "Visualization and EDA"
           href: topic_visualization_and_eda.html
         - text: "Collaboration"
           href: topic_collaboration.html
-        - text: "More Advanced R"
-          href: topic_more_advanced_r.html
+        - text: "Data Wrangling II"
+          href: topic_data_wrangling_ii.html
+        - text: "Iteration"
+          href: topic_iteration.html
         - text: "Interactivity"
           href: topic_interactivity.html
-        - text: "Other Topics"
-          href: topic_other.html
+        - text: "R Packages"
+          href: topic_r_packages.html
     - text: "Homework"
       menu:
         - text: "Homework 0"

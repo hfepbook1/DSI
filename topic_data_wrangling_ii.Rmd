@@ -1,0 +1,29 @@
+---
+title: "Data Wrangling II"
+---
+
+Data wrangling is the process of getting data in whatever form they exist and, through a variety of processes, turning those data into a form that suits your current needs. Our first look at data wrangling focused on data that were pretty clean to start with, and avoided some of the trickier data classes. Now we'll discuss ways of getting data from the web, and take a closer look at strings and factors.
+
+The topic is made up of the following components:
+
+* Reading data from the web
+* Strings and factors
+* Sentiment analysis
+
+
+
+
+
+https://www.opendatanetwork.com/search?q=new+york+city
+
+https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
+
+https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745
+
+https://github.com/ropensci/user2016-tutorial
+
+https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R
+
+https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd
+
+https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd

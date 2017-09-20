@@ -1,11 +1,11 @@
 ---
-title: "Interactivity"
+title: "R Packages"
 ---
 
 Brief overview of content
 
 This topic is made up of the following components:
 
-* Dashboards
-* Shiny Apps
+* Packages I
+* Packages II
 

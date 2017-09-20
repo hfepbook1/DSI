@@ -2,29 +2,11 @@
 title: "What is Data Science?"
 ---
 
-Almost unheard of five years ago, "data science" has become ubiquitous in media, industry, and academia. Because this is a course in data science, we should spend some time understand various meanings of the term, how we'll use it in this class, and how you can learn data science.
+Almost unheard of five years ago, "data science" has become ubiquitous in media, industry, and academia. Because this is a course in data science, we will spend some time understand various meanings of the term, how we'll use it in this class, and how you can learn data science.
 
-## Some slides
+The topic is made up of the following components. We'll check out Part I as the course begins, and revisit the topic after we' have some fundame've covered some fundamentals.
 
-<script async class="speakerdeck-embed" data-id="5d70b1a8ec6344729af32f4821a312c5" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-what-is-data-science" title="What is data science?" target="_blank">What is Data Science?</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+* What is Data Science? [Part I](what_is_ds_i.html)
+* What is Data Science? [Part II](what_is_ds_ii.html)
 
-
-## Other materials
-
-Lots of folks have opinions about what data science is. Here's a collection of things that are worth reading (or watching).
-
-* There was a session at JSM 2015 called "The statistics identity crisis: am I really a data scientist?". All the talks were great; for now, two are especially relevant:
-    * Alyssa Frazee's ["Am I a Data Scientist"](https://youtu.be/JLs01Z5baSU?t=102)
-    * Chris Volinsky's ["How Industry Views Data Science Education in Statistics Departments"](https://youtu.be/JLs01Z5baSU?t=1063)
-* Hilary Parker's ["Opinionated Analysis Development"](https://www.rstudio.com/resources/videos/opinionated-analysis-development/) is a strong argument in favor of having opinions. There's also her [paper on this topic](https://peerj.com/preprints/3210/).
-* Angela Bassa talks about ["Corporate Data Science"](https://www.youtube.com/watch?v=b9ZLXwAuUyw&app=desktop), which is useful complement to academic data science
-
-We also touched on useful resources for learning data science. Each class session will have relevant readings; the following are useful in giving an overview about how to learn and find help.
-
-* stackoverflow has a useful guide on [how to ask a good question](https://stackoverflow.com/help/how-to-ask)
-* Julia Evan's blog also has a useful guide [how to ask good questions](https://jvns.ca/blog/good-questions/) (note: hers has a cartoon!)
-* (Tip: the fact that there are guides on asking questions means it isn't always easy or obvious how to do it well. That's fine! Learning how to ask the right questions is important, and you should practice.)
-* This [blog post](http://mattgemmell.com/what-have-you-tried/) and the follow-up [disavowal](http://mattgemmell.com/hindsight/) are both interesting; one deals with learning to program and asking questions, and the other notes that flippant answers online are discouraging to people who want to learn but regretfully common. 
-
-Lastly, this paper on [good enough practices](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510) for scientific computing gives an idea of what we want to achieve in this course, and why we want to achieve it. 
+This paper on [good enough practices](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510) for scientific computing gives an idea of what we want to achieve in this course, and why we want to achieve it. 

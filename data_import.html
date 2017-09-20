@@ -292,7 +292,7 @@ div.tocify {
       <a href="topic_building_blocks.html">Building Blocks</a>
     </li>
     <li>
-      <a href="topic_data_wrangling.html">Data Wrangling</a>
+      <a href="topic_data_wrangling.html">Data Wrangling I</a>
     </li>
     <li>
       <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
@@ -301,13 +301,16 @@ div.tocify {
       <a href="topic_collaboration.html">Collaboration</a>
     </li>
     <li>
-      <a href="topic_more_advanced_r.html">More Advanced R</a>
+      <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
+    </li>
+    <li>
+      <a href="topic_iteration.html">Iteration</a>
     </li>
     <li>
       <a href="topic_interactivity.html">Interactivity</a>
     </li>
     <li>
-      <a href="topic_other.html">Other Topics</a>
+      <a href="topic_r_packages.html">R Packages</a>
     </li>
   </ul>
 </li>
@@ -388,7 +391,16 @@ div.tocify {
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>We’re going to figure out how to import the three datasets in <a href="./resources/data_import_examples.zip">this zip file</a>. First, create a directory for today’s work, add an R Project, move the data to your directory, and start an R Markdown file. We’re also going to be making extensive use of the <code>tidyverse</code> package, so we can go ahead and load that.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats</code></pre>
 <div id="paths" class="section level3">
 <h3>Paths</h3>
 <p>We’ve mentioned paths and your working directory in passing (when talking about <a href="best_practices.html">best practices</a>). A firmer understanding is helpful when you start loading data into R, because to load data R will have to know where to find it.</p>

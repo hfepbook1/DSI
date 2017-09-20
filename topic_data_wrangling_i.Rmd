@@ -1,5 +1,5 @@
 ---
-title: "Data Wrangling"
+title: "Data Wrangling I"
 ---
 
 You can't do data science without data, and data aren't going to wrangle themselves...
@@ -13,3 +13,5 @@ The topic is made up of the following components:
 * [Tidy data and relational datasets](tidy_data.html)
 
 It has been argued that [data carpentry](http://www.mimno.org/articles/carpentry/) is a better term than data wrangling. I like the analogy to carpentry a lot, but most folks call this data wrangling anyway.
+
+The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C75HFE38U).

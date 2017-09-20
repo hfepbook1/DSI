@@ -11,7 +11,7 @@
 
 
 
-<title>NOAA</title>
+<title>Iteration</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,9 +19,6 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -166,101 +163,6 @@ $(document).ready(function () {
 
 
 
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
-
-
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -374,54 +276,18 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">NOAA</h1>
+<h1 class="title toc-ignore">Iteration</h1>
 
 </div>
 
 
-<p>These data were accessed from the NOAA National Climatic Data Center, <a href="http://doi.org/10.7289/V5D21VHZ" class="uri">http://doi.org/10.7289/V5D21VHZ</a>, on August 15, 2017.(Menne, M.J., I. Durre, B. Korzeniewski, S. McNeal, K. Thomas, X. Yin, S. Anthony, R. Ray, R.S. Vose, B.E.Gleason, and T.G. Houston, 2012: Global Historical Climatology Network - Daily (GHCN-Daily), Version 3.22.)</p>
-<p>The version of the NOAA data that we will use in this class can be found <a href="./data/nynoaadat.RData">here</a>.</p>
-<div id="context" class="section level2">
-<h2>Context</h2>
-<p>The National Oceanic and Atmospheric Association (NOAA) of the National Centers for Environmental Information (NCEI) provides public access to some weather data, including the GHCN (Global Historical Climatology Network)-Daily database of summary statistics from weather stations around the world. A detailed description of the data, including the following, can be found <a href="https://www.ncdc.noaa.gov/ghcn-daily-description">here</a>:</p>
-<blockquote>
-<p>GHCN-Daily contains records from over 100,000 stations in 180 countries and territories. NCEI provides numerous daily variables, including maximum and minimum temperature, total daily precipitation, snowfall, and snow depth; however, about one half of the stations report precipitation only. Both the record length and period of record vary by station and cover intervals ranging from less than a year to more than 175 years.</p>
-</blockquote>
-<p><a href="https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt">Instructions</a> are also provided on how to access and download the data, and what variables the data contains.</p>
-</div>
-<div id="data-description" class="section level2">
-<h2>Data description</h2>
-<p>The data to be used for this class were acquired using functions from the <code>rnoaa</code> package. <code>rnoaa</code> is an R package available on CRAN that was constructed specifically to download and tidy data from NOAA. Details of the many functions available as part of this package can be found in the <a href="https://cran.r-project.org/web/packages/rnoaa/rnoaa.pdf">package documention</a>. Specifically, the function <code>ghcnd_stations()</code> acquires a list of all of the GHCND-Daily weather stations and the function <code>meteo_pull_monitors()</code> pulls weather data for one or many station IDs.</p>
-<p>The following code was used to acquire the five core variables for all New York state weather stations from January 1, 1981 through December 31, 2010. This code was run on a server computer due to the lengthy processing time required, and can serve as a guide for acquisition of additional GHCN-Daily data. Note that the data are acquired via ftp, so an internet connection is required.</p>
-<pre><code>library(dplyr)
-library(rnoaa)
-
-# Get a list of all NY station IDs
-stations &lt;- ghcnd_stations()
-nystationids &lt;-  stations %&gt;% 
-  filter(state == &quot;NY&quot;) %&gt;% 
-  distinct(id)
-
-# Pull the desired weather data for all of these stations
-nydat &lt;- meteo_pull_monitors(nystationids$id, 
-                             date_min = &quot;1981-01-01&quot;, 
-                             date_max = &quot;2010-12-31&quot;, 
-                             var = c(&quot;PRCP&quot;, &quot;SNOW&quot;, &quot;SNWD&quot;, &quot;TMAX&quot;, &quot;TMIN&quot;))
-
-# Save the resulting data
-save(nystationids, nydat, file = &quot;nynoaadat.RData&quot;)</code></pre>
-<p>The resulting R dataset <code>nydat</code> contains variables:</p>
+<p>Brief overview of content</p>
+<p>This topic is made up of the following components:</p>
 <ul>
-<li><code>id</code>: Weather station ID</li>
-<li><code>date</code>: Date of observation</li>
-<li><code>prcp</code>: Precipitation (tenths of mm)</li>
-<li><code>snow</code>: Snowfall (mm)</li>
-<li><code>snwd</code>: Snow depth (mm)</li>
-<li><code>tmax</code>: Maximum temperature (tenths of degrees C)</li>
-<li><code>tmin</code>: Minimum temperature (tenths of degrees C)</li>
+<li>Loops, functions, and maps</li>
+<li>Simulations</li>
+<li>Resampling</li>
 </ul>
-<p>Each weather station may collect only a subset of these variables, and therefore the resulting dataset contains extensive missing data.</p>
-</div>
 
 <br><br>
 <footer>
@@ -429,8 +295,6 @@ save(nystationids, nydat, file = &quot;nynoaadat.RData&quot;)</code></pre>
 </footer>
 
 
-</div>
-</div>
 
 </div>
 

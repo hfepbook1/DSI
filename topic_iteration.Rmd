@@ -1,11 +1,12 @@
 ---
-title: "Interactivity"
+title: "Iteration"
 ---
 
 Brief overview of content
 
 This topic is made up of the following components:
 
-* Dashboards
-* Shiny Apps
+* Loops, functions, and maps
+* Simulations
+* Resampling
 
