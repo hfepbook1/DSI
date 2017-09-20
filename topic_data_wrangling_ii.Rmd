@@ -27,3 +27,5 @@ https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R
 https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd
 
 https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd
+
+https://zapier.com/learn/apis/

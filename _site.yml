@@ -10,7 +10,7 @@ navbar:
         - text: "Building Blocks"
           href: topic_building_blocks.html
         - text: "Data Wrangling I"
-          href: topic_data_wrangling.html
+          href: topic_data_wrangling_i.html
         - text: "Visualization and EDA"
           href: topic_visualization_and_eda.html
         - text: "Collaboration"
