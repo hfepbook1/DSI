@@ -8,6 +8,8 @@ output:
 
 Importing is the first step in wrangling.
 
+This is the first module in the [Data Wrangling I](topic_data_wrangling_i.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C75HFE38U).
+
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -201,3 +203,4 @@ The content in this page draws heavily from several sources; each of the things 
 * There are pages on the tidyverse website for [readr](readr), [readxl](http://readxl.tidyverse.org), and [haven](http://haven.tidyverse.org)
 * The [data import cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf) is handy once you have a good handle on things
 
+The code that I produced working examples in lecture is [here](./code/data_wrangling_i.zip).

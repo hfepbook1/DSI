@@ -10,5 +10,3 @@ The topic is made up of the following components:
 
 * [Visualization with `ggplot2`](visualization.html)
 * [Exploratory analysis using `group_by`](exploratory_analysis.html)
-* [Case study](case_study_viz_and_eda.html)
-

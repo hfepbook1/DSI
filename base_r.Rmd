@@ -8,6 +8,8 @@ output:
 
 This page gives a quick introduction to "base" R. 
 
+This is the first module in the [Best Practices](topic_best_practices.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C728JGKPX/).
+
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -244,3 +246,4 @@ There are also some longer or more advanced references:
 * Andrew Jaffe and John Muschelli's [Introduction to R for Public Health Researchers](http://aejaffe.com/summerR_2016/)
 * Cosma Shalizi and Andrew Thomas' [Statistical Computing 36-350: Beginning to Advanced Techniques in R](https://www.stat.cmu.edu/~cshalizi/statcomp/14/)
 
+The code that I produced working examples in lecture is [here](./code/best_practices.zip).

@@ -8,6 +8,8 @@ output:
 
 You will typically (if not always) need to summarize your work in writing. This page describes how to do so using R Markdown. 
 
+This is the third module in the [Best Practices](topic_best_practices.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C728JGKPX/).
+
 ```{r, echo = FALSE}
 inline <- function(x = "") paste0("`` `r ", x, "` ``")
 
@@ -143,3 +145,5 @@ Constructing useful documents that combine text and code is the subject of sever
 * If Webinars are more to your liking, this [intro](https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/) and this [follow-up](https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/) are good
 
 You'll also find a lot of stuff online that has been written using R Markdown and, with a little digging, can often find the .RMD file as well. This is a great way to spot new tools and figure out how to incorporate them in your own documents!!
+
+The code that I produced working examples in lecture is [here](./code/best_practices.zip).

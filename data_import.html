@@ -380,6 +380,7 @@ div.tocify {
 
 
 <p>Importing is the first step in wrangling.</p>
+<p>This is the first module in the <a href="topic_data_wrangling_i.html">Data Wrangling I</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C75HFE38U">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
 <script async class="speakerdeck-embed" data-id="e75fb41a3142444f9cde9fb3110a1858" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
@@ -635,8 +636,8 @@ head(pulse_data, 5)
 ##      ID      age   Sex BDIScore_BL BDIScore_01m BDIScore_06m BDIScore_12m
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 10003 48.03836  male           7            1            2            0
-## 2 10015 72.47123  male           6           NA           NA           NA
-## 3 10022 58.50959  male          14            3            8           NA
+## 2 10015 72.47123  male           6          NaN          NaN          NaN
+## 3 10022 58.50959  male          14            3            8          NaN
 ## 4 10026 72.72877  male          20            6           18           16
 ## 5 10035 60.40274  male           4            0            1            2</code></pre>
 <p>You can read in data that isn’t coming as a flat file, but it’s beyond the scope of this course.</p>
@@ -663,6 +664,7 @@ head(pulse_data, 5)
 <li>There are pages on the tidyverse website for <a href="readr" class="uri">readr</a>, <a href="http://readxl.tidyverse.org">readxl</a>, and <a href="http://haven.tidyverse.org">haven</a></li>
 <li>The <a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf">data import cheatsheet</a> is handy once you have a good handle on things</li>
 </ul>
+<p>The code that I produced working examples in lecture is <a href="./code/data_wrangling_i.zip">here</a>.</p>
 </div>
 
 <br><br>
