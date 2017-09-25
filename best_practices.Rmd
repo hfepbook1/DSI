@@ -168,4 +168,4 @@ This content draws on the work of others; there are also useful references for a
 * RStudio's guide to [using projects](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
 * Lastly, the BEH [Commandments for Variable Naming and Data Management](https://beh.columbia.edu/2016/08/03/commandments-for-variable-naming-and-data-management/) make a ton of sense
 
-The code that I produced working examples in lecture is [here](./code/best_practices.zip).
+The code that I produced working examples in lecture is [here](./lecture_code/best_practices.zip).

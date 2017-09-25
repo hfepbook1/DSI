@@ -242,4 +242,4 @@ There's lots of stuff out there on how to clean your data using `dplyr`.
 * Even R Programming for Data Science, which tends towards base R, has a chapter on [`dplyr`](https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html).
 * The [data transformation cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) is handy once you have a good handle on things.
 
-The code that I produced working examples in lecture is [here](./code/data_wrangling_i.zip).
+The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_i.zip).

@@ -246,4 +246,4 @@ There are also some longer or more advanced references:
 * Andrew Jaffe and John Muschelli's [Introduction to R for Public Health Researchers](http://aejaffe.com/summerR_2016/)
 * Cosma Shalizi and Andrew Thomas' [Statistical Computing 36-350: Beginning to Advanced Techniques in R](https://www.stat.cmu.edu/~cshalizi/statcomp/14/)
 
-The code that I produced working examples in lecture is [here](./code/best_practices.zip).
+The code that I produced working examples in lecture is [here](./lecture_code/best_practices.zip).

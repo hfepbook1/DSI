@@ -146,4 +146,4 @@ Constructing useful documents that combine text and code is the subject of sever
 
 You'll also find a lot of stuff online that has been written using R Markdown and, with a little digging, can often find the .RMD file as well. This is a great way to spot new tools and figure out how to incorporate them in your own documents!!
 
-The code that I produced working examples in lecture is [here](./code/best_practices.zip).
+The code that I produced working examples in lecture is [here](./lecture_code/best_practices.zip).

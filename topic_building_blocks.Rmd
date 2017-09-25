@@ -12,4 +12,4 @@ The topic is made up of the following components:
 
 The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C728JGKPX/).
 
-The code that I produced working examples in class is [here](./code/building_blocks.zip).
+The code that I produced working examples in class is [here](./lecture_code/building_blocks.zip).

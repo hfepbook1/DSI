@@ -203,4 +203,4 @@ The content in this page draws heavily from several sources; each of the things 
 * There are pages on the tidyverse website for [readr](readr), [readxl](http://readxl.tidyverse.org), and [haven](http://haven.tidyverse.org)
 * The [data import cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf) is handy once you have a good handle on things
 
-The code that I produced working examples in lecture is [here](./code/data_wrangling_i.zip).
+The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_i.zip).

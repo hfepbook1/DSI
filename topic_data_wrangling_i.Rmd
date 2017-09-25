@@ -16,4 +16,4 @@ It has been argued that [data carpentry](http://www.mimno.org/articles/carpentry
 
 The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C75HFE38U).
 
-The code that I produced working examples in lecture is [here](./code/data_wrangling_i.zip).
+The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_i.zip).
