@@ -390,16 +390,30 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Start by figuring out how this example fits in with what you’ve done and plan to do – you may want to start a whole new directory and R Project, but I’d suggest adding a new file to the Project we started last time.</p>
-<p>Once again we’re going to be using the <code>tidyverse</code>, so we’ll load that at the outset. We’re going to be looking at a lot of output, so we’ll print only three lines of each tibble by default. Lastly, we’ll focus on the data in FAS_litters.csv dataset, so we’ll load those data and clean up the column names using what we learned in <a href="data_import.html">data import</a>.</p>
+<p>The <a href="data_wrangling_i.html">Data Wrangling I</a> slack channel is <a href="https://p8105-fall2017.slack.com/messages/C75HFE38U">here</a>.</p>
+<p>Start by figuring out how this example fits in with what you’ve done and plan to do – you may want to start a whole new directory and R Project, but I’d suggest adding a new R Markdown file to the project we started last time.</p>
+<p>Once again we’re going to be using the <code>tidyverse</code>, so we’ll load that at the outset; I’ll also load the <code>janitor</code> package because I like clean names. We’re going to be looking at a lot of output, so I’ll print only three lines of each tibble by default. Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and <code>FAS_pups.csv</code>, so we’ll load those data and clean up the column names using what we learned in <a href="data_import.html">data import</a>.</p>
 <pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
 library(janitor)
 
 options(tibble.print_min = 3)
 
 litters_data = read_csv(&quot;./data/FAS_litters.csv&quot;,
   col_types = &quot;ccddiiii&quot;)
-litters_data = clean_names(litters_data)</code></pre>
+litters_data = clean_names(litters_data)
+
+pups_data = read_csv(&quot;./data/FAS_pups.csv&quot;,
+  col_types = &quot;ciiiii&quot;)
+pups_data = clean_names(pups_data)</code></pre>
 <div id="select" class="section level3">
 <h3><code>select</code></h3>
 <p>For a given analysis, you may only need a subset of the columns in a data table; extracting only what you need can helpfully de-clutter, especially when you have large datasets. You can select columns using <code>select</code>.</p>
@@ -459,7 +473,9 @@ litters_data = clean_names(litters_data)</code></pre>
 ## 3 #5/5/3/83/3-3  Con7       26.0        41.4          19               6
 ## # ... with 46 more rows, and 2 more variables: pups_dead_birth &lt;int&gt;,
 ## #   pups_survive &lt;int&gt;</code></pre>
+<p>In larger datasets, I also use <code>starts_with()</code>, <code>ends_with()</code>, and <code>contains()</code> often.</p>
 <p>Lastly, like other functions in <code>dplyr</code>, <code>select</code> will export a dataframe even if you only select one column. Mostly this is fine, but sometimes you want the vector stored in the column. To pull a single variable, use <code>pull</code>.</p>
+<p><strong><em>Learning Assessment:</em></strong> In the pups data, select the columns containing litter number, sex, and PD ears.</p>
 </div>
 <div id="filter" class="section level3">
 <h3><code>filter</code></h3>
@@ -476,6 +492,11 @@ litters_data = clean_names(litters_data)</code></pre>
 <li><code>!is.na(wt_increase)</code></li>
 </ul>
 <p>Filtering can be helpful for limiting a dataset to only those observations needed for an analysis. However, I recommend against the creation of many data subsets (e.g. one for each group). This can clutter up your workspace, and we’ll see good tools for the analysis of subsets before long.</p>
+<p><strong><em>Learning Assessment:</em></strong> In the pups data:</p>
+<ul>
+<li>filter the data to include only pups with sex 1</li>
+<li>filter the data to include only pups with PD walk less than 11 and sex 2</li>
+</ul>
 </div>
 <div id="mutate" class="section level3">
 <h3><code>mutate</code></h3>
@@ -501,6 +522,11 @@ litters_data = clean_names(litters_data)</code></pre>
 <li>You can create a new variable and immediately refer to (or change) it</li>
 </ul>
 <p>Creating a new variable that does exactly what you need can be a challenge; the more functions you know about, the easier this gets.</p>
+<p><strong><em>Learning Assessment:</em></strong> In the pups data:</p>
+<ul>
+<li>create a variable that subtracts 7 from PD pivot</li>
+<li>create a variable that is the sum of all the PD variables</li>
+</ul>
 </div>
 <div id="arrange" class="section level3">
 <h3><code>arrange</code></h3>
@@ -601,6 +627,14 @@ litters_data
 ## 1     (Intercept) 13.0833132 1.2707022 10.296128 3.390028e-11
 ## 2 pups_born_alive  0.6050786 0.1732314  3.492892 1.553186e-03</code></pre>
 <p>There are limitations to the pipe. You shouldn’t have sequences that are too long, there isn’t a great way to deal with multiple inputs and outputs, and (since it’s not base R) not everyone will know what <code>%&gt;%</code> means. That said, compared to days when R users only had the first two options, life is much better!</p>
+<p><strong><em>Learning Assessment:</em></strong> Write a chain of commands that:</p>
+<ul>
+<li>loads the pups data</li>
+<li>cleans the variable names</li>
+<li>filter the data to include only pups with sex 1</li>
+<li>removes the PD ears variable</li>
+<li>create a variable that indicates whether PD pivot is 7 or more days</li>
+</ul>
 </div>
 </div>
 <div id="other-materials" class="section level2">

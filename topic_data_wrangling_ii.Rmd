@@ -29,3 +29,5 @@ https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scr
 https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd
 
 https://zapier.com/learn/apis/
+
+https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe
