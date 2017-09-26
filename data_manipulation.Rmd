@@ -240,6 +240,6 @@ There's lots of stuff out there on how to clean your data using `dplyr`.
 * R for Data Science has a chapter on [data transformation](http://r4ds.had.co.nz/transform.html). The chapter on [pipes](http://r4ds.had.co.nz/pipes.html) may also be useful at this point.
 * R Programming for Research also discusses [data cleaning](https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#data-cleaning).
 * Even R Programming for Data Science, which tends towards base R, has a chapter on [`dplyr`](https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html).
-* The [data transformation cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf) is handy once you have a good handle on things.
+* The [data transformation cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf) is handy once you have a good handle on things.
 
 The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_i.zip).

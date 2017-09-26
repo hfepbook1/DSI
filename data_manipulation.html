@@ -394,6 +394,15 @@ div.tocify {
 <p>Start by figuring out how this example fits in with what you’ve done and plan to do – you may want to start a whole new directory and R Project practice, but I’d suggest adding a new R Markdown file to the project we started last time.</p>
 <p>Once again we’re going to be using the <code>tidyverse</code>, so we’ll load that at the outset; I’ll also load the <code>janitor</code> package because I like clean names. We’re going to be looking at a lot of output, so I’ll print only three lines of each tibble by default. Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and <code>FAS_pups.csv</code>, so we’ll load those data and clean up the column names using what we learned in <a href="data_import.html">data import</a>.</p>
 <pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
 library(janitor)
 
 options(tibble.print_min = 3)
@@ -637,7 +646,7 @@ litters_data
 <li>R for Data Science has a chapter on <a href="http://r4ds.had.co.nz/transform.html">data transformation</a>. The chapter on <a href="http://r4ds.had.co.nz/pipes.html">pipes</a> may also be useful at this point.</li>
 <li>R Programming for Research also discusses <a href="https://geanders.github.io/RProgrammingForResearch/entering-and-cleaning-data-1.html#data-cleaning">data cleaning</a>.</li>
 <li>Even R Programming for Data Science, which tends towards base R, has a chapter on <a href="https://bookdown.org/rdpeng/rprogdatascience/managing-data-frames-with-the-dplyr-package.html"><code>dplyr</code></a>.</li>
-<li>The <a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf">data transformation cheatsheet</a> is handy once you have a good handle on things.</li>
+<li>The <a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">data transformation cheatsheet</a> is handy once you have a good handle on things.</li>
 </ul>
 <p>The code that I produced working examples in lecture is <a href="./lecture_code/data_wrangling_i.zip">here</a>.</p>
 </div>
