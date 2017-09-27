@@ -327,6 +327,9 @@ div.tocify {
     <li>
       <a href="homework_1.html">Homework 1</a>
     </li>
+    <li>
+      <a href="homework_2.html">Homework 2</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -394,15 +397,6 @@ div.tocify {
 <p>Start by figuring out how this example fits in with what you’ve done and plan to do – you may want to start a whole new directory and R Project practice, but I’d suggest adding a new R Markdown file to the project we started last time.</p>
 <p>Once again we’re going to be using the <code>tidyverse</code>, so we’ll load that at the outset; I’ll also load the <code>janitor</code> package because I like clean names. We’re going to be looking at a lot of output, so I’ll print only three lines of each tibble by default. Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and <code>FAS_pups.csv</code>, so we’ll load those data and clean up the column names using what we learned in <a href="data_import.html">data import</a>.</p>
 <pre class="r"><code>library(tidyverse)
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-## Conflicts with tidy packages ----------------------------------------------
-## filter(): dplyr, stats
-## lag():    dplyr, stats
 library(janitor)
 
 options(tibble.print_min = 3)
