@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-Start by figuring out how this example fits in with what you've done and plan to do -- you may want to start a whole new directory and R Project practice, but I'd suggest adding a new R Markdown file to the project we started last time. 
+Start by figuring out how this example fits in with what you've done and plan to do. I'd suggest adding a new R Markdown file to the project we started last time; that way you can load example data sets using the code we wrote last time.
 
 Once again we're going to be using the `tidyverse`, so we'll load that at the outset; I'll also load the `janitor` package because I like clean names. We're going to be looking at a lot of output, so I'll print only three lines of each tibble by default. Lastly, we'll focus on the data in `FAS_litters.csv` and `FAS_pups.csv`, so we'll load those data and clean up the column names using what we learned in [data import](data_import.html).
 

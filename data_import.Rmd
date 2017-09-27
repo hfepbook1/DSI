@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-We're going to figure out how to import the three datasets in [this zip file](./resources/data_import_examples.zip). First, create a directory for today's work, add an R Project, move the data to your directory, and start an R Markdown file. We're also going to be making extensive use of the `tidyverse` package, so go ahead and load that. Lastly, take a moment to install the packages `janitor`, `haven`, and `readxl`. 
+We're going to figure out how to import the three datasets in [this zip file](./resources/data_import_examples.zip). First, create a directory for today's work (I'm calling mine `data_wrangling_i`), add an R Project, move the data to your directory (perhaps in a sub-directory called `data`), and start an R Markdown file. We're also going to be making extensive use of the `tidyverse` package, so go ahead and load that. Lastly, take a moment to install the packages `janitor`, `haven`, and `readxl`. 
 
 ```{r}
 library(tidyverse)
