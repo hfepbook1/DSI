@@ -51,7 +51,7 @@ Read and clean the Mr. Trash Wheel sheet:
 
 * specify the sheet in the Excel file and to omit columns containing notes (using the `range` argument and `cell_cols()` function) 
 * use reasonable variable names 
-* omit columns that do not include dumpster-specific data
+* omit rows that do not include dumpster-specific data
 * rounds the number of sports balls to the nearest integer and converts the result to an integer variable (using `as.integer`)
 
 Read and clean precipitation data for 2016 and 2017. For each, omit rows without precipitation data and add a variable year. Next, combine datasets and convert month to a character variable (the variable `month.name` is built into R and should be useful).
