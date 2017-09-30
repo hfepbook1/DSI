@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-These data were accessed from [Inside Airbnb](http://insideairbnb.com/get-the-data.html) on September 2, 2017. The version of the data that we will use in this class can be found [here](./data/nyc_airbnb.RData).
+These data were accessed from [Inside Airbnb](http://insideairbnb.com/get-the-data.html) on September 2, 2017. The version of the data that we will use in this class can be found [here](./data/nyc_airbnb.zip).
 
 
 ## About [Inside Airbnb](http://insideairbnb.com/about.html)
