@@ -6,28 +6,11 @@ Data wrangling is the process of getting data in whatever form they exist and, t
 
 The topic is made up of the following components:
 
-* Reading data from the web
-* Strings and factors
-* Sentiment analysis
+* [Reading data from the web](reading_data_from_the_web.html)
+* [Strings and factors](strings_and_factors.html)
+* [Text analysis](text_analysis.html)
 
+The slack channel for this topic is [here](ZZZZZZ).
 
+The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_ii.zip).
 
-
-
-https://www.opendatanetwork.com/search?q=new+york+city
-
-https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
-
-https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745
-
-https://github.com/ropensci/user2016-tutorial
-
-https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R
-
-https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd
-
-https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd
-
-https://zapier.com/learn/apis/
-
-https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe

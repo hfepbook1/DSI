@@ -1,0 +1,231 @@
+---
+title: "Reading data from the web"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Once you've imported data, you're going to need to do some cleaning up.
+
+This is the first module in the [Data Wrangling II](topic_data_wrangling_ii.html) topic; the relevant slack channel is [here](ZZZZZZ).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-manipulation" title="Data Manipulation" target="_blank">Data Manipulation</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+Start by figuring out how this example fits in ...
+
+Once again we're going to be using the `tidyverse`, so we'll load that at the outset; I'll also load the `janitor` package because I like clean names. We're going to be looking at a lot of output, so I'll print only three lines of each tibble by default. Lastly, we'll focus on the data in `FAS_litters.csv` and `FAS_pups.csv`, so we'll load those data and clean up the column names using what we learned in [data import](data_import.html).
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(httr)
+library(stringr)
+```
+
+### from web pages
+
+
+```{r}
+table_1 <- read_html("http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm") %>%
+  html_nodes(css = "table") %>%
+  .[[1]] %>%
+  html_table() %>% 
+  .[-1,] # %>% map(~class(.x))
+
+table_1 = lapply(select(table_1, -State), function(u) {gsub("[abc]", "", x = u) %>% as.numeric()}) %>% 
+  as.tibble()
+
+table_1
+
+
+table_1 <- read_html("https://en.wikipedia.org/wiki/Game_of_Thrones_(season_5)") %>%
+  html_nodes(".wikiepisodetable td:nth-child(4)") %>%
+  html_text()
+table_1
+
+
+
+kw2 <- read_html("http://www.bestplaces.net/climate/city/florida/key_west")
+climate <- html_nodes(kw2, css = "table")
+html_table(climate[[2]], header = TRUE)
+
+
+climate <- html_nodes(kw2, css = "#mainContent_dgClimate td")
+html_text(climate)
+
+
+
+url <- "http://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_dp_qt_see_all_top?ie=UTF8&showViewpoints=1&sortBy=helpful"
+
+h <- read_html(url)
+
+review_titles <- h %>%
+  html_nodes(".a-color-base") %>%
+  html_text()
+
+review_titles
+
+h %>%
+  html_nodes("#cm_cr-review_list .a-icon-alt") %>%
+  html_text() %>%
+  str_extract("\\d")
+
+h %>%
+  html_nodes("#cm_cr-review_list .review-votes") %>%
+  html_text()
+
+```
+
+
+### from an api
+
+```{r}
+
+library(httr)
+req = GET("https://data.cityofnewyork.us/resource/waf7-5gvc.json",
+          query = list(
+            year = "1990"
+          ))
+con = content(req, "text")
+j <- jsonlite::fromJSON(con)
+j
+
+
+
+
+library(httr)
+
+url <- "https://api.stackexchange.com/2.2/search"
+
+req <- GET(url, query = list(order = "desc",
+                             pagesize = 100,
+                             sort = "creation",
+                             tagged = "r",
+                             site = "stackoverflow"))
+
+req
+con <- content(req, "text")
+library(jsonlite)
+
+j <- jsonlite::fromJSON(con)
+
+#head(j$items)
+
+r_questions <- j$items %>%
+  flatten() %>%
+  as_tibble()
+
+r_questions
+
+
+
+
+
+library(httr)
+req = GET("https://data.cityofnewyork.us/resource/9w7m-hzhe.json",
+          query = list(
+            zipcode = 10023
+          ))
+con = content(req, "text")
+j <- jsonlite::fromJSON(con) %>%
+  as_tibble()
+j
+
+
+
+library(httr)
+req = GET("https://data.ny.gov/resource/hvwh-qtfg.json")
+con = content(req, "text")
+j <- jsonlite::fromJSON(con) %>%
+  select(-entrance_location, -station_location) %>%
+  as.tibble()
+
+j %>% group_by(station_name) %>% summarize(n_enter = n()) %>% arrange(desc(n_enter))
+
+
+
+
+
+req = GET("http://swapi.co/api/people")
+con = content(req)
+con$results[[1]]
+
+
+
+
+
+## http://pokeapi.co/docsv2/#pokemon
+
+poke = GET("http://pokeapi.co/api/v2/pokemon")
+con = content(poke)
+con$results[[1]]
+
+
+poke = GET("http://pokeapi.co/api/v2/pokemon/1")
+con = content(poke)
+con$stats[[1]]
+
+
+
+get_all <- function(url) {
+  out <- NULL
+  
+  while(!is.null(url)) {
+    message("Getting ", url)
+    req <- GET(url)
+    stop_for_status(req)
+    
+    con <- content(req)
+    out <- c(out, con$results)
+    url <- con$`next`
+  }
+  
+  out
+}
+
+# people <- get_all("http://swapi.co/api/people")
+# str(people[[1]])
+
+# poke = get_all("http://pokeapi.co/api/v2/pokemon")
+```
+
+
+
+## Other materials
+
+https://www.opendatanetwork.com/search?q=new+york+city
+
+https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
+
+https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745
+
+https://github.com/ropensci/user2016-tutorial
+
+https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R
+
+https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd
+
+https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd
+
+https://zapier.com/learn/apis/
+
+https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe
+
+
+The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_ii.zip).

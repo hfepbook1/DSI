@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Reading data from the web</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_i.html">Data Wrangling I</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
+    </li>
+    <li>
+      <a href="topic_iteration.html">Iteration</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_r_packages.html">R Packages</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Datasets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dataset_mr_trash_wheel.html">Mr. Trash Wheel</a>
+    </li>
+    <li>
+      <a href="dataset_restaurant_inspections.html">NYC Restaurant Inspections</a>
+    </li>
+    <li>
+      <a href="dataset_instacart.html">Instacart</a>
+    </li>
+    <li>
+      <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
+    </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
+    <li>
+      <a href="dataset_airbnb.html">Airbnb</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="homework.html">Homework</a>
+</li>
+<li>
+  <a href="course_communication.html">Communication</a>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Reading data from the web</h1>
+
+</div>
+
+
+<p>Once you’ve imported data, you’re going to need to do some cleaning up.</p>
+<p>This is the first module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="ZZZZZZ">here</a>.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-manipulation" title="Data Manipulation" target="_blank">Data Manipulation</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Start by figuring out how this example fits in …</p>
+<p>Once again we’re going to be using the <code>tidyverse</code>, so we’ll load that at the outset; I’ll also load the <code>janitor</code> package because I like clean names. We’re going to be looking at a lot of output, so I’ll print only three lines of each tibble by default. Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and <code>FAS_pups.csv</code>, so we’ll load those data and clean up the column names using what we learned in <a href="data_import.html">data import</a>.</p>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+library(rvest)
+## Loading required package: xml2
+## 
+## Attaching package: &#39;rvest&#39;
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     pluck
+## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding
+library(httr)
+library(stringr)</code></pre>
+<div id="from-web-pages" class="section level3">
+<h3>from web pages</h3>
+<pre class="r"><code>table_1 &lt;- read_html(&quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;) %&gt;%
+  html_nodes(css = &quot;table&quot;) %&gt;%
+  .[[1]] %&gt;%
+  html_table() %&gt;% 
+  .[-1,] # %&gt;% map(~class(.x))
+
+table_1 = lapply(select(table_1, -State), function(u) {gsub(&quot;[abc]&quot;, &quot;&quot;, x = u) %&gt;% as.numeric()}) %&gt;% 
+  as.tibble()
+
+table_1
+## # A tibble: 56 x 15
+##    `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)` `12-17(2013-2014)`
+##               &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;              &lt;dbl&gt;
+##  1            12.90            13.36          0.002              13.28
+##  2            13.88            14.66          0.005              13.98
+##  3            12.40            12.76          0.082              12.45
+##  4            11.24            11.64          0.029              12.02
+##  5            15.27            15.62          0.262              15.53
+##  6             9.98             9.60          0.426               9.90
+##  7            19.60            21.92          0.010              17.30
+##  8            13.69            13.12          0.364              15.12
+##  9            11.37            11.59          0.678              12.79
+## 10            14.49            15.25          0.103              15.03
+## # ... with 46 more rows, and 11 more variables: `12-17(2014-2015)` &lt;dbl&gt;,
+## #   `12-17(P Value)` &lt;dbl&gt;, `18-25(2013-2014)` &lt;dbl&gt;,
+## #   `18-25(2014-2015)` &lt;dbl&gt;, `18-25(P Value)` &lt;dbl&gt;,
+## #   `26+(2013-2014)` &lt;dbl&gt;, `26+(2014-2015)` &lt;dbl&gt;, `26+(P Value)` &lt;dbl&gt;,
+## #   `18+(2013-2014)` &lt;dbl&gt;, `18+(2014-2015)` &lt;dbl&gt;, `18+(P Value)` &lt;dbl&gt;
+
+
+table_1 &lt;- read_html(&quot;https://en.wikipedia.org/wiki/Game_of_Thrones_(season_5)&quot;) %&gt;%
+  html_nodes(&quot;.wikiepisodetable td:nth-child(4)&quot;) %&gt;%
+  html_text()
+table_1
+##  [1] &quot;Michael Slovis&quot;   &quot;Michael Slovis&quot;   &quot;Mark Mylod&quot;      
+##  [4] &quot;Mark Mylod&quot;       &quot;Jeremy Podeswa&quot;   &quot;Jeremy Podeswa&quot;  
+##  [7] &quot;Miguel Sapochnik&quot; &quot;Miguel Sapochnik&quot; &quot;David Nutter&quot;    
+## [10] &quot;David Nutter&quot;
+
+
+
+kw2 &lt;- read_html(&quot;http://www.bestplaces.net/climate/city/florida/key_west&quot;)
+climate &lt;- html_nodes(kw2, css = &quot;table&quot;)
+html_table(climate[[2]], header = TRUE)
+##                         CLIMATE Key West, Florida United States
+## 1                Rainfall (in.)           39.9054          39.2
+## 2                Snowfall (in.)            0.0000          25.8
+## 3            Precipitation Days           61.7000           102
+## 4                    Sunny Days          260.0000           205
+## 5                Avg. July High           89.3620          86.1
+## 6                 Avg. Jan. Low           64.1260          22.6
+## 7 Comfort Index (higher=better)           94.0000            54
+## 8                      UV Index            7.2000           4.3
+## 9                 Elevation ft.            6.0000         1,443
+
+
+climate &lt;- html_nodes(kw2, css = &quot;#mainContent_dgClimate td&quot;)
+html_text(climate)
+##  [1] &quot;  CLIMATE&quot;                        
+##  [2] &quot;Key West, Florida&quot;                
+##  [3] &quot;United States&quot;                    
+##  [4] &quot;  Rainfall (in.)  &quot;               
+##  [5] &quot;39.9054&quot;                          
+##  [6] &quot;39.2&quot;                             
+##  [7] &quot;  Snowfall (in.)  &quot;               
+##  [8] &quot;0&quot;                                
+##  [9] &quot;25.8&quot;                             
+## [10] &quot;  Precipitation Days  &quot;           
+## [11] &quot;61.7&quot;                             
+## [12] &quot;102&quot;                              
+## [13] &quot;  Sunny Days  &quot;                   
+## [14] &quot;260&quot;                              
+## [15] &quot;205&quot;                              
+## [16] &quot;  Avg. July High  &quot;               
+## [17] &quot;89.362&quot;                           
+## [18] &quot;86.1&quot;                             
+## [19] &quot;  Avg. Jan. Low  &quot;                
+## [20] &quot;64.126&quot;                           
+## [21] &quot;22.6&quot;                             
+## [22] &quot;  Comfort Index (higher=better)  &quot;
+## [23] &quot;94&quot;                               
+## [24] &quot;54&quot;                               
+## [25] &quot;  UV Index  &quot;                     
+## [26] &quot;7.2&quot;                              
+## [27] &quot;4.3&quot;                              
+## [28] &quot;  Elevation ft.  &quot;                
+## [29] &quot;6&quot;                                
+## [30] &quot;1,443&quot;
+
+
+
+url &lt;- &quot;http://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_dp_qt_see_all_top?ie=UTF8&amp;showViewpoints=1&amp;sortBy=helpful&quot;
+
+h &lt;- read_html(url)
+
+review_titles &lt;- h %&gt;%
+  html_nodes(&quot;.a-color-base&quot;) %&gt;%
+  html_text()
+
+review_titles
+##  [1] &quot;Still a great package and highly worth learning - but the text is getting quite out of date.&quot;
+##  [2] &quot;Nice resource, but already out of date&quot;                                                      
+##  [3] &quot;The best guide to the best graphics (I think) out there.&quot;                                    
+##  [4] &quot;Excellent content, poor adaptation to kindle&quot;                                                
+##  [5] &quot;Graphing in R&quot;                                                                               
+##  [6] &quot;Must-have reference for R graphics&quot;                                                          
+##  [7] &quot;Excellent&quot;                                                                                   
+##  [8] &quot;Ggplot2 - graphs that made me leave excel and use R&quot;                                         
+##  [9] &quot;Tippping point for R data visualization.&quot;                                                    
+## [10] &quot;This classic book is now 49 (dog) years old...&quot;
+
+h %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .a-icon-alt&quot;) %&gt;%
+  html_text() %&gt;%
+  str_extract(&quot;\\d&quot;)
+##  [1] &quot;3&quot; NA  NA  &quot;4&quot; NA  NA  &quot;5&quot; NA  NA  &quot;5&quot; NA  NA  &quot;5&quot; NA  NA  &quot;5&quot; NA 
+## [18] NA  &quot;4&quot; NA  NA  &quot;4&quot; NA  NA  &quot;4&quot; NA  NA  &quot;3&quot; NA  NA
+
+h %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-votes&quot;) %&gt;%
+  html_text()
+## [1] &quot;\n      13 people found this helpful.\n    &quot; 
+## [2] &quot;\n      42 people found this helpful.\n    &quot; 
+## [3] &quot;\n      One person found this helpful.\n    &quot;
+## [4] &quot;\n      One person found this helpful.\n    &quot;
+## [5] &quot;\n      2 people found this helpful.\n    &quot;  
+## [6] &quot;\n      7 people found this helpful.\n    &quot;  
+## [7] &quot;\n      2 people found this helpful.\n    &quot;</code></pre>
+</div>
+<div id="from-an-api" class="section level3">
+<h3>from an api</h3>
+<pre class="r"><code>
+library(httr)
+req = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.json&quot;,
+          query = list(
+            year = &quot;1990&quot;
+          ))
+con = content(req, &quot;text&quot;)
+j &lt;- jsonlite::fromJSON(con)
+j
+##   new_york_city_population nyc_consumption_million_gallons_per_day
+## 1                  7335650                                    1424
+##   per_capita_gallons_per_person_per_day year
+## 1                                   194 1990
+
+
+
+
+library(httr)
+
+url &lt;- &quot;https://api.stackexchange.com/2.2/search&quot;
+
+req &lt;- GET(url, query = list(order = &quot;desc&quot;,
+                             pagesize = 100,
+                             sort = &quot;creation&quot;,
+                             tagged = &quot;r&quot;,
+                             site = &quot;stackoverflow&quot;))
+
+req
+## Response [https://api.stackexchange.com/2.2/search?order=desc&amp;pagesize=100&amp;sort=creation&amp;tagged=r&amp;site=stackoverflow]
+##   Date: 2017-09-30 19:17
+##   Status: 200
+##   Content-Type: application/json; charset=utf-8
+##   Size: 63.9 kB
+con &lt;- content(req, &quot;text&quot;)
+library(jsonlite)
+## 
+## Attaching package: &#39;jsonlite&#39;
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     flatten
+
+j &lt;- jsonlite::fromJSON(con)
+
+#head(j$items)
+
+r_questions &lt;- j$items %&gt;%
+  flatten() %&gt;%
+  as_tibble()
+
+r_questions
+## # A tibble: 100 x 21
+##         tags is_answered view_count answer_count score last_activity_date
+##  *    &lt;list&gt;       &lt;lgl&gt;      &lt;int&gt;        &lt;int&gt; &lt;int&gt;              &lt;int&gt;
+##  1 &lt;chr [3]&gt;       FALSE          6            0     0         1506796202
+##  2 &lt;chr [3]&gt;       FALSE         14            1     1         1506797067
+##  3 &lt;chr [5]&gt;       FALSE          3            0     0         1506795809
+##  4 &lt;chr [2]&gt;        TRUE         11            1     0         1506795739
+##  5 &lt;chr [3]&gt;       FALSE          8            0     0         1506794998
+##  6 &lt;chr [1]&gt;       FALSE         16            0     0         1506794990
+##  7 &lt;chr [2]&gt;       FALSE         12            2     0         1506797736
+##  8 &lt;chr [1]&gt;       FALSE         11            1     0         1506798922
+##  9 &lt;chr [4]&gt;       FALSE          9            0     0         1506797963
+## 10 &lt;chr [3]&gt;       FALSE         10            0     0         1506794203
+## # ... with 90 more rows, and 15 more variables: creation_date &lt;int&gt;,
+## #   question_id &lt;int&gt;, link &lt;chr&gt;, title &lt;chr&gt;, last_edit_date &lt;int&gt;,
+## #   accepted_answer_id &lt;int&gt;, closed_date &lt;int&gt;, closed_reason &lt;chr&gt;,
+## #   owner.reputation &lt;int&gt;, owner.user_id &lt;int&gt;, owner.user_type &lt;chr&gt;,
+## #   owner.profile_image &lt;chr&gt;, owner.display_name &lt;chr&gt;, owner.link &lt;chr&gt;,
+## #   owner.accept_rate &lt;int&gt;
+
+
+
+
+
+library(httr)
+req = GET(&quot;https://data.cityofnewyork.us/resource/9w7m-hzhe.json&quot;,
+          query = list(
+            zipcode = 10023
+          ))
+con = content(req, &quot;text&quot;)
+j &lt;- jsonlite::fromJSON(con) %&gt;%
+  as_tibble()
+j
+## # A tibble: 1,000 x 18
+##                                             action      boro building
+##  *                                           &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;
+##  1 Violations were cited in the following area(s). MANHATTAN      316
+##  2 Violations were cited in the following area(s). MANHATTAN       77
+##  3 Violations were cited in the following area(s). MANHATTAN        1
+##  4 Violations were cited in the following area(s). MANHATTAN      218
+##  5 Violations were cited in the following area(s). MANHATTAN       64
+##  6 Violations were cited in the following area(s). MANHATTAN       71
+##  7 Violations were cited in the following area(s). MANHATTAN      148
+##  8 Violations were cited in the following area(s). MANHATTAN      274
+##  9 Violations were cited in the following area(s). MANHATTAN     2061
+## 10 Violations were cited in the following area(s). MANHATTAN       61
+## # ... with 990 more rows, and 15 more variables: camis &lt;chr&gt;,
+## #   critical_flag &lt;chr&gt;, cuisine_description &lt;chr&gt;, dba &lt;chr&gt;,
+## #   grade &lt;chr&gt;, grade_date &lt;chr&gt;, inspection_date &lt;chr&gt;,
+## #   inspection_type &lt;chr&gt;, phone &lt;chr&gt;, record_date &lt;chr&gt;, score &lt;chr&gt;,
+## #   street &lt;chr&gt;, violation_code &lt;chr&gt;, violation_description &lt;chr&gt;,
+## #   zipcode &lt;chr&gt;
+
+
+
+library(httr)
+req = GET(&quot;https://data.ny.gov/resource/hvwh-qtfg.json&quot;)
+con = content(req, &quot;text&quot;)
+j &lt;- jsonlite::fromJSON(con) %&gt;%
+  select(-entrance_location, -station_location) %&gt;%
+  as.tibble()
+
+j %&gt;% group_by(station_name) %&gt;% summarize(n_enter = n()) %&gt;% arrange(desc(n_enter))
+## # A tibble: 190 x 2
+##                      station_name n_enter
+##                             &lt;chr&gt;   &lt;int&gt;
+##  1                        34th St      41
+##  2                        23rd St      31
+##  3                        14th St      26
+##  4                        42nd St      18
+##  5                        59th St      18
+##  6 47-50th Sts Rockefeller Center      17
+##  7                        50th St      16
+##  8                        57th St      16
+##  9                      Rector St      15
+## 10                    Chambers St      14
+## # ... with 180 more rows
+
+
+
+
+
+req = GET(&quot;http://swapi.co/api/people&quot;)
+con = content(req)
+con$results[[1]]
+## $name
+## [1] &quot;Luke Skywalker&quot;
+## 
+## $height
+## [1] &quot;172&quot;
+## 
+## $mass
+## [1] &quot;77&quot;
+## 
+## $hair_color
+## [1] &quot;blond&quot;
+## 
+## $skin_color
+## [1] &quot;fair&quot;
+## 
+## $eye_color
+## [1] &quot;blue&quot;
+## 
+## $birth_year
+## [1] &quot;19BBY&quot;
+## 
+## $gender
+## [1] &quot;male&quot;
+## 
+## $homeworld
+## [1] &quot;https://swapi.co/api/planets/1/&quot;
+## 
+## $films
+## $films[[1]]
+## [1] &quot;https://swapi.co/api/films/2/&quot;
+## 
+## $films[[2]]
+## [1] &quot;https://swapi.co/api/films/6/&quot;
+## 
+## $films[[3]]
+## [1] &quot;https://swapi.co/api/films/3/&quot;
+## 
+## $films[[4]]
+## [1] &quot;https://swapi.co/api/films/1/&quot;
+## 
+## $films[[5]]
+## [1] &quot;https://swapi.co/api/films/7/&quot;
+## 
+## 
+## $species
+## $species[[1]]
+## [1] &quot;https://swapi.co/api/species/1/&quot;
+## 
+## 
+## $vehicles
+## $vehicles[[1]]
+## [1] &quot;https://swapi.co/api/vehicles/14/&quot;
+## 
+## $vehicles[[2]]
+## [1] &quot;https://swapi.co/api/vehicles/30/&quot;
+## 
+## 
+## $starships
+## $starships[[1]]
+## [1] &quot;https://swapi.co/api/starships/12/&quot;
+## 
+## $starships[[2]]
+## [1] &quot;https://swapi.co/api/starships/22/&quot;
+## 
+## 
+## $created
+## [1] &quot;2014-12-09T13:50:51.644000Z&quot;
+## 
+## $edited
+## [1] &quot;2014-12-20T21:17:56.891000Z&quot;
+## 
+## $url
+## [1] &quot;https://swapi.co/api/people/1/&quot;
+
+
+
+
+
+## http://pokeapi.co/docsv2/#pokemon
+
+poke = GET(&quot;http://pokeapi.co/api/v2/pokemon&quot;)
+con = content(poke)
+con$results[[1]]
+## $url
+## [1] &quot;https://pokeapi.co/api/v2/pokemon/1/&quot;
+## 
+## $name
+## [1] &quot;bulbasaur&quot;
+
+
+poke = GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;)
+con = content(poke)
+con$stats[[1]]
+## $stat
+## $stat$url
+## [1] &quot;https://pokeapi.co/api/v2/stat/6/&quot;
+## 
+## $stat$name
+## [1] &quot;speed&quot;
+## 
+## 
+## $effort
+## [1] 0
+## 
+## $base_stat
+## [1] 45
+
+
+
+get_all &lt;- function(url) {
+  out &lt;- NULL
+  
+  while(!is.null(url)) {
+    message(&quot;Getting &quot;, url)
+    req &lt;- GET(url)
+    stop_for_status(req)
+    
+    con &lt;- content(req)
+    out &lt;- c(out, con$results)
+    url &lt;- con$`next`
+  }
+  
+  out
+}
+
+# people &lt;- get_all(&quot;http://swapi.co/api/people&quot;)
+# str(people[[1]])
+
+# poke = get_all(&quot;http://pokeapi.co/api/v2/pokemon&quot;)</code></pre>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p><a href="https://www.opendatanetwork.com/search?q=new+york+city" class="uri">https://www.opendatanetwork.com/search?q=new+york+city</a></p>
+<p><a href="https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer" class="uri">https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer</a></p>
+<p><a href="https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745" class="uri">https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745</a></p>
+<p><a href="https://github.com/ropensci/user2016-tutorial" class="uri">https://github.com/ropensci/user2016-tutorial</a></p>
+<p><a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R" class="uri">https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R</a></p>
+<p><a href="https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd" class="uri">https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd</a></p>
+<p><a href="https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd" class="uri">https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd</a></p>
+<p><a href="https://zapier.com/learn/apis/" class="uri">https://zapier.com/learn/apis/</a></p>
+<p><a href="https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe" class="uri">https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe</a></p>
+<p>The code that I produced working examples in lecture is <a href="./lecture_code/data_wrangling_ii.zip">here</a>.</p>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
