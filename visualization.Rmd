@@ -27,7 +27,15 @@ knitr::opts_chunk$set(
 
 ## Example
 
-I'll start by creating a directory for this topic, adding an R Project, and opening a new R Markdown document for visualizations. We'll be working with NOAA weather data, which is downloaded using the `rnoaa` package in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I'll cache the code chunk. 
+I'll start by creating a directory for this topic, adding an R Project, and opening a new R Markdown document for visualizations. I'll also load the `tidyverse` package and a couple of others.
+
+```{r}
+library(tidyverse)
+library(ggridges)
+library(ggthemes)
+```
+
+We'll be working with NOAA weather data, which is downloaded using the `rnoaa` package in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I'll cache the code chunk. 
 
 ```{r weather_data_create, cache = TRUE}
 library(rnoaa)
@@ -45,14 +53,6 @@ weather =
     tmax = tmax / 10) %>%
   select(name, id, everything())
 weather
-```
-
-I'll load the `tidyverse` package and a couple of others.
-
-```{r}
-library(tidyverse)
-library(ggridges)
-library(ggthemes)
 ```
 
 We'll start with a basic scatterplot to develop our understanding of `ggplot`'s data + mappings + geoms approach, and build quickly from there. 
