@@ -1,0 +1,94 @@
+---
+title: "Strings and factors"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Most of the tools we examined in [Data Wrangling I](topic_data_wrangling_i.html) were general purpose things -- what tidy data is, using `dplyr` and `tidyr` for manipulation of data tables. Two variable types, strings and factors, present enough challenges to examine in some detail.
+
+This is the second module in the [Data Wrangling II](topic_data_wrangling_ii.html) topic; the relevant slack channel is [here](ZZZZZZ).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-manipulation" title="Data Manipulation" target="_blank">Data Manipulation</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+I'll write code for today's content in a new R Markdown document called `strings_and_factors.Rmd`, and put it in the same directory as `reading_data_from_the_web.Rmd`. I'm also going to load the usual packages, as well as `stringr` and `forcats`.
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(httr)
+library(stringr)
+library(forcats)
+```
+
+### Strings
+
+
+
+
+Revisit drug use data. 
+
+[This page](http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm) contains data from the National Survey on Drug Use and Health; it includes tables for drug use in the past year or month, as well as tables focusing on specific kinds of drug use. These data are potentially useful for analysis, and we'd like to be able to read in the first table. 
+
+```{r}
+url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+drug_use_xml = read_html(url)
+
+table_1 = (drug_use_xml %>% html_nodes(css = "table"))[[1]] %>%
+  html_table() %>%
+  .[-1,] %>%
+  as_tibble()
+
+table_1 = 
+  table_1 %>%
+  select(-contains("P Value")) %>%
+  gather(key = key, value = percent, -State) %>%
+  separate(key, into = c("age", "year"), sep = "\\(") %>%
+  mutate(year = str_trunc(year, 9),
+         percent = str_replace(percent, "[ab]", ""),
+         percent = as.numeric(percent)) %>%
+  filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
+```
+
+
+
+
+
+## Other materials
+
+https://www.opendatanetwork.com/search?q=new+york+city
+
+https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
+
+https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745
+
+https://github.com/ropensci/user2016-tutorial
+
+https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R
+
+https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd
+
+https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd
+
+https://zapier.com/learn/apis/
+
+https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe
+
+
+The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_ii.zip).
