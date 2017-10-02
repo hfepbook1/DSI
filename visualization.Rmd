@@ -17,8 +17,6 @@ knitr::opts_chunk$set(
   fig.asp = .6,
   out.width = "90%"
 )
-
-library(tidyverse)
 ```
 
 ## Some slides
@@ -29,7 +27,7 @@ library(tidyverse)
 
 ## Example
 
-I'll start by creating a directory for this topic, adding an R Project, and opening a new R Markdown document for visualizations. We'll be working with NOAA weather data, which is downloaded using the `rnoaa` package in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I'll cache the code chunk. I've also loaded the `tidyverse` package separately.
+I'll start by creating a directory for this topic, adding an R Project, and opening a new R Markdown document for visualizations. We'll be working with NOAA weather data, which is downloaded using the `rnoaa` package in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I'll cache the code chunk. 
 
 ```{r weather_data_create, cache = TRUE}
 library(rnoaa)
@@ -47,6 +45,14 @@ weather =
     tmax = tmax / 10) %>%
   select(name, id, everything())
 weather
+```
+
+I'll load the `tidyverse` package and a couple of others.
+
+```{r}
+library(tidyverse)
+library(ggridges)
+library(ggthemes)
 ```
 
 We'll start with a basic scatterplot to develop our understanding of `ggplot`'s data + mappings + geoms approach, and build quickly from there. 
@@ -91,7 +97,7 @@ Nice! We get colors and have a handly legend. Maybe next I'll add a smooth curve
 ```{r}
 ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) +
-  stat_smooth(se = FALSE)
+  geom_smooth(se = FALSE)
 ```
 
 Neat! The curve gives a sense of the relationship between variables, and the transparency shows where data are overlapping. I can't help but notice, though, that the smooth curve is for all the data but the colors are only for the scatterplot. Turns out that this is due to where I defined the mappings. The X and Y mappings apply to the whole graphic, but color is currently geom-specific. Sometimes you want or need to do this, but for now I don't like it. If I'm honest, I'm also having a hard time seeing everything on one plot, so I'm going to add facet based on name as well. 
@@ -99,7 +105,7 @@ Neat! The curve gives a sense of the relationship between variables, and the tra
 ```{r}
 ggplot(weather, aes(x = tmin, y = tmax, color = name)) + 
   geom_point(alpha = .5) +
-  stat_smooth(se = FALSE) + 
+  geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
 ```
 
@@ -108,11 +114,13 @@ Awesome! I've learned a lot about these data. However, the relationship between 
 ```{r}
 ggplot(weather, aes(x = date, y = tmax, color = name)) + 
   geom_point(aes(size = prcp), alpha = .5) +
-  stat_smooth(se = FALSE) + 
+  geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
 ```
 
 Way more interesting! You get a whole range of temperatures in Central Park (sometimes it's maybe too hot); it's more temperate near Seattle but it rains _all the time_; and Waikiki is great except for that one (relatively) cold, rainy day last summer. 
+
+**_Learning Assessment:_** Write a code chain that starts with weather data; focuses only on Waikiki, converts temperatures to Fahrenheit, makes a scatterplot of min vs. max temperature, and overlays a linear regression line (using options in `geom_smooth()`).
 
 ### Tips and tricks
 
@@ -120,7 +128,7 @@ There are lots of ways you can mix and match elements, depending on your goals. 
 
 ```{r}
 ggplot(weather, aes(x = date, y = tmax, color = name)) + 
-  stat_smooth(se = FALSE) 
+  geom_smooth(se = FALSE) 
 ```
 
 When you're making a scatterplot with lots of data, there's a limit to how much you can avoid overplotting using alpha levels and transparency. In these cases `geom_hex()`, `geom_bin2d()`, or `geom_density2d()` can be handy:
@@ -130,9 +138,9 @@ ggplot(weather, aes(x = tmax, y = tmin)) +
   geom_hex()
 ```
 
-There are lots of aesthetics, and these depend to some extent on the geom -- `color` worked for both `geom_point()` and `stat_smooth()`, but `shape` only applies to points. The help page for each geom includes a list of understood aesthetics.
+There are lots of aesthetics, and these depend to some extent on the geom -- `color` worked for both `geom_point()` and `geom_smooth()`, but `shape` only applies to points. The help page for each geom includes a list of understood aesthetics.
 
-In the preceding, we set the alpha aesthetic "by hand" instead of mapping it to a variable. This is possible for other aesthetics too -- you just have to assign the aesthetic value outside of `aes()`. To check your understanding of this point, try to explain why the two lines below don't produce the same result:
+**_Learning Assessment:_** In the preceding, we set the alpha aesthetic "by hand" instead of mapping it to a variable. This is possible for other aesthetics too. To check your understanding of this point, try to explain why the two lines below don't produce the same result:
 
 ```{r, eval = FALSE}
 ggplot(weather) + geom_point(aes(x = tmax, y = tmin), color = "blue")
@@ -172,7 +180,7 @@ Histograms and densities are one way of investigating univariate distributions; 
 ggplot(weather, aes(x = name, y = tmax)) + geom_boxplot()
 ```
 
-I kinda like violin plots over histograms, personally. 
+I kinda like violin plots over boxplots, personally. 
 
 ```{r}
 ggplot(weather, aes(x = name, y = tmax)) + 
@@ -183,10 +191,11 @@ ggplot(weather, aes(x = name, y = tmax)) +
 Both boxplots and violin plots are currently getting knocked out by ridge plots (in the [`ggridges`](https://github.com/clauswilke/ggridge) package), though, especially if you have [lots of categories](https://simplystatistics.org/2017/07/13/the-joy-of-no-more-violin-plots/)!
 
 ```{r}
-library(ggridges)
 ggplot(weather, aes(x = tmax, y = name)) + 
   geom_density_ridges(scale = .85)
 ```
+
+**_Learning Assessment:_** Make plots that compare precipitation across locations. Try a histogram, a density plot, a boxplot, a violin plot, and a ridgeplot; use aesthetic mappings to make your figure readable. 
 
 ### Themes, legends, etc.
 
@@ -284,7 +293,9 @@ weather %>%
   theme(legend.position = "bottom")
 ```
 
-We'll learn more about the [`forcats`](http://forcats.tidyverse.org/index.html) package later. 
+We'll learn more about the [`forcats`](http://forcats.tidyverse.org/index.html) package in [Data Wrangling II](data_wrangling_ii.html). 
+
+**_Learning Assessment:_** Revisit to density plot you made comparing precipitation across locations. Use themes and labels to improve the readability of this plot. 
 
 ### Saving and embedding plots
 
@@ -305,9 +316,17 @@ p = ggplot(weather, aes(x = tmin, y = tmax)) +
 ggsave("weather_plot.pdf", p, width = 8, height = 5)
 ```
 
-Embedding plots in an R Markdown document can also take a while to get used to, because there are several things to adjust. First is the size of the figure created by R, which is controlled using two of the three chunk options `fig.width`, `fig.height`, and `fig.asp`. I prefer a common width and plots that are a little wider than they are tall, so I set options to `fig.width = 6` and `fig.asp = .6`. Second is the size of the figure inserted into your document, which is controlled using `out.width` or `out.height`. I like to have a little padding around the sides of my figures, so I set `out.width = "90%"`. 
+Embedding plots in an R Markdown document can also take a while to get used to, because there are several things to adjust. First is the size of the figure created by R, which is controlled using two of the three chunk options `fig.width`, `fig.height`, and `fig.asp`. I prefer a common width and plots that are a little wider than they are tall, so I set options to `fig.width = 6` and `fig.asp = .6`. Second is the size of the figure inserted into your document, which is controlled using `out.width` or `out.height`. I like to have a little padding around the sides of my figures, so I set `out.width = "90%"`. I do all this by including the following in a code snippet at the outset of my R Markdown documents.
 
-What makes this difficult at first is that things like the font and point size in the figures generated by R are constant -- that is, they don't scale with the overall size of the figure. As a result, text in a figure with width 12 will _look_ smaller than text in a figure with width 6 after both have been embedded in a document. As an example, the code chunk below has set `fig.width = 12`.
+```{r, eval = FALSE}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+What makes embedding figures difficult at first is that things like the font and point size in the figures generated by R are constant -- that is, they don't scale with the overall size of the figure. As a result, text in a figure with width 12 will _look_ smaller than text in a figure with width 6 after both have been embedded in a document. As an example, the code chunk below has set `fig.width = 12`.
 
 ```{r, fig.width = 12}
 ggplot(weather, aes(x = tmin, y = tmax)) + 
@@ -315,6 +334,8 @@ ggplot(weather, aes(x = tmin, y = tmax)) +
 ```
 
 Usually you can get by with setting reasonable defaults, but keep a careful eye on figures you intend to show others -- everything should be legible!
+
+**_Learning Assessment:_** Set global options for your figure sizes, and re-knit your document. What happens when you change `fig.asp`? What about `out.width`?
 
 ## Other materials
 

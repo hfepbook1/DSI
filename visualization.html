@@ -369,15 +369,6 @@ div.tocify {
 
 <p>Good visualization is a critical step in data analysis.</p>
 <p>This is the first module in the <a href="topic_visualization_and_eda.html">Visualization and EDA</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7CGD92CX">here</a>.</p>
-<pre><code>## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr</code></pre>
-<pre><code>## Conflicts with tidy packages ----------------------------------------------</code></pre>
-<pre><code>## filter(): dplyr, stats
-## lag():    dplyr, stats</code></pre>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
 <script async class="speakerdeck-embed" data-id="7272d2325e0d4f27a6bca25afbf149ce" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
@@ -388,7 +379,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>I’ll start by creating a directory for this topic, adding an R Project, and opening a new R Markdown document for visualizations. We’ll be working with NOAA weather data, which is downloaded using the <code>rnoaa</code> package in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I’ll cache the code chunk. I’ve also loaded the <code>tidyverse</code> package separately.</p>
+<p>I’ll start by creating a directory for this topic, adding an R Project, and opening a new R Markdown document for visualizations. We’ll be working with NOAA weather data, which is downloaded using the <code>rnoaa</code> package in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I’ll cache the code chunk.</p>
 <pre class="r"><code>library(rnoaa)
 
 weather = 
@@ -413,17 +404,30 @@ weather
 ## 4 CentralPark_NY USW00094728 2016-01-04     0   2.2  -9.9
 ## 5 CentralPark_NY USW00094728 2016-01-05     0  -1.6 -11.6
 ## # ... with 1,093 more rows</code></pre>
+<p>I’ll load the <code>tidyverse</code> package and a couple of others.</p>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+library(ggridges)
+library(ggthemes)</code></pre>
 <p>We’ll start with a basic scatterplot to develop our understanding of <code>ggplot</code>’s data + mappings + geoms approach, and build quickly from there.</p>
 <div id="basic-scatterplot" class="section level3">
 <h3>Basic scatterplot</h3>
 <p>We’ll use the <code>weather</code> data throughout, so we’ll move straight into defining aesthetic mappings. To create a basic scatterplot, we need to map variables to the X and Y coordinate aesthetics:</p>
 <pre class="r"><code>p = ggplot(weather, aes(x = tmin, y = tmax))
 p</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
 <p>Couple of things to notice here. First, I saved the output of <code>ggplot()</code> to an object <code>p</code> and then printed it; later, I’ll be able add to the basic object as needed. I don’t always (or even usually) save the ggplot object, do want to emphasize this behavior.</p>
 <p>Second, my “scatterplot” is blank. That’s because I’ve defined the data and the aesthetic mappings, but haven’t added any geoms: ggplot knows what data I want to plot and how I want to map variables, but not what I want to show. Below I add a geom to define my first scatterplot.</p>
 <pre class="r"><code>p + geom_point()</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 <p>The code below could be used instead to produce the same figure. Using this style can be helpful if you want to do some pre-processing before making your plot but don’t want to save the intermediate data.</p>
 <pre class="r"><code>weather %&gt;%
   ggplot(aes(x = tmin, y = tmax)) + 
@@ -435,43 +439,44 @@ p</code></pre>
 <p>Let’s start with <code>name</code>, which I can incorporate using the <code>color</code> aesthetic:</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name))</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
 <p>Nice! We get colors and have a handly legend. Maybe next I’ll add a smooth curve and make the data points a bit transparent.</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) +
-  stat_smooth(se = FALSE)
+  geom_smooth(se = FALSE)
 ## `geom_smooth()` using method = &#39;gam&#39;</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
 <p>Neat! The curve gives a sense of the relationship between variables, and the transparency shows where data are overlapping. I can’t help but notice, though, that the smooth curve is for all the data but the colors are only for the scatterplot. Turns out that this is due to where I defined the mappings. The X and Y mappings apply to the whole graphic, but color is currently geom-specific. Sometimes you want or need to do this, but for now I don’t like it. If I’m honest, I’m also having a hard time seeing everything on one plot, so I’m going to add facet based on name as well.</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax, color = name)) + 
   geom_point(alpha = .5) +
-  stat_smooth(se = FALSE) + 
+  geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
 ## `geom_smooth()` using method = &#39;loess&#39;</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
 <p>Awesome! I’ve learned a lot about these data. However, the relationship between minimum and maximum temperature is now kinda boring, so I’d prefer something that shows the time of year. Also I want to learn about precipitation, so let’s do that.</p>
 <pre class="r"><code>ggplot(weather, aes(x = date, y = tmax, color = name)) + 
   geom_point(aes(size = prcp), alpha = .5) +
-  stat_smooth(se = FALSE) + 
+  geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
 ## `geom_smooth()` using method = &#39;loess&#39;
 ## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
 <p>Way more interesting! You get a whole range of temperatures in Central Park (sometimes it’s maybe too hot); it’s more temperate near Seattle but it rains <em>all the time</em>; and Waikiki is great except for that one (relatively) cold, rainy day last summer.</p>
+<p><strong><em>Learning Assessment:</em></strong> Write a code chain that starts with weather data; focuses only on Waikiki, converts temperatures to Fahrenheit, makes a scatterplot of min vs. max temperature, and overlays a linear regression line (using options in <code>geom_smooth()</code>).</p>
 </div>
 <div id="tips-and-tricks" class="section level3">
 <h3>Tips and tricks</h3>
 <p>There are lots of ways you can mix and match elements, depending on your goals. I don’t like the following plot as much (it doesn’t show the data and omits precipitation), but it illustrates that you have lots of freedom in determining which geoms to include and how to compare your groups. If nothing else, you should be starting to get a sense for why you create way more plots for yourself than for others.</p>
 <pre class="r"><code>ggplot(weather, aes(x = date, y = tmax, color = name)) + 
-  stat_smooth(se = FALSE) 
+  geom_smooth(se = FALSE) 
 ## `geom_smooth()` using method = &#39;loess&#39;</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
 <p>When you’re making a scatterplot with lots of data, there’s a limit to how much you can avoid overplotting using alpha levels and transparency. In these cases <code>geom_hex()</code>, <code>geom_bin2d()</code>, or <code>geom_density2d()</code> can be handy:</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmax, y = tmin)) + 
   geom_hex()</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
-<p>There are lots of aesthetics, and these depend to some extent on the geom – <code>color</code> worked for both <code>geom_point()</code> and <code>stat_smooth()</code>, but <code>shape</code> only applies to points. The help page for each geom includes a list of understood aesthetics.</p>
-<p>In the preceding, we set the alpha aesthetic “by hand” instead of mapping it to a variable. This is possible for other aesthetics too – you just have to assign the aesthetic value outside of <code>aes()</code>. To check your understanding of this point, try to explain why the two lines below don’t produce the same result:</p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-11-1.png" width="90%" /></p>
+<p>There are lots of aesthetics, and these depend to some extent on the geom – <code>color</code> worked for both <code>geom_point()</code> and <code>geom_smooth()</code>, but <code>shape</code> only applies to points. The help page for each geom includes a list of understood aesthetics.</p>
+<p><strong><em>Learning Assessment:</em></strong> In the preceding, we set the alpha aesthetic “by hand” instead of mapping it to a variable. This is possible for other aesthetics too. To check your understanding of this point, try to explain why the two lines below don’t produce the same result:</p>
 <pre class="r"><code>ggplot(weather) + geom_point(aes(x = tmax, y = tmin), color = &quot;blue&quot;)
 ggplot(weather) + geom_point(aes(x = tmax, y = tmin, color = &quot;blue&quot;))</code></pre>
 </div>
@@ -482,30 +487,30 @@ ggplot(weather) + geom_point(aes(x = tmax, y = tmin, color = &quot;blue&quot;))<
 <pre class="r"><code>ggplot(weather, aes(x = tmax)) + 
   geom_histogram()
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
 <p>You can play around with things like the bin width and set the fill color using an aesthetic mapping.</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmax, fill = name)) + 
   geom_histogram(position = &quot;dodge&quot;, binwidth = 2)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
 <p>The <code>position = &quot;dodge&quot;</code> places the bars for each group side-by-side, but this gets sort of hard to understand. I often prefer density plots in place of histograms.</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmax, fill = name)) + 
   geom_density(alpha = .4, adjust = .5, color = &quot;blue&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
 <p>The <code>adjust</code> parameter in density plots is similar to the <code>binwidth</code> parameter in histograms, and it helps to try a few values. I set the transparency level to .4 to make sure all densities appear. You should also note the distinction between <code>fill</code> and <code>color</code> aesthetics here. Lastly, you could facet by <code>name</code> as above but would have to ask if that makes comparisons easier or harder.</p>
 <p>Histograms and densities are one way of investigating univariate distributions; boxplots are another.</p>
 <pre class="r"><code>ggplot(weather, aes(x = name, y = tmax)) + geom_boxplot()</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
-<p>I kinda like violin plots over histograms, personally.</p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
+<p>I kinda like violin plots over boxplots, personally.</p>
 <pre class="r"><code>ggplot(weather, aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   stat_summary(fun.y = median, geom = &quot;point&quot;, color = &quot;blue&quot;, size = 4)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
 <p>Both boxplots and violin plots are currently getting knocked out by ridge plots (in the <a href="https://github.com/clauswilke/ggridge"><code>ggridges</code></a> package), though, especially if you have <a href="https://simplystatistics.org/2017/07/13/the-joy-of-no-more-violin-plots/">lots of categories</a>!</p>
-<pre class="r"><code>library(ggridges)
-ggplot(weather, aes(x = tmax, y = name)) + 
+<pre class="r"><code>ggplot(weather, aes(x = tmax, y = name)) + 
   geom_density_ridges(scale = .85)
 ## Picking joint bandwidth of 1.68</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><strong><em>Learning Assessment:</em></strong> Make plots that compare precipitation across locations. Try a histogram, a density plot, a boxplot, a violin plot, and a ridgeplot; use aesthetic mappings to make your figure readable.</p>
 </div>
 <div id="themes-legends-etc." class="section level3">
 <h3>Themes, legends, etc.</h3>
@@ -518,7 +523,7 @@ ggplot(weather, aes(x = tmax, y = name)) +
     y = &quot;Maxiumum daily temperature (C)&quot;,
     caption = &quot;Data from the rnoaa package&quot;
   )</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
 <p>Another that I frequently change is the legend position; by default this is on the right of the graphic, but I often shift it to the bottom to ensure the graphic takes up the available left-to-right space.</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) + 
@@ -529,7 +534,7 @@ ggplot(weather, aes(x = tmax, y = name)) +
     caption = &quot;Data from the rnoaa package&quot;
   ) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-20-1.png" width="90%" /></p>
 <p>While we’re on the subject, you can change the default theme (which is <code>theme_gray</code>) to something else. Here’s <code>theme_bw()</code>:</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) + 
@@ -541,7 +546,7 @@ ggplot(weather, aes(x = tmax, y = name)) +
   ) + 
   theme_bw() + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-20-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-21-1.png" width="90%" /></p>
 <p>… and here’s <code>theme_classic()</code>:</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) + 
@@ -553,7 +558,7 @@ ggplot(weather, aes(x = tmax, y = name)) +
   ) + 
   theme_classic() + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-21-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
 <p>… and, for some reason, here’s the Excel 2003 theme from <a href="https://cran.r-project.org/web/packages/ggthemes/vignettes/ggthemes.html"><code>ggthemes</code></a>:</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) + 
@@ -565,7 +570,7 @@ ggplot(weather, aes(x = tmax, y = name)) +
   ) + 
   ggthemes::theme_excel() + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
 <p>Don’t use the Excel 2003 theme (the first two are fine, and <code>ggthemes</code> has other very nice themes as well).</p>
 <p>The behavior of your plot depends on the data you’ve supplied; in some cases, it’s easier to control behavior through data manipulation than it is through the plot code. This is particularly true for the order of categorical or factor variables. Categorical variables will be ordered alphabetically; factors will be follow the specified order level. You can change the order level of a factor variable to your specified preference using <code>forcats::fct_relevel</code> or according to the value of another variable using <code>forcats::fct_reorder</code>.</p>
 <pre class="r"><code>weather %&gt;%
@@ -574,15 +579,16 @@ ggplot(weather, aes(x = tmax, y = name)) +
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   stat_summary(fun.y = median, geom = &quot;point&quot;, color = &quot;blue&quot;, size = 4) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
 <pre class="r"><code>weather %&gt;%
   mutate(name = forcats::fct_reorder(name, tmax)) %&gt;% 
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   stat_summary(fun.y = median, geom = &quot;point&quot;, color = &quot;blue&quot;, size = 4) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
-<p>We’ll learn more about the <a href="http://forcats.tidyverse.org/index.html"><code>forcats</code></a> package later.</p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
+<p>We’ll learn more about the <a href="http://forcats.tidyverse.org/index.html"><code>forcats</code></a> package in <a href="data_wrangling_ii.html">Data Wrangling II</a>.</p>
+<p><strong><em>Learning Assessment:</em></strong> Revisit to density plot you made comparing precipitation across locations. Use themes and labels to improve the readability of this plot.</p>
 </div>
 <div id="saving-and-embedding-plots" class="section level3">
 <h3>Saving and embedding plots</h3>
@@ -599,12 +605,18 @@ ggplot(weather, aes(x = tmax, y = name)) +
   theme(legend.position = &quot;bottom&quot;)
 
 ggsave(&quot;weather_plot.pdf&quot;, p, width = 8, height = 5)</code></pre>
-<p>Embedding plots in an R Markdown document can also take a while to get used to, because there are several things to adjust. First is the size of the figure created by R, which is controlled using two of the three chunk options <code>fig.width</code>, <code>fig.height</code>, and <code>fig.asp</code>. I prefer a common width and plots that are a little wider than they are tall, so I set options to <code>fig.width = 6</code> and <code>fig.asp = .6</code>. Second is the size of the figure inserted into your document, which is controlled using <code>out.width</code> or <code>out.height</code>. I like to have a little padding around the sides of my figures, so I set <code>out.width = &quot;90%&quot;</code>.</p>
-<p>What makes this difficult at first is that things like the font and point size in the figures generated by R are constant – that is, they don’t scale with the overall size of the figure. As a result, text in a figure with width 12 will <em>look</em> smaller than text in a figure with width 6 after both have been embedded in a document. As an example, the code chunk below has set <code>fig.width = 12</code>.</p>
+<p>Embedding plots in an R Markdown document can also take a while to get used to, because there are several things to adjust. First is the size of the figure created by R, which is controlled using two of the three chunk options <code>fig.width</code>, <code>fig.height</code>, and <code>fig.asp</code>. I prefer a common width and plots that are a little wider than they are tall, so I set options to <code>fig.width = 6</code> and <code>fig.asp = .6</code>. Second is the size of the figure inserted into your document, which is controlled using <code>out.width</code> or <code>out.height</code>. I like to have a little padding around the sides of my figures, so I set <code>out.width = &quot;90%&quot;</code>. I do all this by including the following in a code snippet at the outset of my R Markdown documents.</p>
+<pre class="r"><code>knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = &quot;90%&quot;
+)</code></pre>
+<p>What makes embedding figures difficult at first is that things like the font and point size in the figures generated by R are constant – that is, they don’t scale with the overall size of the figure. As a result, text in a figure with width 12 will <em>look</em> smaller than text in a figure with width 6 after both have been embedded in a document. As an example, the code chunk below has set <code>fig.width = 12</code>.</p>
 <pre class="r"><code>ggplot(weather, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name))</code></pre>
-<p><img src="visualization_files/figure-html/unnamed-chunk-26-1.png" width="90%" /></p>
+<p><img src="visualization_files/figure-html/unnamed-chunk-28-1.png" width="90%" /></p>
 <p>Usually you can get by with setting reasonable defaults, but keep a careful eye on figures you intend to show others – everything should be legible!</p>
+<p><strong><em>Learning Assessment:</em></strong> Set global options for your figure sizes, and re-knit your document. What happens when you change <code>fig.asp</code>? What about <code>out.width</code>?</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
