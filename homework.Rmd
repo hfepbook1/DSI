@@ -4,6 +4,8 @@ output:
   html_document
 ---
 
+All homework assignments are covered by the course [policy on collaboration](policy_on_collaboration.html).
+
 * Homework 0: [assignment](homework_0.html)
 * Homework 1: [assignment](homework_1.html) and [solution](resources/p8105_hw1_ajg2202.zip)
 * Homework 2: [assignment](homework_2.html)
