@@ -6,7 +6,9 @@ output:
     toc_float: true
 ---
 
-The version of the Mr. Trash Wheel data we'll use for this class is available [here](./data/HealthyHarborWaterWheelTotals2017-3.xlsx).
+The version of the Mr. Trash Wheel data we'll use for this class is available [here](./data/HealthyHarborWaterWheelTotals2017-3.xlsx). 
+
+**UPDATE:** a more recent dataset is [here](./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx).
 
 
 ## Context
