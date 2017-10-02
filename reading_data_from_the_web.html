@@ -367,7 +367,7 @@ div.tocify {
 </div>
 
 
-<p>Once you’ve imported data, you’re going to need to do some cleaning up.</p>
+<p>In <a href="data_import.html">data import</a>, we saw how to load data from a variety of formats; this is a fairly standard way to get data that have been gathered as part of a study. In a lot of cases, though, you’re going to have to go out and get the data you want or need. That’s the case we’re covering now.</p>
 <p>This is the first module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="ZZZZZZ">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
@@ -379,8 +379,8 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Start by figuring out how this example fits in …</p>
-<p>Once again we’re going to be using the <code>tidyverse</code>, so we’ll load that at the outset; I’ll also load the <code>janitor</code> package because I like clean names. We’re going to be looking at a lot of output, so I’ll print only three lines of each tibble by default. Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and <code>FAS_pups.csv</code>, so we’ll load those data and clean up the column names using what we learned in <a href="data_import.html">data import</a>.</p>
+<p>As always, it’s good to start by figuring out how you want to organize you code for this content. I’ll create a new directory called <code>data_wrangling_ii</code>, start an R Project, and open a new R Markdown file called <code>reading_data_from_the_web.Rmd</code>. Although we’ll mostly be getting data from the web, we’ll revisit some of <a href="./resources/data_import_examples.zip">these examples</a>, so I’ll create a <code>data</code> subdirectory and put those in it.</p>
+<p>There are some new additions to our standard packages (<code>rvest</code> and <code>httr</code>); I’m loading everything we need now. Now’s also the time to install the <a href="http://selectorgadget.com">Selector Gadget</a>.</p>
 <pre class="r"><code>library(tidyverse)
 ## Loading tidyverse: ggplot2
 ## Loading tidyverse: tibble
@@ -401,138 +401,57 @@ library(rvest)
 ## The following object is masked from &#39;package:readr&#39;:
 ## 
 ##     guess_encoding
-library(httr)
-library(stringr)</code></pre>
-<div id="from-web-pages" class="section level3">
-<h3>from web pages</h3>
-<pre class="r"><code>table_1 &lt;- read_html(&quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;) %&gt;%
-  html_nodes(css = &quot;table&quot;) %&gt;%
-  .[[1]] %&gt;%
-  html_table() %&gt;% 
-  .[-1,] # %&gt;% map(~class(.x))
+library(httr)</code></pre>
+<div id="extracting-from-web-pages" class="section level3">
+<h3>Extracting from web pages</h3>
+<p><a href="http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm">This page</a> contains data from the National Survey on Drug Use and Health; it includes tables for drug use in the past year or month, separately for specific kinds of drug use. These data are potentially useful for analysis, and we’d like to be able to read in the first table.</p>
+<p>First, let’s make sure we can load the data from the web.</p>
+<pre class="r"><code>url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
+drug_use_xml = read_html(url)
 
-table_1 = lapply(select(table_1, -State), function(u) {gsub(&quot;[abc]&quot;, &quot;&quot;, x = u) %&gt;% as.numeric()}) %&gt;% 
-  as.tibble()
-
-table_1
-## # A tibble: 56 x 15
-##    `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)` `12-17(2013-2014)`
-##               &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;              &lt;dbl&gt;
-##  1            12.90            13.36          0.002              13.28
-##  2            13.88            14.66          0.005              13.98
-##  3            12.40            12.76          0.082              12.45
-##  4            11.24            11.64          0.029              12.02
-##  5            15.27            15.62          0.262              15.53
-##  6             9.98             9.60          0.426               9.90
-##  7            19.60            21.92          0.010              17.30
-##  8            13.69            13.12          0.364              15.12
-##  9            11.37            11.59          0.678              12.79
-## 10            14.49            15.25          0.103              15.03
-## # ... with 46 more rows, and 11 more variables: `12-17(2014-2015)` &lt;dbl&gt;,
-## #   `12-17(P Value)` &lt;dbl&gt;, `18-25(2013-2014)` &lt;dbl&gt;,
-## #   `18-25(2014-2015)` &lt;dbl&gt;, `18-25(P Value)` &lt;dbl&gt;,
-## #   `26+(2013-2014)` &lt;dbl&gt;, `26+(2014-2015)` &lt;dbl&gt;, `26+(P Value)` &lt;dbl&gt;,
-## #   `18+(2013-2014)` &lt;dbl&gt;, `18+(2014-2015)` &lt;dbl&gt;, `18+(P Value)` &lt;dbl&gt;
-
-
-table_1 &lt;- read_html(&quot;https://en.wikipedia.org/wiki/Game_of_Thrones_(season_5)&quot;) %&gt;%
-  html_nodes(&quot;.wikiepisodetable td:nth-child(4)&quot;) %&gt;%
-  html_text()
-table_1
-##  [1] &quot;Michael Slovis&quot;   &quot;Michael Slovis&quot;   &quot;Mark Mylod&quot;      
-##  [4] &quot;Mark Mylod&quot;       &quot;Jeremy Podeswa&quot;   &quot;Jeremy Podeswa&quot;  
-##  [7] &quot;Miguel Sapochnik&quot; &quot;Miguel Sapochnik&quot; &quot;David Nutter&quot;    
-## [10] &quot;David Nutter&quot;
-
-
-
-kw2 &lt;- read_html(&quot;http://www.bestplaces.net/climate/city/florida/key_west&quot;)
-climate &lt;- html_nodes(kw2, css = &quot;table&quot;)
-html_table(climate[[2]], header = TRUE)
-##                         CLIMATE Key West, Florida United States
-## 1                Rainfall (in.)           39.9054          39.2
-## 2                Snowfall (in.)            0.0000          25.8
-## 3            Precipitation Days           61.7000           102
-## 4                    Sunny Days          260.0000           205
-## 5                Avg. July High           89.3620          86.1
-## 6                 Avg. Jan. Low           64.1260          22.6
-## 7 Comfort Index (higher=better)           94.0000            54
-## 8                      UV Index            7.2000           4.3
-## 9                 Elevation ft.            6.0000         1,443
-
-
-climate &lt;- html_nodes(kw2, css = &quot;#mainContent_dgClimate td&quot;)
-html_text(climate)
-##  [1] &quot;  CLIMATE&quot;                        
-##  [2] &quot;Key West, Florida&quot;                
-##  [3] &quot;United States&quot;                    
-##  [4] &quot;  Rainfall (in.)  &quot;               
-##  [5] &quot;39.9054&quot;                          
-##  [6] &quot;39.2&quot;                             
-##  [7] &quot;  Snowfall (in.)  &quot;               
-##  [8] &quot;0&quot;                                
-##  [9] &quot;25.8&quot;                             
-## [10] &quot;  Precipitation Days  &quot;           
-## [11] &quot;61.7&quot;                             
-## [12] &quot;102&quot;                              
-## [13] &quot;  Sunny Days  &quot;                   
-## [14] &quot;260&quot;                              
-## [15] &quot;205&quot;                              
-## [16] &quot;  Avg. July High  &quot;               
-## [17] &quot;89.362&quot;                           
-## [18] &quot;86.1&quot;                             
-## [19] &quot;  Avg. Jan. Low  &quot;                
-## [20] &quot;64.126&quot;                           
-## [21] &quot;22.6&quot;                             
-## [22] &quot;  Comfort Index (higher=better)  &quot;
-## [23] &quot;94&quot;                               
-## [24] &quot;54&quot;                               
-## [25] &quot;  UV Index  &quot;                     
-## [26] &quot;7.2&quot;                              
-## [27] &quot;4.3&quot;                              
-## [28] &quot;  Elevation ft.  &quot;                
-## [29] &quot;6&quot;                                
-## [30] &quot;1,443&quot;
-
-
-
-url &lt;- &quot;http://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_dp_qt_see_all_top?ie=UTF8&amp;showViewpoints=1&amp;sortBy=helpful&quot;
-
-h &lt;- read_html(url)
-
-review_titles &lt;- h %&gt;%
-  html_nodes(&quot;.a-color-base&quot;) %&gt;%
-  html_text()
-
-review_titles
-##  [1] &quot;Still a great package and highly worth learning - but the text is getting quite out of date.&quot;
-##  [2] &quot;Nice resource, but already out of date&quot;                                                      
-##  [3] &quot;The best guide to the best graphics (I think) out there.&quot;                                    
-##  [4] &quot;Excellent content, poor adaptation to kindle&quot;                                                
-##  [5] &quot;Graphing in R&quot;                                                                               
-##  [6] &quot;Must-have reference for R graphics&quot;                                                          
-##  [7] &quot;Excellent&quot;                                                                                   
-##  [8] &quot;Ggplot2 - graphs that made me leave excel and use R&quot;                                         
-##  [9] &quot;Tippping point for R data visualization.&quot;                                                    
-## [10] &quot;This classic book is now 49 (dog) years old...&quot;
-
-h %&gt;%
-  html_nodes(&quot;#cm_cr-review_list .a-icon-alt&quot;) %&gt;%
-  html_text() %&gt;%
-  str_extract(&quot;\\d&quot;)
-##  [1] &quot;3&quot; NA  NA  &quot;4&quot; NA  NA  &quot;5&quot; NA  NA  &quot;5&quot; NA  NA  &quot;5&quot; NA  NA  &quot;5&quot; NA 
-## [18] NA  &quot;4&quot; NA  NA  &quot;4&quot; NA  NA  &quot;4&quot; NA  NA  &quot;3&quot; NA  NA
-
-h %&gt;%
-  html_nodes(&quot;#cm_cr-review_list .review-votes&quot;) %&gt;%
-  html_text()
-## [1] &quot;\n      13 people found this helpful.\n    &quot; 
-## [2] &quot;\n      42 people found this helpful.\n    &quot; 
-## [3] &quot;\n      One person found this helpful.\n    &quot;
-## [4] &quot;\n      One person found this helpful.\n    &quot;
-## [5] &quot;\n      2 people found this helpful.\n    &quot;  
-## [6] &quot;\n      7 people found this helpful.\n    &quot;  
-## [7] &quot;\n      2 people found this helpful.\n    &quot;</code></pre>
+drug_use_xml
+## {xml_document}
+## &lt;html lang=&quot;en&quot;&gt;
+## [1] &lt;head&gt;\n&lt;link rel=&quot;P3Pv1&quot; href=&quot;http://www.samhsa.gov/w3c/p3p.xml&quot;&gt;\ ...
+## [2] &lt;body&gt;\r\n\r\n&lt;noscript&gt;\r\n&lt;p&gt;Your browser&#39;s Javascript is off. Hyp ...</code></pre>
+<p>Doesn’t look like much, but we’re there. Rather than trying to grab something using a CSS selector, let’s try our luck extracting the tables from the HTML.</p>
+<pre class="r"><code>drug_use_xml %&gt;%
+  html_nodes(css = &quot;table&quot;)
+## {xml_nodeset (15)}
+##  [1] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [2] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [3] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [4] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [5] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [6] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [7] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [8] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+##  [9] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+## [10] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+## [11] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+## [12] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+## [13] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+## [14] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
+## [15] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...</code></pre>
+<p>This has extracted <em>all</em> of the tables on the original page; that’s why we have a list with 15 elements. We’re only focused on the first one for now, so let’s get the contents from the first list element.</p>
+<pre class="r"><code>table_1 = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
+  html_table() </code></pre>
+<p>I won’t print the table here, but if you look at it you’ll notice a problem: the “note” at the bottom of the table appears in every column in the first row. We need to remove that; I’ll also convert to a tibble so that things print nicely.</p>
+<pre class="r"><code>table_1 = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
+  html_table() %&gt;%
+  .[-1,] %&gt;% 
+  as_tibble()</code></pre>
+<p>Success!! At least, mostly. These data aren’t <a href="tidy_data.html">tidy</a>, but we’ll worry about that in another module.</p>
+<p><strong><em>Learning assessment:</em></strong> Create a data frame that contains the cost of living table for New York from <a href="https://www.bestplaces.net/cost_of_living/city/new_york/new_york">this page</a>.</p>
+<p>Suppose we’d like to create a dataframe containing the cast and characters of <a href="http://www.imdb.com/title/tt0241527/">Harry Potter and the Sorcerer’s Stone</a> using the IMDB page. The first step is the same as before – we need to get the HTML.</p>
+<pre class="r"><code>hpss_html = read_html(&quot;http://www.imdb.com/title/tt0241527/&quot;)</code></pre>
+<p>The character list isn’t stored in a handy table, so we’re going to isolate the CSS selector for characters. A bit of clicking around gets me something like below.</p>
+<p><img src="images/read_from_web_css_selctor.png" style="width:75%"></p>
+<p>I’ll use the CSS selector in <code>html_nodes()</code> to extract the relevant HTML code, and convert it to text.</p>
+<pre class="r"><code>cast = hpss_html %&gt;%
+  html_nodes(&quot;.itemprop .itemprop&quot;) %&gt;%
+  html_text()</code></pre>
+<p><strong><em>Learning Assessment:</em></strong> <a href="https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_arp_d_hist_5?ie=UTF8&amp;showViewpoints=1&amp;sortBy=helpful&amp;filterByStar=five_star&amp;pageNumber=1">This page</a> contains the five-star reviews of a book on ggplot2. Use a process similar to the one above to extract the titles of the reviews.</p>
 </div>
 <div id="from-an-api" class="section level3">
 <h3>from an api</h3>
@@ -565,10 +484,10 @@ req &lt;- GET(url, query = list(order = &quot;desc&quot;,
 
 req
 ## Response [https://api.stackexchange.com/2.2/search?order=desc&amp;pagesize=100&amp;sort=creation&amp;tagged=r&amp;site=stackoverflow]
-##   Date: 2017-09-30 19:17
+##   Date: 2017-10-01 21:12
 ##   Status: 200
 ##   Content-Type: application/json; charset=utf-8
-##   Size: 63.9 kB
+##   Size: 64.1 kB
 con &lt;- content(req, &quot;text&quot;)
 library(jsonlite)
 ## 
@@ -589,22 +508,22 @@ r_questions
 ## # A tibble: 100 x 21
 ##         tags is_answered view_count answer_count score last_activity_date
 ##  *    &lt;list&gt;       &lt;lgl&gt;      &lt;int&gt;        &lt;int&gt; &lt;int&gt;              &lt;int&gt;
-##  1 &lt;chr [3]&gt;       FALSE          6            0     0         1506796202
-##  2 &lt;chr [3]&gt;       FALSE         14            1     1         1506797067
-##  3 &lt;chr [5]&gt;       FALSE          3            0     0         1506795809
-##  4 &lt;chr [2]&gt;        TRUE         11            1     0         1506795739
-##  5 &lt;chr [3]&gt;       FALSE          8            0     0         1506794998
-##  6 &lt;chr [1]&gt;       FALSE         16            0     0         1506794990
-##  7 &lt;chr [2]&gt;       FALSE         12            2     0         1506797736
-##  8 &lt;chr [1]&gt;       FALSE         11            1     0         1506798922
-##  9 &lt;chr [4]&gt;       FALSE          9            0     0         1506797963
-## 10 &lt;chr [3]&gt;       FALSE         10            0     0         1506794203
+##  1 &lt;chr [5]&gt;       FALSE          3            0     0         1506892059
+##  2 &lt;chr [3]&gt;       FALSE          4            0     0         1506891663
+##  3 &lt;chr [3]&gt;       FALSE          2            0     0         1506891352
+##  4 &lt;chr [2]&gt;       FALSE          8            1     0         1506892318
+##  5 &lt;chr [2]&gt;        TRUE          4            1     0         1506892190
+##  6 &lt;chr [4]&gt;       FALSE          6            1     0         1506892056
+##  7 &lt;chr [2]&gt;       FALSE          5            0     0         1506890097
+##  8 &lt;chr [3]&gt;        TRUE         14            1     0         1506891225
+##  9 &lt;chr [5]&gt;       FALSE          9            1     0         1506890522
+## 10 &lt;chr [3]&gt;       FALSE          4            0     0         1506892033
 ## # ... with 90 more rows, and 15 more variables: creation_date &lt;int&gt;,
-## #   question_id &lt;int&gt;, link &lt;chr&gt;, title &lt;chr&gt;, last_edit_date &lt;int&gt;,
-## #   accepted_answer_id &lt;int&gt;, closed_date &lt;int&gt;, closed_reason &lt;chr&gt;,
+## #   question_id &lt;int&gt;, link &lt;chr&gt;, title &lt;chr&gt;, accepted_answer_id &lt;int&gt;,
+## #   last_edit_date &lt;int&gt;, closed_date &lt;int&gt;, closed_reason &lt;chr&gt;,
 ## #   owner.reputation &lt;int&gt;, owner.user_id &lt;int&gt;, owner.user_type &lt;chr&gt;,
-## #   owner.profile_image &lt;chr&gt;, owner.display_name &lt;chr&gt;, owner.link &lt;chr&gt;,
-## #   owner.accept_rate &lt;int&gt;
+## #   owner.accept_rate &lt;int&gt;, owner.profile_image &lt;chr&gt;,
+## #   owner.display_name &lt;chr&gt;, owner.link &lt;chr&gt;
 
 
 
@@ -622,22 +541,22 @@ j
 ## # A tibble: 1,000 x 18
 ##                                             action      boro building
 ##  *                                           &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;
-##  1 Violations were cited in the following area(s). MANHATTAN      316
-##  2 Violations were cited in the following area(s). MANHATTAN       77
-##  3 Violations were cited in the following area(s). MANHATTAN        1
-##  4 Violations were cited in the following area(s). MANHATTAN      218
-##  5 Violations were cited in the following area(s). MANHATTAN       64
-##  6 Violations were cited in the following area(s). MANHATTAN       71
-##  7 Violations were cited in the following area(s). MANHATTAN      148
-##  8 Violations were cited in the following area(s). MANHATTAN      274
-##  9 Violations were cited in the following area(s). MANHATTAN     2061
+##  1 Violations were cited in the following area(s). MANHATTAN      132
+##  2 Violations were cited in the following area(s). MANHATTAN      141
+##  3 Violations were cited in the following area(s). MANHATTAN      104
+##  4 Violations were cited in the following area(s). MANHATTAN      303
+##  5 Violations were cited in the following area(s). MANHATTAN       57
+##  6 Violations were cited in the following area(s). MANHATTAN      251
+##  7 Violations were cited in the following area(s). MANHATTAN        0
+##  8 Violations were cited in the following area(s). MANHATTAN      117
+##  9 Violations were cited in the following area(s). MANHATTAN      303
 ## 10 Violations were cited in the following area(s). MANHATTAN       61
 ## # ... with 990 more rows, and 15 more variables: camis &lt;chr&gt;,
 ## #   critical_flag &lt;chr&gt;, cuisine_description &lt;chr&gt;, dba &lt;chr&gt;,
-## #   grade &lt;chr&gt;, grade_date &lt;chr&gt;, inspection_date &lt;chr&gt;,
-## #   inspection_type &lt;chr&gt;, phone &lt;chr&gt;, record_date &lt;chr&gt;, score &lt;chr&gt;,
-## #   street &lt;chr&gt;, violation_code &lt;chr&gt;, violation_description &lt;chr&gt;,
-## #   zipcode &lt;chr&gt;
+## #   inspection_date &lt;chr&gt;, inspection_type &lt;chr&gt;, phone &lt;chr&gt;,
+## #   record_date &lt;chr&gt;, score &lt;chr&gt;, street &lt;chr&gt;, violation_code &lt;chr&gt;,
+## #   violation_description &lt;chr&gt;, zipcode &lt;chr&gt;, grade &lt;chr&gt;,
+## #   grade_date &lt;chr&gt;
 
 
 
