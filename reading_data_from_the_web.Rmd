@@ -106,14 +106,14 @@ cast = hpss_html %>%
   html_text()
 ```
 
-**_Learning Assessment:_** [This page](https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_arp_d_hist_5?ie=UTF8&showViewpoints=1&sortBy=helpful&filterByStar=five_star&pageNumber=1) contains the five-star reviews of a book on ggplot2. Use a process similar to the one above to extract the titles of the reviews. 
+**_Learning Assessment:_** [This page](https://www.amazon.com/Napoleon-Dynamite-Jon-Heder/product-reviews/B003MXB4FC/ref=cm_cr_arp_d_paging_btm_2?ie=UTF8&filterByStar=five_star&reviewerType=avp_only_reviews&pageNumber=2#reviews-filter-bar) contains the first 10 five-star reviews of the movie "Napoleon Dynamite". Use a process similar to the one above to extract the titles of the reviews. 
 
 ```{r, eval = FALSE, echo = FALSE}
-url = "https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_arp_d_hist_5?ie=UTF8&showViewpoints=1&sortBy=helpful&filterByStar=five_star&pageNumber=1"
+url = "https://www.amazon.com/Napoleon-Dynamite-Jon-Heder/product-reviews/B003MXB4FC/ref=cm_cr_arp_d_paging_btm_2?ie=UTF8&filterByStar=five_star&reviewerType=avp_only_reviews&pageNumber=2#reviews-filter-bar"
 
-ggplot2_book_html = read_html(url)
+nap_dyn_html = read_html(url)
 
-review_titles = ggplot2_book_html %>%
+review_titles = nap_dyn_html %>%
   html_nodes(".a-color-base") %>%
   html_text()
 ```
@@ -158,9 +158,9 @@ subway_entrances =
 
 The NYC open data is particularly user-friendly; not every API is, and many take some work to get used to. Let's walk through an example from the Star Wars API.
 
-```{r}
+```{r, eval = FALSE}
 
-req = GET("http://swapi.co/api/people")
+req = GET("http://swapi.co/api/people/1")
 con = content(req)
 con$results[[1]]
 
@@ -170,7 +170,7 @@ con$results[[1]]
 
 ## http://pokeapi.co/docsv2/#pokemon
 
-poke = GET("http://pokeapi.co/api/v2/pokemon")
+poke = GET("http://pokeapi.co/api/v2/pokemon/1")
 con = content(poke)
 con$results[[1]]
 

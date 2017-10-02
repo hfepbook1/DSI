@@ -402,8 +402,8 @@ library(rvest)
 ## 
 ##     guess_encoding
 library(httr)</code></pre>
-<div id="extracting-from-web-pages" class="section level3">
-<h3>Extracting from web pages</h3>
+<div id="extracting-tables" class="section level3">
+<h3>Extracting tables</h3>
 <p><a href="http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm">This page</a> contains data from the National Survey on Drug Use and Health; it includes tables for drug use in the past year or month, separately for specific kinds of drug use. These data are potentially useful for analysis, and we’d like to be able to read in the first table.</p>
 <p>First, let’s make sure we can load the data from the web.</p>
 <pre class="r"><code>url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
@@ -434,235 +434,85 @@ drug_use_xml
 ## [14] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...
 ## [15] &lt;table class=&quot;rti&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;1&quot; width ...</code></pre>
 <p>This has extracted <em>all</em> of the tables on the original page; that’s why we have a list with 15 elements. We’re only focused on the first one for now, so let’s get the contents from the first list element.</p>
-<pre class="r"><code>table_1 = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
+<pre class="r"><code>table_marj = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
   html_table() </code></pre>
 <p>I won’t print the table here, but if you look at it you’ll notice a problem: the “note” at the bottom of the table appears in every column in the first row. We need to remove that; I’ll also convert to a tibble so that things print nicely.</p>
-<pre class="r"><code>table_1 = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
+<pre class="r"><code>table_marj = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
   html_table() %&gt;%
   .[-1,] %&gt;% 
-  as_tibble()</code></pre>
+  as_tibble()
+
+table_marj
+## # A tibble: 56 x 16
+##         State `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)`
+##  *      &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;
+##  1 Total U.S.           12.90a            13.36          0.002
+##  2  Northeast           13.88a            14.66          0.005
+##  3    Midwest           12.40b            12.76          0.082
+##  4      South           11.24a            11.64          0.029
+##  5       West            15.27            15.62          0.262
+##  6    Alabama             9.98             9.60          0.426
+##  7     Alaska           19.60a            21.92          0.010
+##  8    Arizona            13.69            13.12          0.364
+##  9   Arkansas            11.37            11.59          0.678
+## 10 California            14.49            15.25          0.103
+## # ... with 46 more rows, and 12 more variables: `12-17(2013-2014)` &lt;chr&gt;,
+## #   `12-17(2014-2015)` &lt;chr&gt;, `12-17(P Value)` &lt;chr&gt;,
+## #   `18-25(2013-2014)` &lt;chr&gt;, `18-25(2014-2015)` &lt;chr&gt;, `18-25(P
+## #   Value)` &lt;chr&gt;, `26+(2013-2014)` &lt;chr&gt;, `26+(2014-2015)` &lt;chr&gt;, `26+(P
+## #   Value)` &lt;chr&gt;, `18+(2013-2014)` &lt;chr&gt;, `18+(2014-2015)` &lt;chr&gt;, `18+(P
+## #   Value)` &lt;chr&gt;</code></pre>
 <p>Success!! At least, mostly. These data aren’t <a href="tidy_data.html">tidy</a>, but we’ll worry about that in another module.</p>
 <p><strong><em>Learning assessment:</em></strong> Create a data frame that contains the cost of living table for New York from <a href="https://www.bestplaces.net/cost_of_living/city/new_york/new_york">this page</a>.</p>
-<p>Suppose we’d like to create a dataframe containing the cast and characters of <a href="http://www.imdb.com/title/tt0241527/">Harry Potter and the Sorcerer’s Stone</a> using the IMDB page. The first step is the same as before – we need to get the HTML.</p>
+</div>
+<div id="css-selectors" class="section level3">
+<h3>CSS Selectors</h3>
+<p>Suppose we’d like to scrape the cast of <a href="http://www.imdb.com/title/tt0241527/">Harry Potter and the Sorcerer’s Stone</a> from the IMDB page. The first step is the same as before – we need to get the HTML.</p>
 <pre class="r"><code>hpss_html = read_html(&quot;http://www.imdb.com/title/tt0241527/&quot;)</code></pre>
-<p>The character list isn’t stored in a handy table, so we’re going to isolate the CSS selector for characters. A bit of clicking around gets me something like below.</p>
+<p>The cast list isn’t stored in a handy table, so we’re going to isolate the CSS selector for cast. A bit of clicking around gets me something like below.</p>
 <p><img src="images/read_from_web_css_selctor.png" style="width:75%"></p>
 <p>I’ll use the CSS selector in <code>html_nodes()</code> to extract the relevant HTML code, and convert it to text.</p>
 <pre class="r"><code>cast = hpss_html %&gt;%
   html_nodes(&quot;.itemprop .itemprop&quot;) %&gt;%
   html_text()</code></pre>
-<p><strong><em>Learning Assessment:</em></strong> <a href="https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/product-reviews/0387981403/ref=cm_cr_arp_d_hist_5?ie=UTF8&amp;showViewpoints=1&amp;sortBy=helpful&amp;filterByStar=five_star&amp;pageNumber=1">This page</a> contains the five-star reviews of a book on ggplot2. Use a process similar to the one above to extract the titles of the reviews.</p>
+<p><strong><em>Learning Assessment:</em></strong> <a href="https://www.amazon.com/Napoleon-Dynamite-Jon-Heder/product-reviews/B003MXB4FC/ref=cm_cr_arp_d_paging_btm_2?ie=UTF8&amp;filterByStar=five_star&amp;reviewerType=avp_only_reviews&amp;pageNumber=2#reviews-filter-bar">This page</a> contains the first 10 five-star reviews of the movie “Napoleon Dynamite”. Use a process similar to the one above to extract the titles of the reviews.</p>
 </div>
-<div id="from-an-api" class="section level3">
-<h3>from an api</h3>
+<div id="using-an-api" class="section level3">
+<h3>Using an API</h3>
+<p>New York City has a great open data resource. Although most (all?) datasets can be accessed by clicking through a website, we’ll access them directly using the API to improve reproducibility.</p>
+<p>As a simple example, <a href="https://data.cityofnewyork.us/Environment/Water-Consumption-In-The-New-York-City/ia2d-e54m">this page</a> is about a dataset for annual water consumption in NYC, along with the population in that year.</p>
+<pre class="r"><code>nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.csv&quot;) %&gt;% 
+  content(&quot;parsed&quot;)
+## Parsed with column specification:
+## cols(
+##   new_york_city_population = col_integer(),
+##   nyc_consumption_million_gallons_per_day = col_integer(),
+##   per_capita_gallons_per_person_per_day = col_integer(),
+##   year = col_integer()
+## )
+
+nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.json&quot;) %&gt;% 
+  content(&quot;text&quot;) %&gt;%
+  jsonlite::fromJSON() %&gt;%
+  as_tibble()</code></pre>
+<pre class="r"><code>nyc_water = 
+  GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.csv&quot;,
+        query = list(year = 1990)
+      ) %&gt;% 
+  content(&quot;parsed&quot;)
+## Parsed with column specification:
+## cols(
+##   new_york_city_population = col_integer(),
+##   nyc_consumption_million_gallons_per_day = col_integer(),
+##   per_capita_gallons_per_person_per_day = col_integer(),
+##   year = col_integer()
+## )</code></pre>
+<p><strong><em>Learning Assessment:</em></strong> Using information on <a href="https://data.cityofnewyork.us/resource/hvwh-qtfg">this page</a>, get the information on subway entrances in the city. Which stations have the most entrances?</p>
+<p>The NYC open data is particularly user-friendly; not every API is, and many take some work to get used to. Let’s walk through an example from the Star Wars API.</p>
 <pre class="r"><code>
-library(httr)
-req = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.json&quot;,
-          query = list(
-            year = &quot;1990&quot;
-          ))
-con = content(req, &quot;text&quot;)
-j &lt;- jsonlite::fromJSON(con)
-j
-##   new_york_city_population nyc_consumption_million_gallons_per_day
-## 1                  7335650                                    1424
-##   per_capita_gallons_per_person_per_day year
-## 1                                   194 1990
-
-
-
-
-library(httr)
-
-url &lt;- &quot;https://api.stackexchange.com/2.2/search&quot;
-
-req &lt;- GET(url, query = list(order = &quot;desc&quot;,
-                             pagesize = 100,
-                             sort = &quot;creation&quot;,
-                             tagged = &quot;r&quot;,
-                             site = &quot;stackoverflow&quot;))
-
-req
-## Response [https://api.stackexchange.com/2.2/search?order=desc&amp;pagesize=100&amp;sort=creation&amp;tagged=r&amp;site=stackoverflow]
-##   Date: 2017-10-01 21:12
-##   Status: 200
-##   Content-Type: application/json; charset=utf-8
-##   Size: 64.1 kB
-con &lt;- content(req, &quot;text&quot;)
-library(jsonlite)
-## 
-## Attaching package: &#39;jsonlite&#39;
-## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     flatten
-
-j &lt;- jsonlite::fromJSON(con)
-
-#head(j$items)
-
-r_questions &lt;- j$items %&gt;%
-  flatten() %&gt;%
-  as_tibble()
-
-r_questions
-## # A tibble: 100 x 21
-##         tags is_answered view_count answer_count score last_activity_date
-##  *    &lt;list&gt;       &lt;lgl&gt;      &lt;int&gt;        &lt;int&gt; &lt;int&gt;              &lt;int&gt;
-##  1 &lt;chr [5]&gt;       FALSE          3            0     0         1506892059
-##  2 &lt;chr [3]&gt;       FALSE          4            0     0         1506891663
-##  3 &lt;chr [3]&gt;       FALSE          2            0     0         1506891352
-##  4 &lt;chr [2]&gt;       FALSE          8            1     0         1506892318
-##  5 &lt;chr [2]&gt;        TRUE          4            1     0         1506892190
-##  6 &lt;chr [4]&gt;       FALSE          6            1     0         1506892056
-##  7 &lt;chr [2]&gt;       FALSE          5            0     0         1506890097
-##  8 &lt;chr [3]&gt;        TRUE         14            1     0         1506891225
-##  9 &lt;chr [5]&gt;       FALSE          9            1     0         1506890522
-## 10 &lt;chr [3]&gt;       FALSE          4            0     0         1506892033
-## # ... with 90 more rows, and 15 more variables: creation_date &lt;int&gt;,
-## #   question_id &lt;int&gt;, link &lt;chr&gt;, title &lt;chr&gt;, accepted_answer_id &lt;int&gt;,
-## #   last_edit_date &lt;int&gt;, closed_date &lt;int&gt;, closed_reason &lt;chr&gt;,
-## #   owner.reputation &lt;int&gt;, owner.user_id &lt;int&gt;, owner.user_type &lt;chr&gt;,
-## #   owner.accept_rate &lt;int&gt;, owner.profile_image &lt;chr&gt;,
-## #   owner.display_name &lt;chr&gt;, owner.link &lt;chr&gt;
-
-
-
-
-
-library(httr)
-req = GET(&quot;https://data.cityofnewyork.us/resource/9w7m-hzhe.json&quot;,
-          query = list(
-            zipcode = 10023
-          ))
-con = content(req, &quot;text&quot;)
-j &lt;- jsonlite::fromJSON(con) %&gt;%
-  as_tibble()
-j
-## # A tibble: 1,000 x 18
-##                                             action      boro building
-##  *                                           &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;
-##  1 Violations were cited in the following area(s). MANHATTAN      132
-##  2 Violations were cited in the following area(s). MANHATTAN      141
-##  3 Violations were cited in the following area(s). MANHATTAN      104
-##  4 Violations were cited in the following area(s). MANHATTAN      303
-##  5 Violations were cited in the following area(s). MANHATTAN       57
-##  6 Violations were cited in the following area(s). MANHATTAN      251
-##  7 Violations were cited in the following area(s). MANHATTAN        0
-##  8 Violations were cited in the following area(s). MANHATTAN      117
-##  9 Violations were cited in the following area(s). MANHATTAN      303
-## 10 Violations were cited in the following area(s). MANHATTAN       61
-## # ... with 990 more rows, and 15 more variables: camis &lt;chr&gt;,
-## #   critical_flag &lt;chr&gt;, cuisine_description &lt;chr&gt;, dba &lt;chr&gt;,
-## #   inspection_date &lt;chr&gt;, inspection_type &lt;chr&gt;, phone &lt;chr&gt;,
-## #   record_date &lt;chr&gt;, score &lt;chr&gt;, street &lt;chr&gt;, violation_code &lt;chr&gt;,
-## #   violation_description &lt;chr&gt;, zipcode &lt;chr&gt;, grade &lt;chr&gt;,
-## #   grade_date &lt;chr&gt;
-
-
-
-library(httr)
-req = GET(&quot;https://data.ny.gov/resource/hvwh-qtfg.json&quot;)
-con = content(req, &quot;text&quot;)
-j &lt;- jsonlite::fromJSON(con) %&gt;%
-  select(-entrance_location, -station_location) %&gt;%
-  as.tibble()
-
-j %&gt;% group_by(station_name) %&gt;% summarize(n_enter = n()) %&gt;% arrange(desc(n_enter))
-## # A tibble: 190 x 2
-##                      station_name n_enter
-##                             &lt;chr&gt;   &lt;int&gt;
-##  1                        34th St      41
-##  2                        23rd St      31
-##  3                        14th St      26
-##  4                        42nd St      18
-##  5                        59th St      18
-##  6 47-50th Sts Rockefeller Center      17
-##  7                        50th St      16
-##  8                        57th St      16
-##  9                      Rector St      15
-## 10                    Chambers St      14
-## # ... with 180 more rows
-
-
-
-
-
-req = GET(&quot;http://swapi.co/api/people&quot;)
+req = GET(&quot;http://swapi.co/api/people/1&quot;)
 con = content(req)
 con$results[[1]]
-## $name
-## [1] &quot;Luke Skywalker&quot;
-## 
-## $height
-## [1] &quot;172&quot;
-## 
-## $mass
-## [1] &quot;77&quot;
-## 
-## $hair_color
-## [1] &quot;blond&quot;
-## 
-## $skin_color
-## [1] &quot;fair&quot;
-## 
-## $eye_color
-## [1] &quot;blue&quot;
-## 
-## $birth_year
-## [1] &quot;19BBY&quot;
-## 
-## $gender
-## [1] &quot;male&quot;
-## 
-## $homeworld
-## [1] &quot;https://swapi.co/api/planets/1/&quot;
-## 
-## $films
-## $films[[1]]
-## [1] &quot;https://swapi.co/api/films/2/&quot;
-## 
-## $films[[2]]
-## [1] &quot;https://swapi.co/api/films/6/&quot;
-## 
-## $films[[3]]
-## [1] &quot;https://swapi.co/api/films/3/&quot;
-## 
-## $films[[4]]
-## [1] &quot;https://swapi.co/api/films/1/&quot;
-## 
-## $films[[5]]
-## [1] &quot;https://swapi.co/api/films/7/&quot;
-## 
-## 
-## $species
-## $species[[1]]
-## [1] &quot;https://swapi.co/api/species/1/&quot;
-## 
-## 
-## $vehicles
-## $vehicles[[1]]
-## [1] &quot;https://swapi.co/api/vehicles/14/&quot;
-## 
-## $vehicles[[2]]
-## [1] &quot;https://swapi.co/api/vehicles/30/&quot;
-## 
-## 
-## $starships
-## $starships[[1]]
-## [1] &quot;https://swapi.co/api/starships/12/&quot;
-## 
-## $starships[[2]]
-## [1] &quot;https://swapi.co/api/starships/22/&quot;
-## 
-## 
-## $created
-## [1] &quot;2014-12-09T13:50:51.644000Z&quot;
-## 
-## $edited
-## [1] &quot;2014-12-20T21:17:56.891000Z&quot;
-## 
-## $url
-## [1] &quot;https://swapi.co/api/people/1/&quot;
 
 
 
@@ -670,32 +520,14 @@ con$results[[1]]
 
 ## http://pokeapi.co/docsv2/#pokemon
 
-poke = GET(&quot;http://pokeapi.co/api/v2/pokemon&quot;)
+poke = GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;)
 con = content(poke)
 con$results[[1]]
-## $url
-## [1] &quot;https://pokeapi.co/api/v2/pokemon/1/&quot;
-## 
-## $name
-## [1] &quot;bulbasaur&quot;
 
 
 poke = GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;)
 con = content(poke)
 con$stats[[1]]
-## $stat
-## $stat$url
-## [1] &quot;https://pokeapi.co/api/v2/stat/6/&quot;
-## 
-## $stat$name
-## [1] &quot;speed&quot;
-## 
-## 
-## $effort
-## [1] 0
-## 
-## $base_stat
-## [1] 45
 
 
 
@@ -719,6 +551,7 @@ get_all &lt;- function(url) {
 # str(people[[1]])
 
 # poke = get_all(&quot;http://pokeapi.co/api/v2/pokemon&quot;)</code></pre>
+<p>Lastly, there are R packages for several popular APIs, including the <code>rnoaa</code> package we used in <a href="visualization.html">visualization</a> and the <code>twitteR</code> package for interacting with twitter.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
