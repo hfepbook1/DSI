@@ -8,5 +8,5 @@ All homework assignments are covered by the course [policy on collaboration](pol
 
 * Homework 0: [assignment](homework_0.html)
 * Homework 1: [assignment](homework_1.html) and [solution](resources/p8105_hw1_ajg2202.zip)
-* Homework 2: [assignment](homework_2.html)
+* Homework 2: [assignment](homework_2.html) and [solution](resources/p8105_hw2_ajg2202.zip)
 * Homework 3: [assignment](homework_3.html)
