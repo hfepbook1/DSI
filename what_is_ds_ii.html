@@ -368,6 +368,15 @@ div.tocify {
 
 
 <p>We have, by now, established some fundamental tools for doing data science. It’s important to revisit our definition, and especially our discussion of connotation, before moving forward.</p>
+<pre><code>## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr</code></pre>
+<pre><code>## Conflicts with tidy packages ----------------------------------------------</code></pre>
+<pre><code>## filter(): dplyr, stats
+## lag():    dplyr, stats</code></pre>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
 <script async class="speakerdeck-embed" data-id="69791e0a56b14efd9f741fc10cea30f9" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
@@ -378,13 +387,129 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>This example is based entirely on live-coding, and uses the <a href="dataset_instacart.html">Instacart dataset</a>. These data can be loaded directly from the course website using:</p>
-<pre class="r"><code>instacart_data = read_csv(&quot;./data/instacart_train_data.csv.zip&quot;)</code></pre>
-<p>After some quick exploratory analyses, we’ll brainstorm some questions and try to answer them.</p>
+<p>This example is based entirely on live-coding and uses the <a href="dataset_airbnb.html">NYC Airbnb data</a>. Once downloaded, the data can be imported using:</p>
+<pre class="r"><code>airbnb_data = read_csv(&quot;./data/nyc_airbnb.zip&quot;)
+## Parsed with column specification:
+## cols(
+##   id = col_integer(),
+##   review_scores_location = col_integer(),
+##   name = col_character(),
+##   host_id = col_integer(),
+##   host_name = col_character(),
+##   neighbourhood_group = col_character(),
+##   neighbourhood = col_character(),
+##   latitude = col_double(),
+##   longitude = col_double(),
+##   room_type = col_character(),
+##   price = col_integer(),
+##   minimum_nights = col_integer(),
+##   number_of_reviews = col_integer(),
+##   last_review = col_date(format = &quot;&quot;),
+##   reviews_per_month = col_double(),
+##   calculated_host_listings_count = col_integer(),
+##   availability_365 = col_integer()
+## )</code></pre>
+<p>As always, I’ll do today’s coding in a R Markdown file, sitting in an R Project with a data directory.</p>
+<div id="understanding-variables" class="section level3">
+<h3>Understanding variables</h3>
+<p>First, let’s take a few minutes to understand the dataset and the variables it contains.</p>
+<pre class="r"><code># View(airbnb_data)
+str(airbnb_data)
+## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    40753 obs. of  17 variables:
+##  $ id                            : int  7949480 16042478 1886820 6627449 5557381 9147025 11675715 715270 17876530 182177 ...
+##  $ review_scores_location        : int  10 NA NA 10 10 10 10 9 10 9 ...
+##  $ name                          : chr  &quot;City Island Sanctuary relaxing BR &amp; Bath w Parking&quot; &quot;WATERFRONT STUDIO APARTMENT&quot; &quot;Quaint City Island Community.&quot; &quot;Large 1 BDRM in Great location&quot; ...
+##  $ host_id                       : int  119445 9117975 9815788 13886510 28811542 403032 56714504 3684360 11305944 873273 ...
+##  $ host_name                     : chr  &quot;Linda &amp; Didier&quot; &quot;Collins&quot; &quot;Steve&quot; &quot;Arlene&quot; ...
+##  $ neighbourhood_group           : chr  &quot;Bronx&quot; &quot;Bronx&quot; &quot;Bronx&quot; &quot;Bronx&quot; ...
+##  $ neighbourhood                 : chr  &quot;City Island&quot; &quot;City Island&quot; &quot;City Island&quot; &quot;City Island&quot; ...
+##  $ latitude                      : num  40.9 40.9 40.8 40.8 40.9 ...
+##  $ longitude                     : num  -73.8 -73.8 -73.8 -73.8 -73.8 ...
+##  $ room_type                     : chr  &quot;Private room&quot; &quot;Private room&quot; &quot;Entire home/apt&quot; &quot;Entire home/apt&quot; ...
+##  $ price                         : int  99 200 300 125 69 125 85 39 95 125 ...
+##  $ minimum_nights                : int  1 7 7 3 3 2 1 2 3 2 ...
+##  $ number_of_reviews             : int  25 0 0 12 86 41 74 114 5 206 ...
+##  $ last_review                   : Date, format: &quot;2017-04-23&quot; NA ...
+##  $ reviews_per_month             : num  1.59 NA NA 0.54 3.63 2.48 5.43 2.06 5 2.98 ...
+##  $ calculated_host_listings_count: int  1 1 1 1 1 1 1 4 3 4 ...
+##  $ availability_365              : int  170 180 365 335 352 129 306 306 144 106 ...
+##  - attr(*, &quot;spec&quot;)=List of 2
+##   ..$ cols   :List of 17
+##   .. ..$ id                            : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ review_scores_location        : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ name                          : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ host_id                       : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ host_name                     : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ neighbourhood_group           : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ neighbourhood                 : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ latitude                      : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_double&quot; &quot;collector&quot;
+##   .. ..$ longitude                     : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_double&quot; &quot;collector&quot;
+##   .. ..$ room_type                     : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_character&quot; &quot;collector&quot;
+##   .. ..$ price                         : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ minimum_nights                : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ number_of_reviews             : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ last_review                   :List of 1
+##   .. .. ..$ format: chr &quot;&quot;
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_date&quot; &quot;collector&quot;
+##   .. ..$ reviews_per_month             : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_double&quot; &quot;collector&quot;
+##   .. ..$ calculated_host_listings_count: list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   .. ..$ availability_365              : list()
+##   .. .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_integer&quot; &quot;collector&quot;
+##   ..$ default: list()
+##   .. ..- attr(*, &quot;class&quot;)= chr  &quot;collector_guess&quot; &quot;collector&quot;
+##   ..- attr(*, &quot;class&quot;)= chr &quot;col_spec&quot;
+
+airbnb_data %&gt;%
+  count(room_type)
+## # A tibble: 3 x 2
+##         room_type     n
+##             &lt;chr&gt; &lt;int&gt;
+## 1 Entire home/apt 19937
+## 2    Private room 19626
+## 3     Shared room  1190
+
+airbnb_data %&gt;%
+  count(neighbourhood_group)
+## # A tibble: 5 x 2
+##   neighbourhood_group     n
+##                 &lt;chr&gt; &lt;int&gt;
+## 1               Bronx   649
+## 2            Brooklyn 16810
+## 3           Manhattan 19212
+## 4              Queens  3821
+## 5       Staten Island   261</code></pre>
+</div>
+<div id="brainstorming-questions" class="section level3">
+<h3>Brainstorming questions</h3>
+<p>A major element of data science is to ask questions, and this dataset provides some rich opportunities. For example, we might ask:</p>
+<ul>
+<li>Does rating vary by neighborhood, room type, or both?</li>
+<li>Do hosts with more listings have higher or lower ratings?</li>
+<li>How is price related to other variables?</li>
+<li>Where are rentals located?</li>
+</ul>
+<p>We’ll take a few minutes as a class to brainstorm some additional questions, and then try to answer some of them.</p>
+</div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
 <ul>
+<li>Although we’re playing with public (scraped) data, you might be interested in <a href="https://peerj.com/preprints/3182/">How R Helps Airbnb Make the Most of Its Data</a></li>
 <li>If you didn’t listen before, now’s the time for Chris Volinsky’s <a href="https://youtu.be/JLs01Z5baSU?t=1063">“How Industry Views Data Science Education in Statistics Departments”</a></li>
 <li>Jeff Leek’s <a href="https://simplystatistics.org/2013/05/29/what-statistics-should-do-about-big-data-problem-forward-not-solution-backward/">problem forward</a> blog post</li>
 </ul>

@@ -27,17 +27,76 @@ library(tidyverse)
 
 ## Example
 
-This example is based entirely on live-coding, and uses the [Instacart dataset](dataset_instacart.html). These data can be loaded directly from the course website using:
+This example is based entirely on live-coding and uses the [NYC Airbnb data](dataset_airbnb.html). Once downloaded, the data can be imported using:
 
-```{r eval = FALSE}
-instacart_data = read_csv("./data/instacart_train_data.csv.zip")
+```{r cache = TRUE}
+airbnb_data = read_csv("./data/nyc_airbnb.zip")
 ```
 
-After some quick exploratory analyses, we'll brainstorm some questions and try to answer them. 
+As always, I'll do today's coding in a R Markdown file, sitting in an R Project with a data directory.
+
+### Understanding variables
+
+First, let's take a few minutes to understand the dataset and the variables it contains.
+
+```{r}
+# View(airbnb_data)
+str(airbnb_data)
+
+airbnb_data %>%
+  count(room_type)
+
+airbnb_data %>%
+  count(neighbourhood_group)
+```
+
+### Brainstorming questions
+
+A major element of data science is to ask questions, and this dataset provides some rich opportunities. For example, we might ask:
+
+* Does rating vary by neighborhood, room type, or both?
+* Do hosts with more listings have higher or lower ratings?
+* How is price related to other variables?
+* Where are rentals located?
+
+We'll take a few minutes as a class to brainstorm some additional questions, and then try to answer some of them.
+
+
+
+```{r, echo = FALSE, eval = FALSE}
+ggplot(airbnb_data, aes(x = longitude, y = latitude)) +
+  geom_point() + 
+  coord_map()
+  coord_equal(ratio = 1)
+```
+
+
+```{r, echo = FALSE, eval = FALSE}
+library(sp)
+library(rgdal)
+library(rgeos)
+library(ggplot2)
+library(ggthemes)
+
+fils <- unzip("~/Desktop/nybb_17c.zip")
+
+nyc <- readOGR(fils[1], ogrListLayers(fils[1])[1], stringsAsFactors=FALSE)
+
+nyc_map <- fortify(gSimplify(nyc, 0.05))
+
+gg <- ggplot()
+gg <- gg + geom_map(data=nyc_map, map=nyc_map,
+                    aes(x=long, y=lat, map_id=id),
+                    color="black", fill="white", size=0.25)
+gg <- gg + coord_equal() 
+gg <- gg + theme_map()
+gg = gg + geom_point(data = airbnb_data, aes(x = longitude, y = latitude)) 
+```
 
 
 
 ## Other materials
 
+* Although we're playing with public (scraped) data, you might be interested in [How R Helps Airbnb Make the Most of Its Data](https://peerj.com/preprints/3182/)
 * If you didn't listen before, now's the time for Chris Volinsky's ["How Industry Views Data Science Education in Statistics Departments"](https://youtu.be/JLs01Z5baSU?t=1063)
 * Jeff Leek's [problem forward](https://simplystatistics.org/2013/05/29/what-statistics-should-do-about-big-data-problem-forward-not-solution-backward/) blog post
