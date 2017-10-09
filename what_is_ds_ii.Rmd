@@ -98,3 +98,5 @@ gg = gg + geom_point(data = airbnb_data, aes(x = longitude, y = latitude))
 * Although we're playing with public (scraped) data, you might be interested in [How R Helps Airbnb Make the Most of Its Data](https://peerj.com/preprints/3182/)
 * If you didn't listen before, now's the time for Chris Volinsky's ["How Industry Views Data Science Education in Statistics Departments"](https://youtu.be/JLs01Z5baSU?t=1063)
 * Jeff Leek's [problem forward](https://simplystatistics.org/2013/05/29/what-statistics-should-do-about-big-data-problem-forward-not-solution-backward/) blog post
+
+The code that I produced working examples in lecture is [here](./lecture_code/what_is_ds_ii.zip).
