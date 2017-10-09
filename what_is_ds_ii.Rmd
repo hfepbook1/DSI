@@ -63,8 +63,6 @@ A major element of data science is to ask questions, and this dataset provides s
 
 We'll take a few minutes as a class to brainstorm some additional questions, and then try to answer some of them.
 
-
-
 ```{r, echo = FALSE, eval = FALSE}
 ggplot(airbnb_data, aes(x = longitude, y = latitude)) +
   geom_point() + 
@@ -94,8 +92,6 @@ gg <- gg + coord_equal()
 gg <- gg + theme_map()
 gg = gg + geom_point(data = airbnb_data, aes(x = longitude, y = latitude)) 
 ```
-
-
 
 ## Other materials
 
