@@ -1,0 +1,41 @@
+---
+title: "Homework and Projects"
+output:
+  html_document
+---
+
+All homework assignments are covered by the course [policy on collaboration](policy_on_collaboration.html). 
+
+* Homework 0: 
+    * Available 9/6 and due 9/11 by 1:00. 
+    * [Assignment](homework_0.html).
+* Homework 1:  
+    * Available 9/18 and due 9/25 by 5:00. 
+    * [Assignment](homework_1.html) and [solution](resources/p8105_hw1_ajg2202.zip).
+* Homework 2:  
+    * Available 9/27 and due 10/4 by 5:00. 
+    * [Assignment](homework_2.html) and [solution](resources/p8105_hw2_ajg2202.zip).
+* Homework 3:  
+    * Available 10/4 and due 10/13 by 5:00. 
+    * [Assignment](homework_3.html)
+* Homework 4:  
+    * Available 10/18 and due 10/30 by 1:00. 
+    * [Assignment](homework_4.html)
+* Homework 5:  
+    * Available 10/30 and due 11/8 by 1:00. 
+    * [Assignment](homework_5.html)
+* Homework 6:  
+    * Available 11/8 and due 11/17 by 5:00. 
+    * [Assignment](homework_6.html)
+* Homework 7:  
+    * Available 11/15 and due 11/27 by 1:00. 
+    * [Assignment](homework_7.html)
+* Homework 8:  
+    * Available 12/6 and due 12/13 by 1:00. 
+    * [Assignment](homework_8.html)
+
+The midterm project is not covered by the course policy on collaboration -- you are expected to work independently. 
+
+* Midterm project
+    * Available 10/9 and due 10/23 by 1:00. 
+    * [Assignment](midterm_project.html)
