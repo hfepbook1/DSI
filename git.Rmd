@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-To get the most out of this content, you should have installed relevant software (git and a git client), connected git with RStudio, and created a GitHub account before proceeding. Instructions for doing all that can be found in Chapters 4-9 of [this book](http://happygitwithr.com) (note -- all the rest of those chapters are also awesome).
+
 
 ## Some slides
 
@@ -15,7 +15,66 @@ To get the most out of this content, you should have installed relevant software
 
 ## Example
 
-<!-- Demo will be "live", but I'll need to do a trial run and populate this with screenshots -->
+To get the most out of this content, you should have installed relevant software (git and a git client), connected git with RStudio, and created a GitHub account before proceeding. Instructions for doing all that can be found in Chapters 4-9 of [this book](http://happygitwithr.com) (note -- all the rest of those chapters are also awesome).
+
+### New workflow
+
+create directory
+start r project
+turn on version control using git
+add to git client (and, optionally, create remote repository)
+
+steps 1 and 2 are what we've been doing. to do 3, go to tools > version control > project setup and select Git.
+
+once you've done this, a few things will happen. most notable, you now have a .gitignore file in your project; by default, this will ignore `.Rproj.user`, `.Rhistory`, `.RData`, and `.Ruserdata`. You can add things to be ignored if you want.
+
+Next I'll add this to my git client; i'm not going to create a remote repo yet, but we'll see that shortly.
+
+### Commit to git
+
+Although I haven't really done much yet, I'm going to make an initial commit for the project -- sort of a starting point. The screenshot below shows part of this process in my git client.
+
+
+Now I'll start actually doing stuff. For this example, I'm going to re-do the example from [What is Data Science: Part II](what_is_ds_ii.html), starting from [this outline](resources/nyc_airbnb_outline.Rmd). As a first step, I'll add that outline of the analysis and commit.
+
+Next I'll add my [data file](data/nyc_airbnb.zip) and commit.
+
+Next I'll add a code chunk doing the data cleaning. And commit.
+
+### GitHub
+
+Git is useful all by itself on your computer, but it is especially powerful when combined with GitHub.
+
+I'll create a remote repo that is paired with my local repo. I usually do this via the client, using right-click > publish to remote. (Alternatively, you can ask your client to create a remote repository when you add the local in step 4).
+
+Once you've done that, you'll be asked if you want to push to remote; do that. From this point on, you can commit locally and also push those commits to the remote server; if you don't push, they won't be public.
+
+To illustrate, I'll add some code to do data inspection, commit, and push; I can double check that this appears on GitHub.
+
+
+### Collaborating via GitHub
+
+Sharing repositories online makes it possible to collaborate in a formal way. 
+
+commit messages make it clear what each person is doing. comparisons of files show where those commits made changes. 
+
+Add Julia as a collaborator. She's going to answer "Does rating vary by neighborhood, room type, or both?". She'll commit and push; I'll sit back until she's done, then pull her changes from the remote repository to my local repository.
+
+
+Next we'll work in parallel -- I'll tackle "Where are rentals located?" and she'll address "Do hosts with more listings have higher or lower ratings?".
+
+Once I've written my code, I'm going to commit; pull to see if there are any changes; and then push.
+
+
+## Conflicts
+
+When we're working in parallel and not overlapping, everything is pretty smooth. I can edit and commit, and so can Julia; we cycle through the commit > pull > push, git knows we're not editing the same stuff, and keeps track of the changes.
+
+We can run into issues when we both edit the same thing -- suppose, for example, we both try to add the discussion. If she commits and pushes before I do, when I commit and pull I'll see the following :
+
+
+
+
 
 ## Other materials
 
