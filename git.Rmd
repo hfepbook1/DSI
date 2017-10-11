@@ -11,7 +11,7 @@ This is the first module in the [Collaboration](topic_collaboration.html) topic;
 ## Some slides
 
 <script async class="speakerdeck-embed" data-id="b1f65532f0644b8fb5301f8fd6934b01" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/git-slides" title="Git stuff" target="_blank">Git stuff</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-git-and-github" title="Git and GitHub" target="_blank">Git and GitHub</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div>
 
 ## Example
 
