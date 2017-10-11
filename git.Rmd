@@ -127,3 +127,5 @@ There's a lot of stuff to help with git in general, and with git for R in partic
 * Jenny Bryan's [book](http://happygitwithr.com) (same as the link above)
 * The [GitHub](https://guides.github.com/activities/hello-world/) guide
 * Version control with [RStudio](https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN)
+
+The GitHub repository I created working through this example is [here](https://github.com/jeff-goldsmith/git_example/).
