@@ -1,0 +1,24 @@
+---
+title: "Homework 4"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+In Problems 1 and 2, I worked with Julia Wrobel (UNI: jw3134).
+
+### Problem 1
+
+The GitHub repo containing our solution to this problem is [here](https://github.com/jeff-goldsmith/vbvs.concurrent).
+
+
+### Problem 2
+
+The GitHub repo containing the solution to this problem is [here](https://github.com/julia-wrobel/depthTests)
+
+
+### Problem 3
+
+My personal website is [here](http://jeffgoldsmith.com)
+
