@@ -124,6 +124,7 @@ After resolving conflicts, we should commit the changes and push the new unified
 
 There's a lot of stuff to help with git in general, and with git for R in particular. This is a non-exhaustive list:
 
+* Jenny Bryan's [article](https://peerj.com/preprints/3159/) "Excuse me, do you have a moment to talk about version control?" is excellent
 * Jenny Bryan's [book](http://happygitwithr.com) (same as the link above)
 * The [GitHub](https://guides.github.com/activities/hello-world/) guide
 * Version control with [RStudio](https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN)
