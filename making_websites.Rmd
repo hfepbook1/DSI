@@ -65,7 +65,7 @@ output:
 
 This contains some usual kinds of formatting stuff, like `output` options, but also the `navbar`. Importantly, `_site.yml` is used by each page in your site (hence the name).
 
-There are several ways you can arrange this (right vs. left; single pages vs. drop-down menus) but the idea is to give a way to navigate through your _site_, not just your _page_. The two icons are there to encourage good practices -- an easy way for someone to email you, and a link to the source for the site on GitHub. I've also included an "About" page, which is pretty common for pages describing projects.
+There are several ways you can arrange this (right vs. left; single pages vs. drop-down menus) but the idea is to give a way to navigate through your _site_, not just your _page_. The two icons are there to encourage good practices -- an easy way for someone to email you, and a link to the source for the site on GitHub (icons come from [font awesome](http://fontawesome.io/icons/)). I've also included an "About" page, which is pretty common for pages describing projects.
 
 
 ### Common content
