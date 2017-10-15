@@ -372,7 +372,7 @@ div.tocify {
 <h2>Some slides</h2>
 <script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
 <p><br></p>
 </div>
@@ -386,12 +386,13 @@ div.tocify {
 <li>Call it <code>&lt;YOUR_GH_NAME&gt;.github.io</code> if you want this to be your personal website</li>
 <li>Call it whatever you want if it will be something different (tip: website names should be short and easy-to-remember; they’re also generally case-sensitive)</li>
 </ul>
+<p>You can add an R Project to this directory as well; in this case it’s not <em>critical</em> but it is <strong>helpful</strong>.</p>
 </div>
 <div id="basic-elements" class="section level3">
 <h3>Basic elements</h3>
-<p>Copy the files in <a href="resources/Website_Template.zip">this website template</a> into your new directory.</p>
+<p>Copy the files in <a href="resources/Website_Template.zip">this website template</a> into your new directory. You can also start “from scratch” but a useful template goes a long way.</p>
 <p>All websites have an <code>index.html</code> file – it’s the most common name for the default page and gets served up whenever someone shows up at your site. We’ll build that using the <code>index.Rmd</code> file, which is shown below.</p>
-<pre class="r"><code>---
+<pre><code>---
 title: &quot;Holy cow!&quot;
 ---
 
@@ -427,9 +428,9 @@ output:
 </div>
 <div id="r-project" class="section level3">
 <h3>R Project</h3>
-<p>At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don’t <em>have to</em> add an R Project to the directory, but it doesn’t hurt and often helps, and I recommend it.</p>
 <p>One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the “build website” button. This is really just a shortcut to <code>rmarkdown::render_site()</code>, but it’s still nice.</p>
 <p><img src="images/making_websites_RProj.png" style="width:75%"></p>
+<p>This rebuilds the full website, whereas the <code>knit</code> button only rebuilds a page. Rebuilding the site can be useful if you’ve made big changes, like changing the <code>_site.yml</code>.</p>
 </div>
 <div id="hosting-on-github" class="section level3">
 <h3>Hosting on GitHub</h3>

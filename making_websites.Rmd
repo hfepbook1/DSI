@@ -11,7 +11,7 @@ This page outlines the process of making a basic website using R Markdown, and h
 ## Some slides
 
 <script async class="speakerdeck-embed" data-id="e4897332b1e345e8a223b5e82fc61504" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-making-websites" title="Making websites" target="_blank">Making Websites</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example
@@ -25,20 +25,16 @@ This is going to hold everything you want on your website, and the name does mat
 * Call it `<YOUR_GH_NAME>.github.io` if you want this to be your personal website
 * Call it whatever you want if it will be something different (tip: website names should be short and easy-to-remember; they're also generally case-sensitive)
 
+You can add an R Project to this directory as well; in this case it's not _critical_ but it is **helpful**. 
+
 ### Basic elements
 
-Copy the files in [this website template](resources/Website_Template.zip) into your new directory. 
+Copy the files in [this website template](resources/Website_Template.zip) into your new directory. You can also start "from scratch" but a useful template goes a long way.
 
 All websites have an `index.html` file -- it's the most common name for the default page and gets served up whenever someone shows up at your site. We'll build that using the `index.Rmd` file, which is shown below.
 
-```{r index, eval = FALSE}
----
-title: "Holy cow!"
----
-
-### I have a webpage!
-
-And I can put all kinds of stuff on it!
+```{r, echo = FALSE, comment = ""}
+cat(htmltools::includeText("resources/Website_Template/index.Rmd"))
 ```
 
 This has usual RMD stuff: a title, some headings, some content. Anything you could put in any other RMD file, you can put in here, too. Then, as usual, you can knit to create `index.html`; you should get something like the following.
@@ -83,11 +79,11 @@ This will load and display `images/image.jpg` (I usually keep my images inside a
 
 ### R Project
 
-At this point, you should have a directory with some files in it, and should be able to knit individual web pages. You don't _have to_ add an R Project to the directory, but it doesn't hurt and often helps, and I recommend it.
-
 One nice feature is that RStudio will recognize your project as a website, and give you a quick way to build the complete website using the "build website" button. This is really just a shortcut to `rmarkdown::render_site()`, but it's still nice. 
 
 <img src="images/making_websites_RProj.png" style="width:75%">
+
+This rebuilds the full website, whereas the `knit` button only rebuilds a page. Rebuilding the site can be useful if you've made big changes, like changing the `_site.yml`. 
 
 
 ### Hosting on GitHub
