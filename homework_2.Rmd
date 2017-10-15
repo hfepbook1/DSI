@@ -23,7 +23,7 @@ Due: October 4 at 5:00pm.
 
 ### Problem 0
 
-This "problem" focuses on structure of your assignment, including the use of R Markdown to write reproducible reports, the use of R Projects to organize your work, the use of relative paths to load data, and the naming structure for your files. 
+This "problem" focuses on structure of your submission, including the use of R Markdown to write reproducible reports, the use of R Projects to organize your work, the use of relative paths to load data, and the naming structure for your files. 
 
 To that end: 
 
