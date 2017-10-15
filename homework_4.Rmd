@@ -1,0 +1,77 @@
+---
+title: "Homework 3"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Context
+
+This assignment reinforces ideas in [Collaboration](topic_collaboration.html). A PDF of this assignment is [here](homework_4.pdf).
+
+### Due date
+
+Due: October 30 at 1:00pm. 
+
+### Points
+
+* Problem 0: 40 points
+* Problem 1: 20 points
+* Problem 2: 20 points
+* Problem 3: 20 points
+
+### Problem 0
+
+This "problem" focuses on structure of your submission, including the use of R Markdown to write reproducible reports, the use of R Projects to organize your work, the use of relative paths to load data, the naming structure for your files, and the use of Git and GiuHub for collaboration. 
+
+To that end, you will submit only an HTML file, with links to GitHub repos (for Problems 1 and 2) and a link to your website (for Problem 3). The GitHub repos in Problems 1 and 2 should follow best practices for project management. In Problems 1 and 2, you will work with a partner, and your submission should make it clear who you worked with. A template submission is here.
+
+We will assess adherence to the best practices, reproducibility, and collaboration in the grading of this problem. Adherence to appropriate styling and clarity of code will be assessed in Problems 1 and 2. This homework includes figures; the readability of your embedded plots (e.g. font sizes, axis labels, titles) will be assessed in Problems 1 and 2. 
+
+### Problem 1
+
+One member of the partnership will take the role of "project lead" and the other of "collaborator". The project lead should:
+
+* create a directory
+* put an R project in the directory
+* initialize Git
+* add the collaborator as a collaborator on GitHub
+* start an R Markdown file for this problem
+
+This problem uses the pups dataset; include that data file in your directory (or in a sub-directory), and load that data file using relative paths.
+
+The project lead will load and tidy the data for this problem. The original data file includes data in "wide" format: the post-natal days on which developmental landmarks are reached are stored in columns called `PD_outcome`. The project lead will convert these data to "long" format, using reasonable variable names and values.
+
+The collaborator will create a plot showing the distribution of post-natal days for each developmental landmark. 
+
+The produced file should include code and text that explains the analyses and results.
+
+
+### Problem 2
+
+Partners whould switch roles: the former "project lead" will be the "collaborator", and the former "collaborator" will be the "project lead". The project lead should:
+
+* create a directory
+* put an R project in the directory
+* initialize Git
+* add the collaborator as a collaborator on GitHub
+* start an R Markdown file for this problem
+
+This problem uses the 538 datasets; include relevant data file in your directory (or in a sub-directory), and load that data file using relative paths.
+
+The project lead will load and tidy the data for this problem. Combine the data in `pols-month.csv` and `GDP.csv` based on the date / month (use `lubridate::floor_date` to collase dates to the first day of the month).
+
+The collaborator will create a plot showing the GDP value over time, including the party of the president in an informative aesthetic. 
+
+The produced file should include code and text that explains the analyses and results.
+
+### Problem 3
+
+Create a personal website at `<YOUR_GH_NAME>.github.io`. This page can be as extensive as you'd like, but it should include at least:
+
+* A brief introductory landing page
+* A page giving your academic and professional experience (i.e. a resume)
+* Links in the site navigation for your GitHub account, your email, and any other professional networks. 
+
+
