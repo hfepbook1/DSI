@@ -1,0 +1,26 @@
+---
+title: "Team Data Science"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+This is the first module in the [Collaboration](topic_collaboration.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7G7KR6MP).
+
+A major theme of this course is the development of practical tools for data science and analysis. To provide some context for those tools and to give a sense of data science outside of academia (in the "real world"), this content was developed by [Sandy Griffith](https://www.linkedin.com/in/sandy-griffith-70861a95) and [Elizabeth Sweeney](https://www.linkedin.com/in/elizabeth-sweeney-a68b9739), both of whom are quantitative scientists at [Flatiron Health](https://flatiron.com).
+
+
+## Some slides
+
+The slides Sandy and Elizabeth used in their presentation are publicly available here.
+
+
+## Other materials
+
+In the course of their presentation, Sandy and Elizabeth referred to several additional resources:
+
+* Learning to ["give away your legos"](http://firstround.com/review/give-away-your-legos-and-other-commandments-for-scaling-startups/) gives a perspective on how to work collaboratively and avoid anxiety as others work on (and take over) your projects
+* The ["blameless postmortem"](https://codeascraft.com/2012/05/22/blameless-postmortems/) shifts emphasis for project failure from individual actions to the system that made failure possible
+* Using [Phabricator](https://secure.phabricator.com) makes it easier to provide specific, Google-doc-like comments on code, and uses an interface familiar to users of Git and GitHub
+

@@ -7,7 +7,7 @@ Much of the content through this point has focused on the work of a single indiv
 The topic is made up of the following components:
 
 * [Git and GitHub](git.html)
-* Team data science
+* [Team data science](team_data_science.html)
 * [Making websites](making_websites.html)
 
 The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C7G7KR6MP).

@@ -11,7 +11,7 @@
 
 
 
-<title>Collaboration and dissemination</title>
+<title>Team Data Science</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -264,19 +362,26 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Collaboration and dissemination</h1>
+<h1 class="title toc-ignore">Team Data Science</h1>
 
 </div>
 
 
-<p>Much of the content through this point has focused on the work of a single individual. Data science work, however, often happens as part of a team. Moreover, the products of data science projects (including code for analyses as well as a discussion of results) are typically made public. This topic focuses on collaboration using Git and GitHub, either as an individual or as part of a team; best practices for team data science; and dissemination of products via a website.</p>
-<p>The topic is made up of the following components:</p>
+<p>This is the first module in the <a href="topic_collaboration.html">Collaboration</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7G7KR6MP">here</a>.</p>
+<p>A major theme of this course is the development of practical tools for data science and analysis. To provide some context for those tools and to give a sense of data science outside of academia (in the “real world”), this content was developed by <a href="https://www.linkedin.com/in/sandy-griffith-70861a95">Sandy Griffith</a> and <a href="https://www.linkedin.com/in/elizabeth-sweeney-a68b9739">Elizabeth Sweeney</a>, both of whom are quantitative scientists at <a href="https://flatiron.com">Flatiron Health</a>.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<p>The slides Sandy and Elizabeth used in their presentation are publicly available here.</p>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<p>In the course of their presentation, Sandy and Elizabeth referred to several additional resources:</p>
 <ul>
-<li><a href="git.html">Git and GitHub</a></li>
-<li><a href="team_data_science.html">Team data science</a></li>
-<li><a href="making_websites.html">Making websites</a></li>
+<li>Learning to <a href="http://firstround.com/review/give-away-your-legos-and-other-commandments-for-scaling-startups/">“give away your legos”</a> gives a perspective on how to work collaboratively and avoid anxiety as others work on (and take over) your projects</li>
+<li>The <a href="https://codeascraft.com/2012/05/22/blameless-postmortems/">“blameless postmortem”</a> shifts emphasis for project failure from individual actions to the system that made failure possible</li>
+<li>Using <a href="https://secure.phabricator.com">Phabricator</a> makes it easier to provide specific, Google-doc-like comments on code, and uses an interface familiar to users of Git and GitHub</li>
 </ul>
-<p>The slack channel for this topic is <a href="https://p8105-fall2017.slack.com/messages/C7G7KR6MP">here</a>.</p>
+</div>
 
 <br><br>
 <footer>
@@ -284,6 +389,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 
