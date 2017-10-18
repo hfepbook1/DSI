@@ -133,3 +133,4 @@ There's a lot of material online to help with making websites. You should use it
 * This [walk through](http://nickstrayer.me/RMarkdown_Sites_tutorial/)
 * GitHub [Pages](https://pages.github.com)
 
+The website I produced during lecture is [here](http://jeffgoldsmith.com/example_website/), and the materials can be downloaded from this [GitHub repo](https://github.com/jeff-goldsmith/example_website/). 
