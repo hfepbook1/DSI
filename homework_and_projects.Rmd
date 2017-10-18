@@ -17,7 +17,7 @@ All homework assignments are covered by the course [policy on collaboration](pol
     * [Assignment](homework_2.html) and [solution](resources/p8105_hw2_ajg2202.zip).
 * Homework 3:  
     * Available 10/4 and due 10/13 by 5:00. 
-    * [Assignment](homework_3.html)
+    * [Assignment](homework_3.html) and [solution](resources/p8105_hw3_ajg2202.zip).
 * Homework 4:  
     * Available 10/18 and due 10/30 by 1:00. 
     * [Assignment](homework_4.html)
