@@ -13,7 +13,7 @@ A major theme of this course is the development of practical tools for data scie
 
 ## Some slides
 
-The slides Sandy and Elizabeth used in their presentation are publicly available here.
+The slides Sandy and Elizabeth used in their presentation are publicly available [here](resources/a_day_in_the_life.pdf).
 
 
 ## Other materials
