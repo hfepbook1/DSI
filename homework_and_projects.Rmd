@@ -39,3 +39,5 @@ The midterm project is not covered by the course policy on collaboration -- you 
 * Midterm project
     * Available 10/9 and due 10/23 by 1:00. 
     * [Assignment](midterm_project.html)
+    
+The final project differs substantially from both homework assignments and the midterm project. Detailed instructions, including deliverables and due dates, are [here](final_project.html).

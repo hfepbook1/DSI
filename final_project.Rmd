@@ -1,0 +1,83 @@
+---
+title: "Final project"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Your final project in this course will be a collaborative that uses each element of the data science process to answer questions on a topic of your choosing. Your team will be responsible for finding and cleaning data; producing visualizations and exploratory analyses; producing concrete data-centric deliverables; and disseminating results. You are expect to organize your work and to collaborate using best practices. 
+
+## Structure and due dates
+
+### Team 
+
+You will work closely with other classmates in a team of 4 on this project, and are free to form teams of your choosing. If you can't find a team, or wish to form a team of a different size, please reach out to the instructor. In general, we do not anticipate that the grades for each group member will be different. We do, however, reserve the right to assign different grades to each group member based on peer assessments or public records of contribution (e.g. through commit histories).
+
+### Due dates
+
+Date                  | Description
+--------------------- | -------------
+November 6 by 1:00    | Form a team and submit a proposal
+November 13-17        | Project review meeting
+December 6 by 1:00    | R Markdown and HTML 
+December 8 by 5:00    | Webpage and screencast
+December 8 by 5:00    | Peer assessment
+December 11           | In class discussion of projects
+
+
+## Deliverables
+
+### Team registration and proposal
+
+First, you will define your teams and propose a project. This proposal should include:
+
+* The group members (names and UNIs)
+* The tentative project title
+* The motivation for this project
+* The intended final products
+* The anticipated data sources
+* The planned analyses / visualizations / coding challenges
+* The planned timeline
+
+There should be one proposal per group, written collaboratively using google docs. Conceptually, this is a 10% review.
+
+### Project review meeting
+
+Based on the topic of your proposal, you will work a member of the teaching team; this person will be your primary resource and will guide you through the rest of the project. In particular, you will schedule a project review meeting with your teaching team leader to discuss the proposal, anticipated stumbling blocks, and preliminary work. All team members are required to be present for the meeting. Conceptually, the project review meeting is a 30% review.
+
+### R Markdown and HTML
+
+The R Markdown and HTML files produced by your team are central to this project. These files will detail how you completed your project, and should cover data collection and cleaning, exploratory analyses, alternative strategies, descriptions of approaches, and a discussion of results. We anticipate that your project will change somewhat over time; these changes and the reasons for them should be documented! You should write one R Markdown document per group, and be sure to include all group member names in the document.
+
+Your R Markdown should include the following topics. Depending on your project type the amount of discussion you devote to each of them will vary:
+
+* Motivation: Provide an overview of the project goals and motivation.
+* Related work: Anything that inspired you, such as a paper, a web site, or something we discussed in class.
+* Initial questions: What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
+* Data: Source, scraping method, cleaning, etc.
+* Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas. 
+* Additional analysis: If you undertake formal statistical analyses, describe these in detail
+* Discussion: What were your findings? Are they what you expect? What insights into the data can you make?
+
+As this will be your only chance to describe your project in detail make sure that your RMarkdown file and compiled HTML file are standalone documents that fully describes your process and results. We also expect you to write high-quality code that is understandable to an outside reader. Coding collaboratively and actively reviewing code within the team will help with this!
+
+Your R Markdown document and HTML file should be included in a GitHub repository, along with the data used for the analysis. If the data are too big to fit in the repository, make the data accessible somewhere online (e.g. google drive or a downloadable link). Inside the RMarkdown file at the top, include instructions on where to access the data. If we cannot access your work or links because these directions are not followed correctly, we will not grade your work.
+
+### Webpage and screencast
+
+You will create a webpage summarizing your project. This should not be as detailed as your submitted R Markdown and HTML files, but should give a overview of the project scope, data, approaches, visualizations, and other results. You should include a link to the GitHub repository containing your R Markdown document. 
+
+You will also create a two-minute narrated screencast illustrating your project. You may use slides, demonstrations, or any other content that is relevant to your project. Publish your screencast on youtube, vimeo, or another online platform, and embed the screencast in your website. The two-minute limit will be strictly enforced.
+
+For both the website and the screencast, your audience is classmates who worked on other projects. It will be helpful to put yourself in their shoes, and ask what information you think will be most interesting. We suggest you emphasize motivation, questions, and results over methods; after all, interested folks can view your complete project on GitHub.
+
+### Peer assessment
+
+It is important to provide positive feedback to people who worked hard for the good of the team and to also make suggestions to those you perceived not to be working as effectively on team tasks. We ask you to provide an honest assessment of the contributions of the members of your team, including yourself. The feedback you provide should reflect your judgment of each team member:
+
+* Preparation - were they prepared during team meetings?
+* Contribution - did they contribute productively to the team discussion and work?
+* Respect - did they encourage others to contribute their ideas, and provide feedback in a constructive way?
+* Flexibility - were they flexible when disagreements occurred?
+
