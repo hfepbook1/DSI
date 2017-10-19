@@ -381,6 +381,15 @@ div.tocify {
 <h2>Example</h2>
 <p>I’ll keep using the same R Project as in <a href="data_import.html">data import</a> and <a href="data_manipulation.html">data manipulation</a>, but create a new .Rmd for tidying. I’m also going to load some relevant packages, and limit the number of lines printed in a tibble. Lastly, there’s another dataset we’ll use in examples today; I’m going to download it <a href="./data/LotR_Words.xlsx">here</a> and add it to my <code>data</code> subdirectory.</p>
 <pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
 library(haven)
 library(readxl)
 library(janitor)
@@ -396,8 +405,8 @@ pulse_data
 ##      id      age   sex bdiscore_bl bdiscore_01m bdiscore_06m bdiscore_12m
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 10003 48.03836  male           7            1            2            0
-## 2 10015 72.47123  male           6           NA           NA           NA
-## 3 10022 58.50959  male          14            3            8           NA
+## 2 10015 72.47123  male           6          NaN          NaN          NaN
+## 3 10022 58.50959  male          14            3            8          NaN
 ## 4 10026 72.72877  male          20            6           18           16
 ## 5 10035 60.40274  male           4            0            1            2
 ## # ... with 1,082 more rows</code></pre>
@@ -426,13 +435,13 @@ pulse_tidy_data
 ##  $ bdiscore_bl : atomic  7 6 14 20 4 2 4 5 0 10 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, BL IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_01m: atomic  1 NA 3 6 0 10 0 NA 3 2 ...
+##  $ bdiscore_01m: atomic  1 NaN 3 6 0 10 0 NaN 3 2 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 1 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_06m: atomic  2 NA 8 18 1 12 NA 0 4 11 ...
+##  $ bdiscore_06m: atomic  2 NaN 8 18 1 12 NaN 0 4 11 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 6 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;
-##  $ bdiscore_12m: atomic  0 NA NA 16 2 8 NA 2 0 6 ...
+##  $ bdiscore_12m: atomic  0 NaN NaN 16 2 8 NaN 2 0 6 ...
 ##   ..- attr(*, &quot;label&quot;)= chr &quot;BDI, 12 MONTH IMPUTED SCORE&quot;
 ##   ..- attr(*, &quot;format.sas&quot;)= chr &quot;F&quot;</code></pre>
 <p>Each BDI score column has a specific label in the SAS dataset; these don’t match, so <code>gather</code> dropped them when creating the <code>bdi</code> column. Not a problem here, but dropping attributes could be an issue if you wanted to preserve dates, factors, or some other feature.</p>
@@ -473,13 +482,13 @@ print(pulse_data, n = 12)
 ##  3 10003    06m 48.03836  male     2
 ##  4 10003    12m 48.03836  male     0
 ##  5 10015    00m 72.47123  male     6
-##  6 10015    01m 72.47123  male    NA
-##  7 10015    06m 72.47123  male    NA
-##  8 10015    12m 72.47123  male    NA
+##  6 10015    01m 72.47123  male   NaN
+##  7 10015    06m 72.47123  male   NaN
+##  8 10015    12m 72.47123  male   NaN
 ##  9 10022    00m 58.50959  male    14
 ## 10 10022    01m 58.50959  male     3
 ## 11 10022    06m 58.50959  male     8
-## 12 10022    12m 58.50959  male    NA
+## 12 10022    12m 58.50959  male   NaN
 ## # ... with 4,336 more rows</code></pre>
 <p>Before moving on, let’s revisit the <code>group</code> variable in the litters dataset:</p>
 <pre class="r"><code>read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;% 
@@ -636,7 +645,7 @@ FAS_data
 <li>R for Data Science, of course, has a chapter on <a href="http://r4ds.had.co.nz/tidy-data.html">tidy data</a>. The <a href="http://www.jstatsoft.org/v59/i10/paper">paper</a> that lays out the underlying ideas may also be useful.</li>
 <li>R for Data Science also has an excellent and very detailed presentation of <a href="http://r4ds.had.co.nz/relational-data.html">joins</a>.</li>
 <li>Jenny Bryan’s <a href="http://stat545.com">Stat 545</a> class has content on tidy data – parts <a href="https://github.com/jennybc/lotr-tidy/blob/master/01-intro.md">1</a>, <a href="https://github.com/jennybc/lotr-tidy/blob/master/02-gather.md">2</a>, <a href="https://github.com/jennybc/lotr-tidy/blob/master/03-spread.md">3</a>, and <a href="https://github.com/jennybc/lotr-tidy/blob/master/04-tidy-bonus-content.md">4</a> are all good (some of the content above is very much related to this).</li>
-<li>You should revisit the data import <a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf">cheatsheet</a>, which also has some tips for tidying.</li>
+<li>You should revisit the data import <a href="https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf">cheatsheet</a>, which also has some tips for tidying.</li>
 </ul>
 </div>
 

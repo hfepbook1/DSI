@@ -225,6 +225,6 @@ As a final point, the `*_join` functions are very much related to SQL syntax, bu
 * R for Data Science also has an excellent and very detailed presentation of [joins](http://r4ds.had.co.nz/relational-data.html).
 * Jenny Bryan's [Stat 545](http://stat545.com) class has content on tidy data -- parts [1](https://github.com/jennybc/lotr-tidy/blob/master/01-intro.md), [2](https://github.com/jennybc/lotr-tidy/blob/master/02-gather.md),
 [3](https://github.com/jennybc/lotr-tidy/blob/master/03-spread.md), and [4](https://github.com/jennybc/lotr-tidy/blob/master/04-tidy-bonus-content.md) are all good (some of the content above is very much related to this).
-* You should revisit the data import [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf), which also has some tips for tidying.
+* You should revisit the data import [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf), which also has some tips for tidying.
 
 
