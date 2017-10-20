@@ -10,7 +10,7 @@ The topic is made up of the following components:
 * [Strings and factors](strings_and_factors.html)
 * [Text analysis](text_analysis.html)
 
-The slack channel for this topic is [here](ZZZZZZ).
+The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C7N8HG34N).
 
 The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_ii.zip).
 

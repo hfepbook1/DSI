@@ -5,10 +5,10 @@ output:
     toc: true
     toc_float: true
 ---
+  
+In [data import](data_import.html), we saw how to load data from a variety of formats; this is a fairly standard way to get data that have been gathered as part of a study. In a lot of cases, though, you're going to have to go out and get the data you want or need. That's what we're covering now.
 
-In [data import](data_import.html), we saw how to load data from a variety of formats; this is a fairly standard way to get data that have been gathered as part of a study. In a lot of cases, though, you're going to have to go out and get the data you want or need. That's the case we're covering now.
-
-This is the first module in the [Data Wrangling II](topic_data_wrangling_ii.html) topic; the relevant slack channel is [here](ZZZZZZ).
+This is the first module in the [Data Wrangling II](topic_data_wrangling_ii.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7N8HG34N).
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -27,9 +27,9 @@ knitr::opts_chunk$set(
 
 ## Example
 
-As always, it's good to start by figuring out how you want to organize you code for this content. I'll create a new directory called `data_wrangling_ii`, start an R Project, and open a new R Markdown file called `reading_data_from_the_web.Rmd`. Although we'll mostly be getting data from the web, we'll revisit some of [these examples](./resources/data_import_examples.zip), so I'll create a `data` subdirectory and put those in it.
+As always, it's good to start by figuring out how you want to organize you code for this content. I'll create a new directory called `example_data_wrangling_ii`, start an R Project, and open a new R Markdown file called `reading_data_from_the_web.Rmd`. I'll initialize Git and make the repo public on GitHub. Although we'll mostly be getting data from the web, we'll revisit some of [these examples](./resources/data_import_examples.zip), so I'll create a `data` subdirectory and put those in it.
 
-There are some new additions to our standard packages (`rvest` and `httr`); I'm loading everything we need now. Now's also the time to install the [Selector Gadget](http://selectorgadget.com). 
+There are some new additions to our standard packages (`rvest` and `httr`); I'm loading everything we need now. Now's also the time to "install" the [Selector Gadget](http://selectorgadget.com). 
 
 ```{r}
 library(tidyverse)
@@ -97,8 +97,8 @@ hpss_html = read_html("http://www.imdb.com/title/tt0241527/")
 The cast list isn't stored in a handy table, so we're going to isolate the CSS selector for cast. A bit of clicking around gets me something like below. 
 
 <img src="images/read_from_web_css_selctor.png" style="width:75%">
-
-I'll use the CSS selector in `html_nodes()` to extract the relevant HTML code, and convert it to text. 
+  
+  I'll use the CSS selector in `html_nodes()` to extract the relevant HTML code, and convert it to text. 
 
 ```{r}
 cast = hpss_html %>%
@@ -106,124 +106,79 @@ cast = hpss_html %>%
   html_text()
 ```
 
-**_Learning Assessment:_** [This page](https://www.amazon.com/Napoleon-Dynamite-Jon-Heder/product-reviews/B003MXB4FC/ref=cm_cr_arp_d_paging_btm_2?ie=UTF8&filterByStar=five_star&reviewerType=avp_only_reviews&pageNumber=2#reviews-filter-bar) contains the first 10 five-star reviews of the movie "Napoleon Dynamite". Use a process similar to the one above to extract the titles of the reviews. 
+**_Learning Assessment:_** [This page](https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1) contains the 10 most recent reviews of a popular toothbrush. Use a process similar to the one above to extract the titles of the reviews. Note: getting the star ratings from Amazon is trickier, but the CSS path `"#cm_cr-review_list .review-rating"` helps -- I discovered this after about an hour of googling around. 
 
 ```{r, eval = FALSE, echo = FALSE}
-url = "https://www.amazon.com/Napoleon-Dynamite-Jon-Heder/product-reviews/B003MXB4FC/ref=cm_cr_arp_d_paging_btm_2?ie=UTF8&filterByStar=five_star&reviewerType=avp_only_reviews&pageNumber=2#reviews-filter-bar"
+url = "https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
 
-nap_dyn_html = read_html(url)
+toothbrush_html = read_html(url)
 
-review_titles = nap_dyn_html %>%
-  html_nodes(".a-color-base") %>%
+toothbrush_html %>%
+  html_nodes("#cm_cr-review_list .review-title") %>%
   html_text()
+
+review_stars = toothbrush_html %>%
+  html_nodes("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+reviews = data_frame(
+  title = review_titles,
+  stars = review_stars
+)
 ```
 
 
 ### Using an API
 
-New York City has a great open data resource. Although most (all?) datasets can be accessed by clicking through a website, we'll access them directly using the API to improve reproducibility.
+New York City has a great open data resource, and we'll use that for our API examples. Although most (all?) of these datasets can be accessed by clicking through a website, we'll access them directly using the API to improve reproducibility and make it easier to update results to reflect new data.
 
-As a simple example, [this page](https://data.cityofnewyork.us/Environment/Water-Consumption-In-The-New-York-City/ia2d-e54m) is about a dataset for annual water consumption in NYC, along with the population in that year. 
+As a simple example, [this page](https://data.cityofnewyork.us/Environment/Water-Consumption-In-The-New-York-City/ia2d-e54m) is about a dataset for annual water consumption in NYC, along with the population in that year. First, we'll import this as a CSV and parse it.
 
 ```{r}
 nyc_water = GET("https://data.cityofnewyork.us/resource/waf7-5gvc.csv") %>% 
   content("parsed")
+```
 
+We can also import this dataset as a JSON file. This takes a bit more work (and this is, really, a pretty easy case), but it's still doable.
+
+```{r}
 nyc_water = GET("https://data.cityofnewyork.us/resource/waf7-5gvc.json") %>% 
   content("text") %>%
   jsonlite::fromJSON() %>%
   as_tibble()
 ```
 
+[Data.gov](https://catalog.data.gov/dataset?q=-aapi+api+OR++res_format%3Aapi#topic=developers_navigation) also has a lot of data available using their API; often this is available as CSV or JSON as well. For example, we might be interested in data coming from [BRFSS](https://catalog.data.gov/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system). This is importable via the API as a CSV (JSON, in this example, is much more complicated).
 
 ```{r}
-nyc_water = 
-  GET("https://data.cityofnewyork.us/resource/waf7-5gvc.csv",
-        query = list(year = 1990)
-      ) %>% 
+brfss = 
+  GET("https://chronicdata.cdc.gov/api/views/hn4x-zwk7/rows.csv?accessType=DOWNLOAD") %>% 
   content("parsed")
 ```
 
+Both of the previous examples are _extremely_ easy -- we accessed data that is essentially a data table, and we had a very straightforward API.
 
-**_Learning Assessment:_** Using information on [this page](https://data.cityofnewyork.us/resource/hvwh-qtfg), get the information on subway entrances in the city. Which stations have the most entrances?
+To get a sense of how this becomes complicated, let's look at the [Pokemon API](https://pokeapi.co) (which is also pretty nice).
 
-```{r, eval = FALSE, echo = FALSE}
-subway_entrances = 
-  GET("https://data.ny.gov/resource/hvwh-qtfg.csv") %>%
-  content("parsed") %>% 
-  group_by(station_name) %>% 
-  summarize(n_enter = n()) %>% 
-  arrange(desc(n_enter))
+```{r}
+poke = GET("http://pokeapi.co/api/v2/pokemon/1") %>%
+  content()
+
+poke$name
+
+poke$height
+
+poke$abilities
 ```
 
-The NYC open data is particularly user-friendly; not every API is, and many take some work to get used to. Let's walk through an example from the Star Wars API.
+To build a Pokemon dataset for analysis, you'd need to distill the data returned from the API into a useful format; iterate across all pokemon; and combine the results. 
 
-```{r, eval = FALSE}
-
-req = GET("http://swapi.co/api/people/1")
-con = content(req)
-con$results[[1]]
-
-
-
-
-
-## http://pokeapi.co/docsv2/#pokemon
-
-poke = GET("http://pokeapi.co/api/v2/pokemon/1")
-con = content(poke)
-con$results[[1]]
-
-
-poke = GET("http://pokeapi.co/api/v2/pokemon/1")
-con = content(poke)
-con$stats[[1]]
-
-
-
-get_all <- function(url) {
-  out <- NULL
-  
-  while(!is.null(url)) {
-    message("Getting ", url)
-    req <- GET(url)
-    stop_for_status(req)
-    
-    con <- content(req)
-    out <- c(out, con$results)
-    url <- con$`next`
-  }
-  
-  out
-}
-
-# people <- get_all("http://swapi.co/api/people")
-# str(people[[1]])
-
-# poke = get_all("http://pokeapi.co/api/v2/pokemon")
-```
-
-Lastly, there are R packages for several popular APIs, including the `rnoaa` package we used in [visualization](visualization.html) and the `twitteR` package for interacting with twitter. 
 
 ## Other materials
 
-https://www.opendatanetwork.com/search?q=new+york+city
+* A recent short course presented similar topics to those above; a GitHub repo for the course is [here](https://github.com/ropensci/user2016-tutorial)
+* A lot of [NYC data](https://opendata.cityofnewyork.us) is public; [this](https://www.opendatanetwork.com/search?q=new+york+city) is a good place to start looking for interesting data
+* There are some cool projects based on scraped data; the RStudio community collected some [here](https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745)
+* Check out the [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.co) (from the maker of the Pokemon API).
 
-https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
-
-https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745
-
-https://github.com/ropensci/user2016-tutorial
-
-https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R
-
-https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd
-
-https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd
-
-https://zapier.com/learn/apis/
-
-https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe
-
-
-The code that I produced working examples in lecture is [here](./lecture_code/data_wrangling_ii.zip).
+The code that I produced working examples in lecture is [here]().

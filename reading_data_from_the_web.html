@@ -367,8 +367,8 @@ div.tocify {
 </div>
 
 
-<p>In <a href="data_import.html">data import</a>, we saw how to load data from a variety of formats; this is a fairly standard way to get data that have been gathered as part of a study. In a lot of cases, though, you’re going to have to go out and get the data you want or need. That’s the case we’re covering now.</p>
-<p>This is the first module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="ZZZZZZ">here</a>.</p>
+<p>In <a href="data_import.html">data import</a>, we saw how to load data from a variety of formats; this is a fairly standard way to get data that have been gathered as part of a study. In a lot of cases, though, you’re going to have to go out and get the data you want or need. That’s what we’re covering now.</p>
+<p>This is the first module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7N8HG34N">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
 <script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
@@ -379,9 +379,18 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>As always, it’s good to start by figuring out how you want to organize you code for this content. I’ll create a new directory called <code>data_wrangling_ii</code>, start an R Project, and open a new R Markdown file called <code>reading_data_from_the_web.Rmd</code>. Although we’ll mostly be getting data from the web, we’ll revisit some of <a href="./resources/data_import_examples.zip">these examples</a>, so I’ll create a <code>data</code> subdirectory and put those in it.</p>
-<p>There are some new additions to our standard packages (<code>rvest</code> and <code>httr</code>); I’m loading everything we need now. Now’s also the time to install the <a href="http://selectorgadget.com">Selector Gadget</a>.</p>
+<p>As always, it’s good to start by figuring out how you want to organize you code for this content. I’ll create a new directory called <code>example_data_wrangling_ii</code>, start an R Project, and open a new R Markdown file called <code>reading_data_from_the_web.Rmd</code>. I’ll initialize Git and make the repo public on GitHub. Although we’ll mostly be getting data from the web, we’ll revisit some of <a href="./resources/data_import_examples.zip">these examples</a>, so I’ll create a <code>data</code> subdirectory and put those in it.</p>
+<p>There are some new additions to our standard packages (<code>rvest</code> and <code>httr</code>); I’m loading everything we need now. Now’s also the time to “install” the <a href="http://selectorgadget.com">Selector Gadget</a>.</p>
 <pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
 library(rvest)
 ## Loading required package: xml2
 ## 
@@ -435,15 +444,19 @@ drug_use_xml
 
 table_marj
 ## # A tibble: 56 x 16
-##        State `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)`
-## *      &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;
-## 1 Total U.S.           12.90a            13.36          0.002
-## 2  Northeast           13.88a            14.66          0.005
-## 3    Midwest           12.40b            12.76          0.082
-## 4      South           11.24a            11.64          0.029
-## 5       West            15.27            15.62          0.262
-## 6    Alabama             9.98             9.60          0.426
-## # ... with 50 more rows, and 12 more variables: `12-17(2013-2014)` &lt;chr&gt;,
+##         State `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)`
+##  *      &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;
+##  1 Total U.S.           12.90a            13.36          0.002
+##  2  Northeast           13.88a            14.66          0.005
+##  3    Midwest           12.40b            12.76          0.082
+##  4      South           11.24a            11.64          0.029
+##  5       West            15.27            15.62          0.262
+##  6    Alabama             9.98             9.60          0.426
+##  7     Alaska           19.60a            21.92          0.010
+##  8    Arizona            13.69            13.12          0.364
+##  9   Arkansas            11.37            11.59          0.678
+## 10 California            14.49            15.25          0.103
+## # ... with 46 more rows, and 12 more variables: `12-17(2013-2014)` &lt;chr&gt;,
 ## #   `12-17(2014-2015)` &lt;chr&gt;, `12-17(P Value)` &lt;chr&gt;,
 ## #   `18-25(2013-2014)` &lt;chr&gt;, `18-25(2014-2015)` &lt;chr&gt;, `18-25(P
 ## #   Value)` &lt;chr&gt;, `26+(2013-2014)` &lt;chr&gt;, `26+(2014-2015)` &lt;chr&gt;, `26+(P
@@ -462,12 +475,12 @@ table_marj
 <pre class="r"><code>cast = hpss_html %&gt;%
   html_nodes(&quot;.itemprop .itemprop&quot;) %&gt;%
   html_text()</code></pre>
-<p><strong><em>Learning Assessment:</em></strong> <a href="https://www.amazon.com/Napoleon-Dynamite-Jon-Heder/product-reviews/B003MXB4FC/ref=cm_cr_arp_d_paging_btm_2?ie=UTF8&amp;filterByStar=five_star&amp;reviewerType=avp_only_reviews&amp;pageNumber=2#reviews-filter-bar">This page</a> contains the first 10 five-star reviews of the movie “Napoleon Dynamite”. Use a process similar to the one above to extract the titles of the reviews.</p>
+<p><strong><em>Learning Assessment:</em></strong> <a href="https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=1">This page</a> contains the 10 most recent reviews of a popular toothbrush. Use a process similar to the one above to extract the titles of the reviews. Note: getting the star ratings from Amazon is trickier, but the CSS path <code>&quot;#cm_cr-review_list .review-rating&quot;</code> helps – I discovered this after about an hour of googling around.</p>
 </div>
 <div id="using-an-api" class="section level3">
 <h3>Using an API</h3>
-<p>New York City has a great open data resource. Although most (all?) datasets can be accessed by clicking through a website, we’ll access them directly using the API to improve reproducibility.</p>
-<p>As a simple example, <a href="https://data.cityofnewyork.us/Environment/Water-Consumption-In-The-New-York-City/ia2d-e54m">this page</a> is about a dataset for annual water consumption in NYC, along with the population in that year.</p>
+<p>New York City has a great open data resource, and we’ll use that for our API examples. Although most (all?) of these datasets can be accessed by clicking through a website, we’ll access them directly using the API to improve reproducibility and make it easier to update results to reflect new data.</p>
+<p>As a simple example, <a href="https://data.cityofnewyork.us/Environment/Water-Consumption-In-The-New-York-City/ia2d-e54m">this page</a> is about a dataset for annual water consumption in NYC, along with the population in that year. First, we’ll import this as a CSV and parse it.</p>
 <pre class="r"><code>nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.csv&quot;) %&gt;% 
   content(&quot;parsed&quot;)
 ## Parsed with column specification:
@@ -476,83 +489,81 @@ table_marj
 ##   nyc_consumption_million_gallons_per_day = col_integer(),
 ##   per_capita_gallons_per_person_per_day = col_integer(),
 ##   year = col_integer()
-## )
-
-nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.json&quot;) %&gt;% 
+## )</code></pre>
+<p>We can also import this dataset as a JSON file. This takes a bit more work (and this is, really, a pretty easy case), but it’s still doable.</p>
+<pre class="r"><code>nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.json&quot;) %&gt;% 
   content(&quot;text&quot;) %&gt;%
   jsonlite::fromJSON() %&gt;%
   as_tibble()</code></pre>
-<pre class="r"><code>nyc_water = 
-  GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.csv&quot;,
-        query = list(year = 1990)
-      ) %&gt;% 
+<p><a href="https://catalog.data.gov/dataset?q=-aapi+api+OR++res_format%3Aapi#topic=developers_navigation">Data.gov</a> also has a lot of data available using their API; often this is available as CSV or JSON as well. For example, we might be interested in data coming from <a href="https://catalog.data.gov/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system">BRFSS</a>. This is importable via the API as a CSV (JSON, in this example, is much more complicated).</p>
+<pre class="r"><code>brfss = 
+  GET(&quot;https://chronicdata.cdc.gov/api/views/hn4x-zwk7/rows.csv?accessType=DOWNLOAD&quot;) %&gt;% 
   content(&quot;parsed&quot;)
 ## Parsed with column specification:
 ## cols(
-##   new_york_city_population = col_integer(),
-##   nyc_consumption_million_gallons_per_day = col_integer(),
-##   per_capita_gallons_per_person_per_day = col_integer(),
-##   year = col_integer()
-## )</code></pre>
-<p><strong><em>Learning Assessment:</em></strong> Using information on <a href="https://data.cityofnewyork.us/resource/hvwh-qtfg">this page</a>, get the information on subway entrances in the city. Which stations have the most entrances?</p>
-<p>The NYC open data is particularly user-friendly; not every API is, and many take some work to get used to. Let’s walk through an example from the Star Wars API.</p>
-<pre class="r"><code>
-req = GET(&quot;http://swapi.co/api/people/1&quot;)
-con = content(req)
-con$results[[1]]
+##   .default = col_character(),
+##   YearStart = col_integer(),
+##   YearEnd = col_integer(),
+##   Data_Value = col_double(),
+##   Data_Value_Alt = col_double(),
+##   Low_Confidence_Limit = col_double(),
+##   High_Confidence_Limit = col_double(),
+##   Sample_Size = col_integer()
+## )
+## See spec(...) for full column specifications.</code></pre>
+<p>Both of the previous examples are <em>extremely</em> easy – we accessed data that is essentially a data table, and we had a very straightforward API.</p>
+<p>To get a sense of how this becomes complicated, let’s look at the <a href="https://pokeapi.co">Pokemon API</a> (which is also pretty nice).</p>
+<pre class="r"><code>poke = GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;) %&gt;%
+  content()
 
+poke$name
+## [1] &quot;bulbasaur&quot;
 
+poke$height
+## [1] 7
 
-
-
-## http://pokeapi.co/docsv2/#pokemon
-
-poke = GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;)
-con = content(poke)
-con$results[[1]]
-
-
-poke = GET(&quot;http://pokeapi.co/api/v2/pokemon/1&quot;)
-con = content(poke)
-con$stats[[1]]
-
-
-
-get_all &lt;- function(url) {
-  out &lt;- NULL
-  
-  while(!is.null(url)) {
-    message(&quot;Getting &quot;, url)
-    req &lt;- GET(url)
-    stop_for_status(req)
-    
-    con &lt;- content(req)
-    out &lt;- c(out, con$results)
-    url &lt;- con$`next`
-  }
-  
-  out
-}
-
-# people &lt;- get_all(&quot;http://swapi.co/api/people&quot;)
-# str(people[[1]])
-
-# poke = get_all(&quot;http://pokeapi.co/api/v2/pokemon&quot;)</code></pre>
-<p>Lastly, there are R packages for several popular APIs, including the <code>rnoaa</code> package we used in <a href="visualization.html">visualization</a> and the <code>twitteR</code> package for interacting with twitter.</p>
+poke$abilities
+## [[1]]
+## [[1]]$slot
+## [1] 3
+## 
+## [[1]]$is_hidden
+## [1] TRUE
+## 
+## [[1]]$ability
+## [[1]]$ability$url
+## [1] &quot;https://pokeapi.co/api/v2/ability/34/&quot;
+## 
+## [[1]]$ability$name
+## [1] &quot;chlorophyll&quot;
+## 
+## 
+## 
+## [[2]]
+## [[2]]$slot
+## [1] 1
+## 
+## [[2]]$is_hidden
+## [1] FALSE
+## 
+## [[2]]$ability
+## [[2]]$ability$url
+## [1] &quot;https://pokeapi.co/api/v2/ability/65/&quot;
+## 
+## [[2]]$ability$name
+## [1] &quot;overgrow&quot;</code></pre>
+<p>To build a Pokemon dataset for analysis, you’d need to distill the data returned from the API into a useful format; iterate across all pokemon; and combine the results.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p><a href="https://www.opendatanetwork.com/search?q=new+york+city" class="uri">https://www.opendatanetwork.com/search?q=new+york+city</a></p>
-<p><a href="https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer" class="uri">https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer</a></p>
-<p><a href="https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745" class="uri">https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745</a></p>
-<p><a href="https://github.com/ropensci/user2016-tutorial" class="uri">https://github.com/ropensci/user2016-tutorial</a></p>
-<p><a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R" class="uri">https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R</a></p>
-<p><a href="https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd" class="uri">https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd</a></p>
-<p><a href="https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd" class="uri">https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd</a></p>
-<p><a href="https://zapier.com/learn/apis/" class="uri">https://zapier.com/learn/apis/</a></p>
-<p><a href="https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe" class="uri">https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe</a></p>
-<p>The code that I produced working examples in lecture is <a href="./lecture_code/data_wrangling_ii.zip">here</a>.</p>
+<ul>
+<li>A recent short course presented similar topics to those above; a GitHub repo for the course is <a href="https://github.com/ropensci/user2016-tutorial">here</a></li>
+<li>A lot of <a href="https://opendata.cityofnewyork.us">NYC data</a> is public; <a href="https://www.opendatanetwork.com/search?q=new+york+city">this</a> is a good place to start looking for interesting data</li>
+<li>There are some cool projects based on scraped data; the RStudio community collected some <a href="https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745">here</a></li>
+<li>Check out the <a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R">R file</a> used to create the <code>starwars</code> dataset (in the <code>tidyverse</code>) using the <a href="https://swapi.co">Star Wars API</a> (from the maker of the Pokemon API).</li>
+</ul>
+<p>The code that I produced working examples in lecture is <a href="">here</a>.</p>
 </div>
 
 <br><br>
