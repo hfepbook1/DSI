@@ -382,8 +382,46 @@ div.tocify {
 </div>
 <div id="data-description" class="section level2">
 <h2>Data description</h2>
-<p>Data on restaurant inspection results are publicly available at <a href="https://opendata.cityofnewyork.us/">NYC Open Data</a> and are updated daily. The specific data to be used in this class, linked to at the top of this page, was accessed in June 2017 from <a href="https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j">this page</a>.</p>
-<p>The dataset contains 413,092 rows and 18 columns. There is information on restaurant name and location, type of food, inspection date, and details on violation codes, total scores, and associated grades. The data is longitudinal in nature, with multiple rows per restaurant representing inspections over time. A complete data dictionary can be accessed <a href="./data/Restaurant_Inspection_Open_Data_Dictionary_082214.xlsx">here</a>.</p>
+<p>Data on restaurant inspection results are publicly available at <a href="https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe">NYC Open Data</a> and are updated daily. The specific data to be used in this class, linked to at the top of this page, was accessed in October 2017 using the code below.</p>
+<pre class="r"><code>library(tidyverse)
+library(httr)
+library(jsonlite)
+
+get_all_inspections = function(url) {
+  
+  all_inspections = vector(&quot;list&quot;, length = 0)
+  
+  loop_index = 1
+  chunk_size = 50000
+  DO_NEXT = TRUE
+  
+  while (DO_NEXT) {
+    message(&quot;Getting data, page &quot;, loop_index)
+    
+    all_inspections[[loop_index]] = 
+      GET(url,
+          query = list(`$order` = &quot;zipcode&quot;,
+                       `$limit` = chunk_size,
+                       `$offset` = as.integer((loop_index - 1) * chunk_size)
+                       )
+          ) %&gt;%
+      content(&quot;text&quot;) %&gt;%
+      fromJSON() %&gt;%
+      as_tibble()
+    
+    DO_NEXT = dim(all_inspections[[loop_index]])[1] == chunk_size
+    loop_index = loop_index + 1
+  }
+  
+  all_inspections
+  
+}
+
+url = &quot;https://data.cityofnewyork.us/resource/9w7m-hzhe.json&quot;
+
+nyc_inspections = get_all_inspections(url) %&gt;%
+  bind_rows() </code></pre>
+<p>The dataset contains roughly 400,000 rows and 18 columns. There is information on restaurant name and location, type of food, inspection date, and details on violation codes, total scores, and associated grades. The data is longitudinal in nature, with multiple rows per restaurant representing inspections over time. A complete data dictionary can be accessed <a href="./data/Restaurant_Inspection_Open_Data_Dictionary_082214.xlsx">here</a>.</p>
 </div>
 
 <br><br>
