@@ -368,7 +368,7 @@ div.tocify {
 
 
 <p>Most of the tools we examined in <a href="topic_data_wrangling_i.html">Data Wrangling I</a> were general purpose things – what tidy data is, using <code>dplyr</code> and <code>tidyr</code> for manipulation of data tables. Two variable types, strings and factors, present enough challenges to examine in some detail.</p>
-<p>This is the second module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="ZZZZZZ">here</a>.</p>
+<p>This is the second module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7N8HG34N">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
 <script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
@@ -379,47 +379,258 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>I’ll write code for today’s content in a new R Markdown document called <code>strings_and_factors.Rmd</code>, and put it in the same directory as <code>reading_data_from_the_web.Rmd</code>. I’m also going to load the usual packages, as well as <code>stringr</code> and <code>forcats</code>.</p>
+<p>I’ll write code for today’s content in a new R Markdown document called <code>strings_and_factors.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data_from_the_web.Rmd</code>. I’m also going to load the usual packages, as well as <code>stringr</code> and <code>forcats</code>.</p>
 <pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+library(janitor)
+library(haven)
+
 library(rvest)
+## Loading required package: xml2
+## 
+## Attaching package: &#39;rvest&#39;
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     pluck
+## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding
 library(httr)
+
 library(stringr)
-library(forcats)</code></pre>
-<div id="strings" class="section level3">
-<h3>Strings</h3>
-<p>Revisit drug use data.</p>
-<p><a href="http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm">This page</a> contains data from the National Survey on Drug Use and Health; it includes tables for drug use in the past year or month, as well as tables focusing on specific kinds of drug use. These data are potentially useful for analysis, and we’d like to be able to read in the first table.</p>
+library(forcats)
+
+theme_set(theme_bw())
+theme_update(legend.position = &quot;bottom&quot;)</code></pre>
+<div id="pups-data" class="section level3">
+<h3>Pups data</h3>
+<p>We’ll start by revisiting a dataset we’ve seen a few times, now. In <a href="tidy_data.html">tidy data</a> we spent some time tidying the pups dataset; as part of that we used tools available to us at the time, but now we have some better tools.</p>
+<p>The code below updates the data processing pipeline for the pups data using <code>strignr</code> and <code>forcats</code>. The result is the same, and the differences are pretty small, but this is a bit cleaner.</p>
+<pre class="r"><code>pulse_data = read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) %&gt;%
+  clean_names() %&gt;%
+  gather(key = visit, value = bdi, bdiscore_bl:bdiscore_12m) %&gt;%
+  mutate(visit = str_replace(visit, &quot;bdiscore_&quot;, &quot;&quot;),
+         visit = str_replace(visit, &quot;bl&quot;, &quot;00m&quot;),
+         visit = fct_relevel(visit, str_c(c(&quot;00&quot;, &quot;01&quot;, &quot;06&quot;, &quot;12&quot;), &quot;m&quot;))) %&gt;%
+  arrange(id, visit)
+## Warning: attributes are not identical across measure variables;
+## they will be dropped
+
+print(pulse_data, n = 12)
+## # A tibble: 4,348 x 5
+##       id      age   sex  visit   bdi
+##    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;fctr&gt; &lt;dbl&gt;
+##  1 10003 48.03836  male    00m     7
+##  2 10003 48.03836  male    01m     1
+##  3 10003 48.03836  male    06m     2
+##  4 10003 48.03836  male    12m     0
+##  5 10015 72.47123  male    00m     6
+##  6 10015 72.47123  male    01m    NA
+##  7 10015 72.47123  male    06m    NA
+##  8 10015 72.47123  male    12m    NA
+##  9 10022 58.50959  male    00m    14
+## 10 10022 58.50959  male    01m     3
+## 11 10022 58.50959  male    06m     8
+## 12 10022 58.50959  male    12m    NA
+## # ... with 4,336 more rows</code></pre>
+</div>
+<div id="nsduh" class="section level3">
+<h3>NSDUH</h3>
+<p>Next we’ll revisit the table scraped from the National Survey on Drug Use and Health data on <a href="http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm">this page</a>. In <a href="reading_data_from_the_web.html">reading data from the web</a>, we loaded this data using the code below, but noted it wasn’t tidy.</p>
 <pre class="r"><code>url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
 drug_use_xml = read_html(url)
 
-table_1 = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
+table_marj = (drug_use_xml %&gt;% html_nodes(css = &quot;table&quot;))[[1]] %&gt;%
   html_table() %&gt;%
   .[-1,] %&gt;%
-  as_tibble()
-
-table_1 = 
-  table_1 %&gt;%
+  as_tibble()</code></pre>
+<p>There are a few steps we need to implement to tidy these data. For now I’m not interested in the p-values (I’d rather just see the data); we also have age groups and year ranges in column titles, both of which are, in fact, variables. Lastly, the table includes letters as superscripts next to table entries; if we only want the percents we’ll need to strip these out.</p>
+<pre class="r"><code>data_marj = 
+  table_marj %&gt;%
   select(-contains(&quot;P Value&quot;)) %&gt;%
   gather(key = key, value = percent, -State) %&gt;%
   separate(key, into = c(&quot;age&quot;, &quot;year&quot;), sep = &quot;\\(&quot;) %&gt;%
-  mutate(year = str_trunc(year, 9),
-         percent = str_replace(percent, &quot;[ab]&quot;, &quot;&quot;),
+  mutate(year = str_sub(year, 1, -2),
+         percent = str_replace(percent, &quot;[a-z]&quot;, &quot;&quot;),
          percent = as.numeric(percent)) %&gt;%
   filter(!(State %in% c(&quot;Total U.S.&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;)))</code></pre>
+<p>We used <code>stringr</code> and regular expressions a couple of times above:</p>
+<ul>
+<li>in <code>separate</code>, we split age and year at the open parentheses using <code>&quot;\\(&quot;</code></li>
+<li>to remove character superscripts, we replaced any character using <code>&quot;[a-z]&quot;</code></li>
+</ul>
+<p>Let’s quickly visualize these data for the 12-17 age group; to make the plot readable, we’ll treat <code>State</code> as a factor are reorder according to <code>percent</code>.</p>
+<pre class="r"><code>data_marj %&gt;%
+  filter(age == &quot;12-17&quot;) %&gt;% 
+  mutate(State = fct_reorder(State, percent)) %&gt;% 
+  ggplot(aes(x = State, y = percent, color = year)) + 
+    geom_point() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+</div>
+<div id="toothbrush-reviews" class="section level3">
+<h3>Toothbrush reviews</h3>
+<p>We were able to scrape toothbrush reviews for a single review page in <a href="reading_data_from_the_web.html">reading data from the web</a>. If we want to scrape more reviews, it’s necessary to construct the URLs for several review pages. This is possible based on an observation about the the structure of the URL for the <a href="https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=1">first page</a> of reviews – it ended with <code>pageNumber=1</code> and, sure enough, changing this to <code>pageNumber=2</code> will bring up the <a href="https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=2">second page</a> of reviews.</p>
+<pre class="r"><code>url_base = &quot;https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
+
+urls = str_c(url_base, 1:5)
+
+read_html(urls[1]) %&gt;% 
+  html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+  html_text()
+##  [1] &quot;Good price&quot;                                                 
+##  [2] &quot;Five Stars&quot;                                                 
+##  [3] &quot;Love it&quot;                                                    
+##  [4] &quot;Does what is sonic toothbrush is supposed to do. ...&quot;       
+##  [5] &quot;I should have looked for a better bargin&quot;                   
+##  [6] &quot;Fatter handle than other models&quot;                            
+##  [7] &quot;Four Stars&quot;                                                 
+##  [8] &quot;Best electric toothbrush in the market, period.&quot;            
+##  [9] &quot;Huge upgrade to my old Elite Sonicare. Highly recommended!!&quot;
+## [10] &quot;Philips Sonicare 2 Series Plaque&quot;
+
+read_html(urls[2]) %&gt;% 
+  html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+  html_text()
+##  [1] &quot;Good Choice!&quot;                                                                  
+##  [2] &quot;Five Stars&quot;                                                                    
+##  [3] &quot;Five Stars&quot;                                                                    
+##  [4] &quot;love&quot;                                                                          
+##  [5] &quot;... thought I would spend the money on a toothbrush like this. After buying it&quot;
+##  [6] &quot;... have had both the Sonicate and Oral B and like this the&quot;                   
+##  [7] &quot;Works like exppected&quot;                                                          
+##  [8] &quot;Four Stars&quot;                                                                    
+##  [9] &quot;Not the same as other sonic care tooth brushes. ...&quot;                           
+## [10] &quot;Lovin&#39; this toothbrush!&quot;</code></pre>
+<p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
+</div>
+<div id="restaurant-inspections" class="section level3">
+<h3>Restaurant inspections</h3>
+<p>As a final example of strings and factors, we’ll take a look at the <a href="dataset_restaurant_inspections.Rmd">NYC Restuarant Inspections</a> data. Although we won’t talk about this in detail now, it’s worth mentioning that these data were collected using the NYC Open Data API; code is available with the data description.</p>
+<p>First we’ll import the data and take a look.</p>
+<pre class="r"><code>nyc_inspections = read_csv(&quot;./data/DOHMH_New_York_City_Restaurant_Inspection_Results.csv.gz&quot;)
+## Parsed with column specification:
+## cols(
+##   action = col_character(),
+##   boro = col_character(),
+##   building = col_integer(),
+##   camis = col_integer(),
+##   critical_flag = col_character(),
+##   cuisine_description = col_character(),
+##   dba = col_character(),
+##   inspection_date = col_datetime(format = &quot;&quot;),
+##   inspection_type = col_character(),
+##   phone = col_character(),
+##   record_date = col_datetime(format = &quot;&quot;),
+##   score = col_integer(),
+##   street = col_character(),
+##   violation_code = col_character(),
+##   violation_description = col_character(),
+##   zipcode = col_integer(),
+##   grade = col_character(),
+##   grade_date = col_datetime(format = &quot;&quot;)
+## )
+## Warning in rbind(names(probs), probs_f): number of columns of result is not
+## a multiple of vector length (arg 1)
+## Warning: 9380 parsing failures.
+## row # A tibble: 5 x 5 col     row      col   expected actual expected   &lt;int&gt;    &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; actual 1  2292 building an integer    NKA file 2  3268 building an integer    NKA row 3  5321 building an integer    NKA col 4  5689 building an integer    NKA expected 5  6364 building an integer    NKA actual # ... with 1 more variables: file &lt;chr&gt;
+## ... ................. ... .................................. ........ .................................. ...... .................................. .... .................................. ... .................................. ... .................................. ........ .................................. ...... .......................................
+## See problems(...) for more details.
+
+nyc_inspections %&gt;% 
+  group_by(boro, grade) %&gt;% 
+  summarize(n = n()) %&gt;% 
+  spread(key = grade, value = n)
+## # A tibble: 6 x 8
+## # Groups:   boro [6]
+##            boro     A     B     C `Not Yet Graded`     P     Z `&lt;NA&gt;`
+## *         &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;
+## 1         BRONX 13688  2801   701              200   163   351  16833
+## 2      BROOKLYN 37449  6651  1684              702   416   977  51930
+## 3     MANHATTAN 61608 10532  2689              765   508  1237  80615
+## 4       Missing     4    NA    NA               NA    NA    NA     13
+## 5        QUEENS 35952  6492  1593              604   331   913  45816
+## 6 STATEN ISLAND  5215   933   207               85    47   149   6730</code></pre>
+<p>To simplify things, I’ll remove inspections with scores other than <code>A</code>, <code>B</code>, or <code>C</code>, and also remove the restaurants with missing boro information. I’ll also clean up boro names a bit.</p>
+<pre class="r"><code>nyc_inspections =
+  nyc_inspections %&gt;%
+  filter(grade %in% c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;), boro != &quot;Missing&quot;) %&gt;% 
+  mutate(boro = str_to_title(boro))</code></pre>
+<p>Let’s focus only on pizza places for now, and re-examine grades by boro</p>
+<pre class="r"><code>nyc_inspections %&gt;% 
+  filter(str_detect(dba, &quot;Pizza&quot;)) %&gt;% 
+  group_by(boro, grade) %&gt;% 
+  summarize(n = n()) %&gt;% 
+  spread(key = grade, value = n)
+## # A tibble: 5 x 3
+## # Groups:   boro [5]
+##            boro     A     B
+## *         &lt;chr&gt; &lt;int&gt; &lt;int&gt;
+## 1         Bronx     9     3
+## 2      Brooklyn     6    NA
+## 3     Manhattan    26     8
+## 4        Queens    17    NA
+## 5 Staten Island     5    NA</code></pre>
+<p>That doesn’t look right – for sure there are more pizza places than that! The problem is that the match in <code>str_detect</code> is case-sensitive until we tell it not to be:</p>
+<pre class="r"><code>nyc_inspections %&gt;% 
+  filter(str_detect(dba, regex(&quot;pizza&quot;, ignore_case = TRUE))) %&gt;% 
+  group_by(boro, grade) %&gt;% 
+  summarize(n = n()) %&gt;% 
+  spread(key = grade, value = n)
+## # A tibble: 5 x 4
+## # Groups:   boro [5]
+##            boro     A     B     C
+## *         &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1         Bronx  1170   305    56
+## 2      Brooklyn  1948   296    61
+## 3     Manhattan  1983   420    76
+## 4        Queens  1647   259    48
+## 5 Staten Island   323   127    21</code></pre>
+<p>The table is okay but I’d like to visualize this.</p>
+<pre class="r"><code>nyc_inspections %&gt;% 
+  filter(str_detect(dba, regex(&quot;pizza&quot;, ignore_case = TRUE))) %&gt;%
+  ggplot(aes(x = boro, fill = grade)) + geom_bar()</code></pre>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p>Might help to have things in a different order – maybe number of pizza places? Fortunately this can be done using <code>fct_infreq</code>.</p>
+<pre class="r"><code>nyc_inspections %&gt;% 
+  filter(str_detect(dba, regex(&quot;pizza&quot;, ignore_case = TRUE))) %&gt;%
+  mutate(boro = fct_infreq(boro)) %&gt;%
+  ggplot(aes(x = boro, fill = grade)) + geom_bar()</code></pre>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<p>Suppose I want to rename a boro; I’ll try to do this using <code>replace</code>.</p>
+<pre class="r"><code>nyc_inspections %&gt;% 
+  filter(str_detect(dba, regex(&quot;pizza&quot;, ignore_case = TRUE))) %&gt;%
+  mutate(boro = fct_infreq(boro),
+         boro = replace(boro, which(boro == &quot;Brooklyn&quot;), &quot;Hipsterville&quot;)) %&gt;%
+  ggplot(aes(x = boro, fill = grade)) + geom_bar()
+## Warning in `[&lt;-.factor`(`*tmp*`, list, value = &quot;Hipsterville&quot;): invalid
+## factor level, NA generated</code></pre>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
+<p>That didn’t work at all! Factors have very specific values, trying to use a value that is not an existing factor level won’t work. Fortunately there is a dedicated function for renaming factor levels:</p>
+<pre class="r"><code>nyc_inspections %&gt;% 
+  filter(str_detect(dba, regex(&quot;pizza&quot;, ignore_case = TRUE))) %&gt;%
+  mutate(boro = fct_infreq(boro),
+         boro = fct_recode(boro, &quot;Hipsterville&quot; = &quot;Brooklyn&quot;)) %&gt;%
+  ggplot(aes(x = boro, fill = grade)) + geom_bar()</code></pre>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
+<p>Success!</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
-<p><a href="https://www.opendatanetwork.com/search?q=new+york+city" class="uri">https://www.opendatanetwork.com/search?q=new+york+city</a></p>
-<p><a href="https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer" class="uri">https://github.com/ropensci/user2016-tutorial?utm_content=buffer604f6&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer</a></p>
-<p><a href="https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745" class="uri">https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745</a></p>
-<p><a href="https://github.com/ropensci/user2016-tutorial" class="uri">https://github.com/ropensci/user2016-tutorial</a></p>
-<p><a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R" class="uri">https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R</a></p>
-<p><a href="https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd" class="uri">https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/rvest-scraping.Rmd</a></p>
-<p><a href="https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd" class="uri">https://github.com/datasciencelabs/2016/blob/master/lectures/wrangling/httr_twitter_and_text.Rmd</a></p>
-<p><a href="https://zapier.com/learn/apis/" class="uri">https://zapier.com/learn/apis/</a></p>
-<p><a href="https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe" class="uri">https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe</a></p>
-<p>The code that I produced working examples in lecture is <a href="./lecture_code/data_wrangling_ii.zip">here</a>.</p>
+<ul>
+<li>R for Data Science has chapters on both <a href="http://r4ds.had.co.nz/strings.html">strings</a> and <a href="http://r4ds.had.co.nz/factors.html">factors</a></li>
+<li>There are useful materials by Jenny Bryan on <a href="http://stat545.com/block022_regular-expression.html">strings</a> and <a href="http://stat545.com/block029_factors.html">factors</a> as well</li>
+</ul>
+<p>The code that I produced working examples in lecture is <a href="">here</a>.</p>
 </div>
 
 <br><br>
