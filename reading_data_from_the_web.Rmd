@@ -113,7 +113,7 @@ url = "https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/pr
 
 toothbrush_html = read_html(url)
 
-toothbrush_html %>%
+review_titles = toothbrush_html %>%
   html_nodes("#cm_cr-review_list .review-title") %>%
   html_text()
 
