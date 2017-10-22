@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-Most of the tools we examined in [Data Wrangling I](topic_data_wrangling_i.html) were general purpose things -- what tidy data is, using `dplyr` and `tidyr` for manipulation of data tables. Two variable types, strings and factors, present enough challenges to examine in some detail.
+Most of the tools we examined in [Data Wrangling I](topic_data_wrangling_i.html) were general purpose things -- what tidy data is, using `dplyr` and `tidyr` for manipulation of data tables. Two variable types, strings and factors, present enough challenges to examine in some detail. Now might also be a good time to read up on the [history](https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/) of strings and factors in R!
 
 This is the second module in the [Data Wrangling II](topic_data_wrangling_ii.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7N8HG34N).
 
@@ -19,10 +19,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 ## Some slides
 
-<script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-manipulation" title="Data Manipulation" target="_blank">Data Manipulation</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<script async class="speakerdeck-embed" data-id="bfb454627b71408889958f0893413097" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-strings-and-factors" title="Strings and Factors" target="_blank">Strings and Factors</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example
@@ -33,9 +34,7 @@ I'll write code for today's content in a new R Markdown document called `strings
 library(tidyverse)
 library(janitor)
 library(haven)
-
 library(rvest)
-library(httr)
 
 library(stringr)
 library(forcats)

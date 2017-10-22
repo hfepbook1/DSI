@@ -367,13 +367,13 @@ div.tocify {
 </div>
 
 
-<p>Most of the tools we examined in <a href="topic_data_wrangling_i.html">Data Wrangling I</a> were general purpose things – what tidy data is, using <code>dplyr</code> and <code>tidyr</code> for manipulation of data tables. Two variable types, strings and factors, present enough challenges to examine in some detail.</p>
+<p>Most of the tools we examined in <a href="topic_data_wrangling_i.html">Data Wrangling I</a> were general purpose things – what tidy data is, using <code>dplyr</code> and <code>tidyr</code> for manipulation of data tables. Two variable types, strings and factors, present enough challenges to examine in some detail. Now might also be a good time to read up on the <a href="https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/">history</a> of strings and factors in R!</p>
 <p>This is the second module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7N8HG34N">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
-<script async class="speakerdeck-embed" data-id="4e6375cc48814bd2b43b667180dbb31a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="bfb454627b71408889958f0893413097" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-data-manipulation" title="Data Manipulation" target="_blank">Data Manipulation</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-strings-and-factors" title="Strings and Factors" target="_blank">Strings and Factors</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
 <p><br></p>
 </div>
@@ -392,7 +392,6 @@ div.tocify {
 ## lag():    dplyr, stats
 library(janitor)
 library(haven)
-
 library(rvest)
 ## Loading required package: xml2
 ## 
@@ -403,7 +402,6 @@ library(rvest)
 ## The following object is masked from &#39;package:readr&#39;:
 ## 
 ##     guess_encoding
-library(httr)
 
 library(stringr)
 library(forcats)
@@ -486,30 +484,30 @@ urls = str_c(url_base, 1:5)
 read_html(urls[1]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Good price&quot;                                                 
-##  [2] &quot;Five Stars&quot;                                                 
-##  [3] &quot;Love it&quot;                                                    
-##  [4] &quot;Does what is sonic toothbrush is supposed to do. ...&quot;       
-##  [5] &quot;I should have looked for a better bargin&quot;                   
-##  [6] &quot;Fatter handle than other models&quot;                            
-##  [7] &quot;Four Stars&quot;                                                 
-##  [8] &quot;Best electric toothbrush in the market, period.&quot;            
-##  [9] &quot;Huge upgrade to my old Elite Sonicare. Highly recommended!!&quot;
-## [10] &quot;Philips Sonicare 2 Series Plaque&quot;
+##  [1] &quot;The ONLY brush I use... totally surpasses old-fashioned brushing.&quot;
+##  [2] &quot;Five Stars&quot;                                                       
+##  [3] &quot;Five Stars&quot;                                                       
+##  [4] &quot;Good price&quot;                                                       
+##  [5] &quot;Five Stars&quot;                                                       
+##  [6] &quot;Love it&quot;                                                          
+##  [7] &quot;Does what is sonic toothbrush is supposed to do. ...&quot;             
+##  [8] &quot;I should have looked for a better bargin&quot;                         
+##  [9] &quot;Fatter handle than other models&quot;                                  
+## [10] &quot;Four Stars&quot;
 
 read_html(urls[2]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Good Choice!&quot;                                                                  
-##  [2] &quot;Five Stars&quot;                                                                    
-##  [3] &quot;Five Stars&quot;                                                                    
-##  [4] &quot;love&quot;                                                                          
-##  [5] &quot;... thought I would spend the money on a toothbrush like this. After buying it&quot;
-##  [6] &quot;... have had both the Sonicate and Oral B and like this the&quot;                   
-##  [7] &quot;Works like exppected&quot;                                                          
-##  [8] &quot;Four Stars&quot;                                                                    
-##  [9] &quot;Not the same as other sonic care tooth brushes. ...&quot;                           
-## [10] &quot;Lovin&#39; this toothbrush!&quot;</code></pre>
+##  [1] &quot;Best electric toothbrush in the market, period.&quot;                               
+##  [2] &quot;Huge upgrade to my old Elite Sonicare. Highly recommended!!&quot;                   
+##  [3] &quot;Philips Sonicare 2 Series Plaque&quot;                                              
+##  [4] &quot;Good Choice!&quot;                                                                  
+##  [5] &quot;Five Stars&quot;                                                                    
+##  [6] &quot;Five Stars&quot;                                                                    
+##  [7] &quot;love&quot;                                                                          
+##  [8] &quot;... thought I would spend the money on a toothbrush like this. After buying it&quot;
+##  [9] &quot;... have had both the Sonicate and Oral B and like this the&quot;                   
+## [10] &quot;Works like exppected&quot;</code></pre>
 <p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
 </div>
 <div id="restaurant-inspections" class="section level3">
