@@ -181,4 +181,4 @@ To build a Pokemon dataset for analysis, you'd need to distill the data returned
 * There are some cool projects based on scraped data; the RStudio community collected some [here](https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745)
 * Check out the [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.co) (from the maker of the Pokemon API).
 
-The code that I produced working examples in lecture is [here]().
+The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_data_wrangling_ii).
