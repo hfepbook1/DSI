@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-I'll write code for today's content in a new R Markdown document called `strings_and_factors.Rmd`, and put it in the same directory / GitHub repo as `reading_data_from_the_web.Rmd`. I'm also going to load the usual packages, as well as `stringr` and `forcats`.
+I'll write code for today's content in a new R Markdown document called `strings_and_factors.Rmd`, and put it in the same directory / GitHub repo as `reading_data.Rmd`. I'm also going to load the usual packages, as well as `stringr` and `forcats`.
 
 ```{r}
 library(tidyverse)
@@ -43,11 +43,11 @@ theme_set(theme_bw())
 theme_update(legend.position = "bottom")
 ```
 
-### Pups data
+### PULSE data
 
-We'll start by revisiting a dataset we've seen a few times, now. In [tidy data](tidy_data.html) we spent some time tidying the pups dataset; as part of that we used tools available to us at the time, but now we have some better tools. 
+We'll start by revisiting a [dataset](./data/public_pulse_data.sas7bdat) we've seen a few times now. In [tidy data](tidy_data.html) we spent some time tidying the PULSE dataset; as part of that we used tools available to us at the time, but now we have some better tools. 
 
-The code below updates the data processing pipeline for the pups data using `strignr` and `forcats`. The result is the same, and the differences are pretty small, but this is a bit cleaner. 
+The code below updates the data processing pipeline for the PULSE data using `strignr` and `forcats`. The result is the same, and the differences are pretty small, but this is a bit cleaner. 
 
 ```{r}
 pulse_data = read_sas("./data/public_pulse_data.sas7bdat") %>%
@@ -149,7 +149,7 @@ bmi_data = data_frame(
 )
 ```
 
-Next we'll convert `ind` to a factor variable with a character label, make a quick plot, and fit a linear model using `ind` as a predictor and `insulin` as the outcome. 
+Next we'll convert `ind` to a factor variable with informative levels, make a quick plot, and fit a linear model using `ind` as a predictor and `insulin` as the outcome. 
 
 ```{r}
 bmi_data = bmi_data %>% 

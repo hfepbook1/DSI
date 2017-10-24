@@ -379,7 +379,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>I’ll write code for today’s content in a new R Markdown document called <code>strings_and_factors.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data_from_the_web.Rmd</code>. I’m also going to load the usual packages, as well as <code>stringr</code> and <code>forcats</code>.</p>
+<p>I’ll write code for today’s content in a new R Markdown document called <code>strings_and_factors.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data.Rmd</code>. I’m also going to load the usual packages, as well as <code>stringr</code> and <code>forcats</code>.</p>
 <pre class="r"><code>library(tidyverse)
 ## Loading tidyverse: ggplot2
 ## Loading tidyverse: tibble
@@ -413,10 +413,10 @@ library(forcats)
 
 theme_set(theme_bw())
 theme_update(legend.position = &quot;bottom&quot;)</code></pre>
-<div id="pups-data" class="section level3">
-<h3>Pups data</h3>
-<p>We’ll start by revisiting a dataset we’ve seen a few times, now. In <a href="tidy_data.html">tidy data</a> we spent some time tidying the pups dataset; as part of that we used tools available to us at the time, but now we have some better tools.</p>
-<p>The code below updates the data processing pipeline for the pups data using <code>strignr</code> and <code>forcats</code>. The result is the same, and the differences are pretty small, but this is a bit cleaner.</p>
+<div id="pulse-data" class="section level3">
+<h3>PULSE data</h3>
+<p>We’ll start by revisiting a <a href="./data/public_pulse_data.sas7bdat">dataset</a> we’ve seen a few times now. In <a href="tidy_data.html">tidy data</a> we spent some time tidying the PULSE dataset; as part of that we used tools available to us at the time, but now we have some better tools.</p>
+<p>The code below updates the data processing pipeline for the PULSE data using <code>strignr</code> and <code>forcats</code>. The result is the same, and the differences are pretty small, but this is a bit cleaner.</p>
 <pre class="r"><code>pulse_data = read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) %&gt;%
   clean_names() %&gt;%
   gather(key = visit, value = bdi, bdiscore_bl:bdiscore_12m) %&gt;%
@@ -489,29 +489,29 @@ urls = str_c(url_base, 1:5)
 read_html(urls[1]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Five Stars&quot;                  &quot;Sorry I purchased this item&quot;
-##  [3] &quot;Five Stars&quot;                  &quot;Powerful dental brush===&quot;   
-##  [5] &quot;Big&quot;                         &quot;Too Loud&quot;                   
-##  [7] &quot;Inferior model&quot;              &quot;Four Stars&quot;                 
-##  [9] &quot;Better battery for 5 stars&quot;  &quot;Great&quot;
+##  [1] &quot;Five Stars&quot;                  &quot;Five Stars&quot;                 
+##  [3] &quot;Sorry I purchased this item&quot; &quot;Five Stars&quot;                 
+##  [5] &quot;Powerful dental brush===&quot;    &quot;Big&quot;                        
+##  [7] &quot;Too Loud&quot;                    &quot;Inferior model&quot;             
+##  [9] &quot;Four Stars&quot;                  &quot;Better battery for 5 stars&quot;
 
 read_html(urls[2]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Dentist recommended&quot;                                              
-##  [2] &quot;Five Stars&quot;                                                       
-##  [3] &quot;The ONLY brush I use... totally surpasses old-fashioned brushing.&quot;
-##  [4] &quot;Five Stars&quot;                                                       
+##  [1] &quot;Great&quot;                                                            
+##  [2] &quot;Dentist recommended&quot;                                              
+##  [3] &quot;Five Stars&quot;                                                       
+##  [4] &quot;The ONLY brush I use... totally surpasses old-fashioned brushing.&quot;
 ##  [5] &quot;Five Stars&quot;                                                       
-##  [6] &quot;Good price&quot;                                                       
-##  [7] &quot;Five Stars&quot;                                                       
-##  [8] &quot;Love it&quot;                                                          
-##  [9] &quot;Does what is sonic toothbrush is supposed to do. ...&quot;             
-## [10] &quot;I should have looked for a better bargin&quot;</code></pre>
+##  [6] &quot;Five Stars&quot;                                                       
+##  [7] &quot;Good price&quot;                                                       
+##  [8] &quot;Five Stars&quot;                                                       
+##  [9] &quot;Love it&quot;                                                          
+## [10] &quot;Does what is sonic toothbrush is supposed to do. ...&quot;</code></pre>
 <p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
 </div>
-<div id="biostat-methods-example" class="section level3">
-<h3>Biostat Methods Example</h3>
+<div id="biostat-methods-i-example" class="section level3">
+<h3>Biostat Methods I Example</h3>
 <p>The following dataset was used as an example in <a href="https://columbiabiostatbmi.github.io">Biostat Methods</a> on ANOVA. First we’ll recreate the dataset.</p>
 <pre class="r"><code>ins1 = c(1.53, 1.61, 3.75, 2.89, 3.26)
 ins2 = c(3.15, 3.96, 3.59, 1.89, 1.45, 1.56)
@@ -527,7 +527,7 @@ bmi_data = data_frame(
                     rep(4, length(ins4)),
                     rep(5, length(ins5)))
 )</code></pre>
-<p>Next we’ll convert <code>ind</code> to a factor variable with a character label, make a quick plot, and fit a linear model using <code>ind</code> as a predictor and <code>insulin</code> as the outcome.</p>
+<p>Next we’ll convert <code>ind</code> to a factor variable with informative levels, make a quick plot, and fit a linear model using <code>ind</code> as a predictor and <code>insulin</code> as the outcome.</p>
 <pre class="r"><code>bmi_data = bmi_data %&gt;% 
   mutate(ind = factor(ind), 
          ind = fct_recode(ind,
