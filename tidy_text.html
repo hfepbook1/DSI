@@ -11,7 +11,7 @@
 
 
 
-<title>Text analysis</title>
+<title>Tidy text</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -362,7 +362,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Text analysis</h1>
+<h1 class="title toc-ignore">Tidy text</h1>
 
 </div>
 
@@ -379,6 +379,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
+<p><a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html" class="uri">https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html</a></p>
 <pre class="r"><code>library(tidyverse)
 ## Loading tidyverse: ggplot2
 ## Loading tidyverse: tibble
@@ -404,7 +405,10 @@ library(viridis)
   filter(grade %in% c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)) %&gt;% 
   mutate(inspection_num = row_number(),
          boro = str_to_title(boro)) %&gt;% 
-  select(inspection_num, boro, grade, critical_flag, dba, cuisine_description, zipcode, violation_description)</code></pre>
+  select(inspection_num, boro, grade, score, critical_flag, dba, cuisine_description, zipcode, violation_description)</code></pre>
+</div>
+<div id="words-and-wordcounts" class="section level3">
+<h3>Words and wordcounts</h3>
 <pre class="r"><code>data(stop_words)</code></pre>
 <pre class="r"><code>restaurant_words = nyc_inspections %&gt;% 
   unnest_tokens(word, violation_description) %&gt;% 
@@ -418,7 +422,36 @@ word_counts %&gt;%
   geom_bar(stat = &quot;identity&quot;, fill = &quot;#009E73&quot;) + 
   coord_flip()
 ## Selecting by n</code></pre>
-<p><img src="text_analysis_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><img src="tidy_text_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+</div>
+<div id="comparing-words-across-groups" class="section level3">
+<h3>Comparing words across groups</h3>
+<p>Finally, let’s compare which words are more likely to come from a “C” versus “A” inspection. We limit to words that appear at least 3 times, and compute the log odds ratio for each word, for the odds of the word appearing in a “C” inspection to the odds of the word appearing in an “A” inspection.</p>
+<pre class="r"><code>word_ratios &lt;- restaurant_words %&gt;%
+    filter(grade %in% c(&quot;A&quot;, &quot;C&quot;)) %&gt;% 
+    count(word, grade) %&gt;%
+    group_by(word) %&gt;% 
+    filter(sum(n) &gt;= 5) %&gt;%
+    ungroup() %&gt;%
+    spread(grade, n, fill = 0) %&gt;%
+    mutate_if(is.numeric, funs((. + 1) / sum(. + 1))) %&gt;%
+    mutate(logratio = log(C / A)) %&gt;%
+    arrange(desc(logratio)) </code></pre>
+<p>We plot the top 15 most distinct words that are more common for “C” and “A” graded inspections.</p>
+<pre class="r"><code>word_ratios %&gt;%
+  group_by(logratio &lt; 0) %&gt;%
+  top_n(15, abs(logratio)) %&gt;%
+  ungroup() %&gt;%
+  mutate(word = reorder(word, logratio)) %&gt;%
+  ggplot(aes(word, logratio, fill = logratio &lt; 0)) +
+  geom_col() +
+  coord_flip() +
+  ylab(&quot;log odds ratio (C/A)&quot;) +
+  scale_fill_discrete(name = &quot;&quot;, labels = c(&quot;C&quot;, &quot;A&quot;))</code></pre>
+<p><img src="tidy_text_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
+</div>
+<div id="sentiment-analysis" class="section level3">
+<h3>Sentiment analysis</h3>
 <p>Now lets score the sentiment in each word. Note that only words that are in the selected sentiment lexicon will be retained, as the rest of the words are not considered meaningful. Let’s start with the sentiment lexicon “bing”, which simply categorizes each word as having a positive or negative sentiment. Then we’ll count the number of positive and negative words in each violation description, and create a score that represents the difference in the number of positive words minus the number of negative words.</p>
 <pre class="r"><code>bing_sentiments = get_sentiments(&quot;bing&quot;)</code></pre>
 <p>Not perfect (e.g. this scores <code>cold</code> as <code>negative</code> which might not be accurate), but we’ll use it.</p>
@@ -455,28 +488,7 @@ inspection_sentiments %&gt;%
         axis.ticks.x = element_blank()) +
   scale_fill_viridis(discrete = TRUE) + 
   scale_color_viridis(discrete = TRUE) </code></pre>
-<p><img src="text_analysis_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
-<pre class="r"><code>word_ratios &lt;- restaurant_words %&gt;%
-    filter(grade %in% c(&quot;A&quot;, &quot;C&quot;)) %&gt;% 
-    count(word, grade) %&gt;%
-    group_by(word) %&gt;% 
-    filter(sum(n) &gt;= 5) %&gt;%
-    ungroup() %&gt;%
-    spread(grade, n, fill = 0) %&gt;%
-    mutate_if(is.numeric, funs((. + 1) / sum(. + 1))) %&gt;%
-    mutate(logratio = log(C / A)) %&gt;%
-    arrange(desc(logratio)) </code></pre>
-<pre class="r"><code>word_ratios %&gt;%
-  group_by(logratio &lt; 0) %&gt;%
-  top_n(15, abs(logratio)) %&gt;%
-  ungroup() %&gt;%
-  mutate(word = reorder(word, logratio)) %&gt;%
-  ggplot(aes(word, logratio, fill = logratio &lt; 0)) +
-  geom_col() +
-  coord_flip() +
-  ylab(&quot;log odds ratio (C/A)&quot;) +
-  scale_fill_discrete(name = &quot;&quot;, labels = c(&quot;C&quot;, &quot;A&quot;))</code></pre>
-<p><img src="text_analysis_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p><img src="tidy_text_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
