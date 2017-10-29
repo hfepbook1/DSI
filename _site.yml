@@ -17,10 +17,10 @@ navbar:
           href: topic_collaboration.html
         - text: "Data Wrangling II"
           href: topic_data_wrangling_ii.html
-        - text: "Iteration"
-          href: topic_iteration.html
         - text: "Interactivity"
           href: topic_interactivity.html
+        - text: "Iteration"
+          href: topic_iteration.html
         - text: "R Packages"
           href: topic_r_packages.html
     - text: "Datasets"

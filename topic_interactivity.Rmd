@@ -6,6 +6,6 @@ Brief overview of content
 
 This topic is made up of the following components:
 
-* Dashboards
-* Shiny Apps
+* [Plot.ly and `flexdashboards`](plotly_and_dashboards.html)
+* [Shiny](shiny.html)
 

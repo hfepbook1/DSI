@@ -304,10 +304,10 @@ div.tocify {
       <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
     </li>
     <li>
-      <a href="topic_iteration.html">Iteration</a>
+      <a href="topic_interactivity.html">Interactivity</a>
     </li>
     <li>
-      <a href="topic_interactivity.html">Interactivity</a>
+      <a href="topic_iteration.html">Iteration</a>
     </li>
     <li>
       <a href="topic_r_packages.html">R Packages</a>
@@ -381,22 +381,11 @@ div.tocify {
 <h2>Example</h2>
 <p>I’ll write code for today’s content in a new R Markdown document called <code>tidy_text.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data.Rmd</code> and <code>strings_and_factors.Rmd</code>. I’m also going to load the usual packages, as well as <code>tidytext</code> and <code>viridis</code> (which has nice <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">color palettes</a> for plots).</p>
 <pre class="r"><code>library(tidyverse)
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-## Conflicts with tidy packages ----------------------------------------------
-## filter(): dplyr, stats
-## lag():    dplyr, stats
 library(tidytext)
-## Warning: package &#39;tidytext&#39; was built under R version 3.4.2
 library(stringr)
 library(forcats)
 
 library(viridis)
-## Loading required package: viridisLite
 
 theme_set(theme_bw())
 theme_update(legend.position = &quot;bottom&quot;)</code></pre>

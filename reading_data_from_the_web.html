@@ -304,10 +304,10 @@ div.tocify {
       <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
     </li>
     <li>
-      <a href="topic_iteration.html">Iteration</a>
+      <a href="topic_interactivity.html">Interactivity</a>
     </li>
     <li>
-      <a href="topic_interactivity.html">Interactivity</a>
+      <a href="topic_iteration.html">Iteration</a>
     </li>
     <li>
       <a href="topic_r_packages.html">R Packages</a>
@@ -382,15 +382,6 @@ div.tocify {
 <p>As always, it’s good to start by figuring out how you want to organize you code for this content. I’ll create a new directory called <code>example_data_wrangling_ii</code>, start an R Project, and open a new R Markdown file called <code>reading_data_from_the_web.Rmd</code>. I’ll initialize Git and make the repo public on GitHub. Although we’ll mostly be getting data from the web, we’ll revisit some of <a href="./resources/data_import_examples.zip">these examples</a>, so I’ll create a <code>data</code> subdirectory and put those in it.</p>
 <p>There are some new additions to our standard packages (<code>rvest</code> and <code>httr</code>); I’m loading everything we need now. Now’s also the time to “install” the <a href="http://selectorgadget.com">Selector Gadget</a>.</p>
 <pre class="r"><code>library(tidyverse)
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-## Conflicts with tidy packages ----------------------------------------------
-## filter(): dplyr, stats
-## lag():    dplyr, stats
 library(rvest)
 ## Loading required package: xml2
 ## 
@@ -444,19 +435,15 @@ drug_use_xml
 
 table_marj
 ## # A tibble: 56 x 16
-##         State `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)`
-##  *      &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;
-##  1 Total U.S.           12.90a            13.36          0.002
-##  2  Northeast           13.88a            14.66          0.005
-##  3    Midwest           12.40b            12.76          0.082
-##  4      South           11.24a            11.64          0.029
-##  5       West            15.27            15.62          0.262
-##  6    Alabama             9.98             9.60          0.426
-##  7     Alaska           19.60a            21.92          0.010
-##  8    Arizona            13.69            13.12          0.364
-##  9   Arkansas            11.37            11.59          0.678
-## 10 California            14.49            15.25          0.103
-## # ... with 46 more rows, and 12 more variables: `12-17(2013-2014)` &lt;chr&gt;,
+##        State `12+(2013-2014)` `12+(2014-2015)` `12+(P Value)`
+## *      &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;
+## 1 Total U.S.           12.90a            13.36          0.002
+## 2  Northeast           13.88a            14.66          0.005
+## 3    Midwest           12.40b            12.76          0.082
+## 4      South           11.24a            11.64          0.029
+## 5       West            15.27            15.62          0.262
+## 6    Alabama             9.98             9.60          0.426
+## # ... with 50 more rows, and 12 more variables: `12-17(2013-2014)` &lt;chr&gt;,
 ## #   `12-17(2014-2015)` &lt;chr&gt;, `12-17(P Value)` &lt;chr&gt;,
 ## #   `18-25(2013-2014)` &lt;chr&gt;, `18-25(2014-2015)` &lt;chr&gt;, `18-25(P
 ## #   Value)` &lt;chr&gt;, `26+(2013-2014)` &lt;chr&gt;, `26+(2014-2015)` &lt;chr&gt;, `26+(P

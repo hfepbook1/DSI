@@ -304,10 +304,10 @@ div.tocify {
       <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
     </li>
     <li>
-      <a href="topic_iteration.html">Iteration</a>
+      <a href="topic_interactivity.html">Interactivity</a>
     </li>
     <li>
-      <a href="topic_interactivity.html">Interactivity</a>
+      <a href="topic_iteration.html">Iteration</a>
     </li>
     <li>
       <a href="topic_r_packages.html">R Packages</a>
@@ -381,27 +381,9 @@ div.tocify {
 <h2>Example</h2>
 <p>I’ll write code for today’s content in a new R Markdown document called <code>strings_and_factors.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data.Rmd</code>. I’m also going to load the usual packages, as well as <code>stringr</code> and <code>forcats</code>.</p>
 <pre class="r"><code>library(tidyverse)
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-## Conflicts with tidy packages ----------------------------------------------
-## filter(): dplyr, stats
-## lag():    dplyr, stats
 library(janitor)
 library(haven)
 library(rvest)
-## Loading required package: xml2
-## 
-## Attaching package: &#39;rvest&#39;
-## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     pluck
-## The following object is masked from &#39;package:readr&#39;:
-## 
-##     guess_encoding
 
 library(stringr)
 library(forcats)
@@ -484,30 +466,30 @@ urls = str_c(url_base, 1:5)
 read_html(urls[1]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Clean power a little bit stronger than what I expect ...&quot;                                          
-##  [2] &quot;Not worth the price.&quot;                                                                              
-##  [3] &quot;Five Stars&quot;                                                                                        
-##  [4] &quot;Five Stars&quot;                                                                                        
+##  [1] &quot;thanks, as described,&quot;                                                                             
+##  [2] &quot;Way better than traditional toothbrush&quot;                                                            
+##  [3] &quot;Clean power a little bit stronger than what I expect ...&quot;                                          
+##  [4] &quot;Not worth the price.&quot;                                                                              
 ##  [5] &quot;Five Stars&quot;                                                                                        
 ##  [6] &quot;Five Stars&quot;                                                                                        
-##  [7] &quot;... toothbrush Wasn’t sufficient as far as Amazon service I’m happy with that but I did return the&quot;
-##  [8] &quot;Not as powerful as other/older models&quot;                                                             
-##  [9] &quot;So far so good. Does the job very well&quot;                                                            
-## [10] &quot;Love this toothbrush&quot;
+##  [7] &quot;Five Stars&quot;                                                                                        
+##  [8] &quot;Five Stars&quot;                                                                                        
+##  [9] &quot;... toothbrush Wasn’t sufficient as far as Amazon service I’m happy with that but I did return the&quot;
+## [10] &quot;Not as powerful as other/older models&quot;
 
 read_html(urls[2]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Five Stars&quot;                                           
-##  [2] &quot;Noticeable Improvement in gum health - per my dentist&quot;
+##  [1] &quot;So far so good. Does the job very well&quot;               
+##  [2] &quot;Love this toothbrush&quot;                                 
 ##  [3] &quot;Five Stars&quot;                                           
-##  [4] &quot;I&#39;m really glad I got this model&quot;                     
-##  [5] &quot;Four Stars&quot;                                           
-##  [6] &quot;Great value. Works Well !&quot;                            
-##  [7] &quot;Three Stars&quot;                                          
-##  [8] &quot;Happy Happy Gums and Wallet !!&quot;                       
-##  [9] &quot;Ok&quot;                                                   
-## [10] &quot;Real Deal.&quot;</code></pre>
+##  [4] &quot;Noticeable Improvement in gum health - per my dentist&quot;
+##  [5] &quot;Five Stars&quot;                                           
+##  [6] &quot;I&#39;m really glad I got this model&quot;                     
+##  [7] &quot;Four Stars&quot;                                           
+##  [8] &quot;Great value. Works Well !&quot;                            
+##  [9] &quot;Three Stars&quot;                                          
+## [10] &quot;Happy Happy Gums and Wallet !!&quot;</code></pre>
 <p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
 </div>
 <div id="biostat-methods-i-example" class="section level3">
