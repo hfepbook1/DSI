@@ -405,11 +405,6 @@ library(rvest)
 
 library(stringr)
 library(forcats)
-## 
-## Attaching package: &#39;forcats&#39;
-## The following object is masked from &#39;package:haven&#39;:
-## 
-##     as_factor
 
 theme_set(theme_bw())
 theme_update(legend.position = &quot;bottom&quot;)</code></pre>
@@ -436,13 +431,13 @@ print(pulse_data, n = 12)
 ##  3 10003 48.03836  male    06m     2
 ##  4 10003 48.03836  male    12m     0
 ##  5 10015 72.47123  male    00m     6
-##  6 10015 72.47123  male    01m   NaN
-##  7 10015 72.47123  male    06m   NaN
-##  8 10015 72.47123  male    12m   NaN
+##  6 10015 72.47123  male    01m    NA
+##  7 10015 72.47123  male    06m    NA
+##  8 10015 72.47123  male    12m    NA
 ##  9 10022 58.50959  male    00m    14
 ## 10 10022 58.50959  male    01m     3
 ## 11 10022 58.50959  male    06m     8
-## 12 10022 58.50959  male    12m   NaN
+## 12 10022 58.50959  male    12m    NA
 ## # ... with 4,336 more rows</code></pre>
 </div>
 <div id="nsduh" class="section level3">
@@ -489,25 +484,30 @@ urls = str_c(url_base, 1:5)
 read_html(urls[1]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Five Stars&quot;                  &quot;Five Stars&quot;                 
-##  [3] &quot;Sorry I purchased this item&quot; &quot;Five Stars&quot;                 
-##  [5] &quot;Powerful dental brush===&quot;    &quot;Big&quot;                        
-##  [7] &quot;Too Loud&quot;                    &quot;Inferior model&quot;             
-##  [9] &quot;Four Stars&quot;                  &quot;Better battery for 5 stars&quot;
+##  [1] &quot;Clean power a little bit stronger than what I expect ...&quot;                                          
+##  [2] &quot;Not worth the price.&quot;                                                                              
+##  [3] &quot;Five Stars&quot;                                                                                        
+##  [4] &quot;Five Stars&quot;                                                                                        
+##  [5] &quot;Five Stars&quot;                                                                                        
+##  [6] &quot;Five Stars&quot;                                                                                        
+##  [7] &quot;... toothbrush Wasn’t sufficient as far as Amazon service I’m happy with that but I did return the&quot;
+##  [8] &quot;Not as powerful as other/older models&quot;                                                             
+##  [9] &quot;So far so good. Does the job very well&quot;                                                            
+## [10] &quot;Love this toothbrush&quot;
 
 read_html(urls[2]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Great&quot;                                                            
-##  [2] &quot;Dentist recommended&quot;                                              
-##  [3] &quot;Five Stars&quot;                                                       
-##  [4] &quot;The ONLY brush I use... totally surpasses old-fashioned brushing.&quot;
-##  [5] &quot;Five Stars&quot;                                                       
-##  [6] &quot;Five Stars&quot;                                                       
-##  [7] &quot;Good price&quot;                                                       
-##  [8] &quot;Five Stars&quot;                                                       
-##  [9] &quot;Love it&quot;                                                          
-## [10] &quot;Does what is sonic toothbrush is supposed to do. ...&quot;</code></pre>
+##  [1] &quot;Five Stars&quot;                                           
+##  [2] &quot;Noticeable Improvement in gum health - per my dentist&quot;
+##  [3] &quot;Five Stars&quot;                                           
+##  [4] &quot;I&#39;m really glad I got this model&quot;                     
+##  [5] &quot;Four Stars&quot;                                           
+##  [6] &quot;Great value. Works Well !&quot;                            
+##  [7] &quot;Three Stars&quot;                                          
+##  [8] &quot;Happy Happy Gums and Wallet !!&quot;                       
+##  [9] &quot;Ok&quot;                                                   
+## [10] &quot;Real Deal.&quot;</code></pre>
 <p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
 </div>
 <div id="biostat-methods-i-example" class="section level3">
@@ -734,7 +734,7 @@ nyc_inspections %&gt;%
 <li>There are useful materials by Jenny Bryan on <a href="http://stat545.com/block022_regular-expression.html">strings</a> and <a href="http://stat545.com/block029_factors.html">factors</a> as well</li>
 <li>Dealing with text entries can be a <a href="https://www.youtube.com/watch?v=15nNY7uofNw">real challenge</a></li>
 </ul>
-<p>The code that I produced working examples in lecture is <a href="">here</a>.</p>
+<p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_data_wrangling_ii">here</a>.</p>
 </div>
 
 <br><br>

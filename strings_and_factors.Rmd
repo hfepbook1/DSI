@@ -293,4 +293,4 @@ Success!
 * There are useful materials by Jenny Bryan on [strings](http://stat545.com/block022_regular-expression.html) and [factors](http://stat545.com/block029_factors.html) as well
 * Dealing with text entries can be a [real challenge](https://www.youtube.com/watch?v=15nNY7uofNw)
 
-The code that I produced working examples in lecture is [here]().
+The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_data_wrangling_ii).
