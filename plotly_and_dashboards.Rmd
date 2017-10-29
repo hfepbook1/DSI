@@ -1,0 +1,156 @@
+---
+title: "Plot.ly and `flexdashboards`"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+Plot.ly is a flexible framework for producing interactive graphics; it has a variety of implementations, including one for R. We'll take a look at a few common plot types, and then introduce `flexdashboards` as a way to collect plots (either static or interactive).
+
+This is the first module in the [Interactivity](topic_interactivity.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7RJ9G3SP).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+Set up. Directory; project; git; github; collaboration; website. 
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(stringr)
+library(forcats)
+library(viridis)
+
+library(plotly)
+```
+
+We're mostly going to use the [Airbnb](dataset_airbnb.html) data. Code below extracts what we need -- filters to keep things small for our plots. 
+
+```{r import_data, include = FALSE}
+set.seed(1)
+
+airbnb_data = read_csv("./data/nyc_airbnb.zip") %>%
+  clean_names() %>%
+  mutate(rating = review_scores_location / 2) %>%
+  select(boro = neighbourhood_group, neighbourhood, rating, price, room_type,
+         latitude, longitude) %>%
+  filter(!is.na(rating), 
+         boro == "Manhattan",
+         room_type == "Entire home/apt",
+         price %in% 100:500)  %>% 
+  sample_n(5000)
+```
+
+
+### Plot.ly scatterplot
+
+```{r}
+airbnb_data %>%
+  plot_ly(x = ~longitude, y = ~latitude, type = "scatter", mode = "markers",
+          alpha = 0.5, 
+          color = ~price,
+          text = ~str_c("Price: $", price, '<br>Rating: ', rating))
+```
+
+### Plot.ly boxplot
+
+```{r}
+common_neighborhoods =
+  airbnb_data %>% 
+  count(neighbourhood, sort = TRUE) %>% 
+  top_n(8) %>% 
+  select(neighbourhood)
+
+inner_join(airbnb_data, common_neighborhoods,
+             by = "neighbourhood") %>% 
+  mutate(neighbourhood = fct_reorder(neighbourhood, price)) %>% 
+  plot_ly(., y = ~price, color = ~neighbourhood, type = "box",
+          colors = "Set2")
+```
+
+
+### Plot.ly barchart
+
+```{r}
+df = airbnb_data %>% 
+  count(neighbourhood) %>% 
+  mutate(neighbourhood = fct_reorder(neighbourhood, n)) %>% 
+  plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = "bar")
+```
+
+
+### ggplotly
+
+You can convert a ggplot object straight to an interactive graphic using ggplotly.
+
+Here's our scatterplot
+```{r}
+scatter_ggplot = airbnb_data %>%
+  ggplot(aes(x = longitude, y = latitude, color = price)) +
+  geom_point(alpha = 0.25) +
+  scale_color_viridis() +
+  coord_cartesian() +
+  theme_classic()
+
+ggplotly(scatter_ggplot)
+```
+
+Here's our boxplot.
+
+```{r}
+box_ggplot = 
+  inner_join(airbnb_data, common_neighborhoods,
+             by = "neighbourhood") %>% 
+  mutate(neighbourhood = fct_reorder(neighbourhood, price)) %>% 
+  ggplot(aes(x = neighbourhood, y = price, fill = neighbourhood)) +
+  geom_boxplot() +
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggplotly(box_ggplot)
+```
+
+If I really want an interactive plot to look good, I'll use the plotly framework to build it. I still use ggplot for static plots (and I use this way, way more often); sometimes I'll use ggplotly on top of that for some quick interactivity. 
+
+### `flexdashboard`
+
+Clearly you can embed interactive graphics in HTML files produced by R Markdown. This is a handy time to introduce dashboards. In short, dashboards are a collection of related graphics (or tables, or other outputs) that are displayed in a structured way that's easy to navigate. 
+
+You can create dashboards using the `flexdashboard` package by specifying `flex_dashboard` as the output format in your R Markdown YAML. There are a variety of layout options, but we'll focus on a pretty simple structure produced by the template below.
+
+
+Conveniently, this dashboard has space for three plots! We'll populate it using the plotly plots above; doing so produces a graphic like the one shown below. 
+
+
+
+Dashboard layouts are controlled by specifying columns and rows, and potentially subdiving these. We specified a two-column layout with set column widths, and then divided the second column into two panels. Using tabbed browsing and multiple pages can also be really useful -- check out the gallery linked below for examples!
+
+### Hosting `flexdashboard`s
+
+You can share the HTML files for dashboards directly (e.g. by email); you can also host these online to make the dashboard visible to others. That process is essentially the same as for any other [website](making_websites.html) you'd make. 
+
+To illustrate, we'll put the dashboard we just created on a website for this topic. 
+
+
+## Other materials
+
+* https://plot.ly/r/ and https://plot.ly/r/reference/
+* http://rmarkdown.rstudio.com/flexdashboard/, http://rmarkdown.rstudio.com/flexdashboard/layouts.html, and http://rmarkdown.rstudio.com/flexdashboard/examples.html
+
+The code that I produced working examples in lecture is [here]().
