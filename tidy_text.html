@@ -367,7 +367,7 @@ div.tocify {
 </div>
 
 
-<p>A bit of a digression for a DS class in a Biostat department, but it’s fun, easily related to web data, and deals with strings and factors.</p>
+<p>This is a bit of a diversion for a public-health-focused course in data science, but it’s fun, related to web data, strings, and factors, and emphasizes tools in data wrangling.</p>
 <p>This is the third module in the <a href="topic_data_wrangling_ii.html">Data Wrangling II</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7N8HG34N">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
@@ -379,7 +379,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p><a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html" class="uri">https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html</a></p>
+<p>I’ll write code for today’s content in a new R Markdown document called <code>tidy_text.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data.Rmd</code> and <code>strings_and_factors.Rmd</code>. I’m also going to load the usual packages, as well as <code>tidytext</code> and <code>viridis</code> (which has nice <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">color palettes</a> for plots).</p>
 <pre class="r"><code>library(tidyverse)
 ## Loading tidyverse: ggplot2
 ## Loading tidyverse: tibble
@@ -396,9 +396,13 @@ library(stringr)
 library(forcats)
 
 library(viridis)
-## Loading required package: viridisLite</code></pre>
+## Loading required package: viridisLite
+
+theme_set(theme_bw())
+theme_update(legend.position = &quot;bottom&quot;)</code></pre>
 <div id="data" class="section level3">
 <h3>Data</h3>
+<p>We’re going to continue our examination of the <a href="dataset_restaurant_inspections.html">NYC Restuarant Inspections</a> data. I’ll load this and restrict to data I’m interested in right now.</p>
 <pre class="r"><code>nyc_inspections = read_csv(&quot;./data/DOHMH_New_York_City_Restaurant_Inspection_Results.csv.gz&quot;, 
                            col_types = cols(building = col_character()),
                            na = c(&quot;NA&quot;, &quot;N/A&quot;)) %&gt;% 
@@ -409,75 +413,80 @@ library(viridis)
 </div>
 <div id="words-and-wordcounts" class="section level3">
 <h3>Words and wordcounts</h3>
-<pre class="r"><code>data(stop_words)</code></pre>
-<pre class="r"><code>restaurant_words = nyc_inspections %&gt;% 
-  unnest_tokens(word, violation_description) %&gt;% 
-  anti_join(stop_words, by = &quot;word&quot;)</code></pre>
-<pre class="r"><code>word_counts = restaurant_words %&gt;% count(word, sort = TRUE)
+<p>To illustrate tidy text and text analysis, we’ll focus on the <code>violation_description</code>, which are stored as strings. To begin our analysis, we’ll un-nest the tokens (i.e. words) in each row; the result is a tidy dataset in which each word is contained within a separate row.</p>
+<pre class="r"><code>inspection_words = nyc_inspections %&gt;% 
+  unnest_tokens(word, violation_description)</code></pre>
+<p>There are lots of words here that are uninformative. We’ll remove “stop words” using <code>anti_join</code>; in other settings the words you wan to remove might be different.</p>
+<pre class="r"><code>data(stop_words)
 
-word_counts %&gt;% 
+inspection_words = 
+  anti_join(inspection_words, stop_words)
+## Joining, by = &quot;word&quot;</code></pre>
+<p>Great! Let’s take a look at the most commonly used (informative) words in this dataset.</p>
+<pre class="r"><code>inspection_words %&gt;% 
+  count(word, sort = TRUE) %&gt;% 
   top_n(10) %&gt;% 
   mutate(word = fct_reorder(word, n)) %&gt;% 
   ggplot(aes(x = word, y = n)) + 
-  geom_bar(stat = &quot;identity&quot;, fill = &quot;#009E73&quot;) + 
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;blue&quot;, alpha = .6) + 
   coord_flip()
 ## Selecting by n</code></pre>
 <p><img src="tidy_text_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
 </div>
 <div id="comparing-words-across-groups" class="section level3">
 <h3>Comparing words across groups</h3>
-<p>Finally, let’s compare which words are more likely to come from a “C” versus “A” inspection. We limit to words that appear at least 3 times, and compute the log odds ratio for each word, for the odds of the word appearing in a “C” inspection to the odds of the word appearing in an “A” inspection.</p>
-<pre class="r"><code>word_ratios &lt;- restaurant_words %&gt;%
-    filter(grade %in% c(&quot;A&quot;, &quot;C&quot;)) %&gt;% 
-    count(word, grade) %&gt;%
-    group_by(word) %&gt;% 
-    filter(sum(n) &gt;= 5) %&gt;%
-    ungroup() %&gt;%
-    spread(grade, n, fill = 0) %&gt;%
-    mutate_if(is.numeric, funs((. + 1) / sum(. + 1))) %&gt;%
-    mutate(logratio = log(C / A)) %&gt;%
-    arrange(desc(logratio)) </code></pre>
-<p>We plot the top 15 most distinct words that are more common for “C” and “A” graded inspections.</p>
-<pre class="r"><code>word_ratios %&gt;%
-  group_by(logratio &lt; 0) %&gt;%
-  top_n(15, abs(logratio)) %&gt;%
+<p>Let’s compare which words are more likely to come from a “C” versus “A” inspection grade. We limit to words that appear at least 5 times and compute the approximate log odds ratio for each word.</p>
+<pre class="r"><code>word_ratios = inspection_words %&gt;%
+  filter(grade %in% c(&quot;A&quot;, &quot;C&quot;)) %&gt;% 
+  count(word, grade) %&gt;%
+  group_by(word) %&gt;% 
+  filter(sum(n) &gt;= 5) %&gt;%
   ungroup() %&gt;%
-  mutate(word = reorder(word, logratio)) %&gt;%
-  ggplot(aes(word, logratio, fill = logratio &lt; 0)) +
+  spread(grade, n, fill = 0) %&gt;%
+  mutate(
+    C_odds = (C + 1) / (sum(C) + 1),
+    A_odds = (A + 1) / (sum(A) + 1),
+    log_OR = log(C_odds / A_odds)
+  ) %&gt;%
+  arrange(desc(log_OR)) </code></pre>
+<p>We plot the top 15 most distinct words (that is, words that appear much more frequently in one group than the other) below.</p>
+<pre class="r"><code>word_ratios %&gt;%
+  mutate(pos_log_OR = ifelse(log_OR &gt; 0, &quot;C &gt; A&quot;, &quot;A &gt; C&quot;)) %&gt;% 
+  group_by(pos_log_OR) %&gt;%
+  top_n(15, abs(log_OR)) %&gt;%
+  ungroup() %&gt;%
+  mutate(word = fct_reorder(word, log_OR)) %&gt;%
+  ggplot(aes(word, log_OR, fill = pos_log_OR)) +
   geom_col() +
   coord_flip() +
   ylab(&quot;log odds ratio (C/A)&quot;) +
-  scale_fill_discrete(name = &quot;&quot;, labels = c(&quot;C&quot;, &quot;A&quot;))</code></pre>
+  scale_fill_discrete(name = &quot;&quot;)</code></pre>
 <p><img src="tidy_text_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
+<p>A lot of these seem pretty reasonable.</p>
 </div>
 <div id="sentiment-analysis" class="section level3">
 <h3>Sentiment analysis</h3>
-<p>Now lets score the sentiment in each word. Note that only words that are in the selected sentiment lexicon will be retained, as the rest of the words are not considered meaningful. Let’s start with the sentiment lexicon “bing”, which simply categorizes each word as having a positive or negative sentiment. Then we’ll count the number of positive and negative words in each violation description, and create a score that represents the difference in the number of positive words minus the number of negative words.</p>
+<p>Finally, let’s score the sentiment in each word. We’ll use the “bing” (like <a href="https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html">Bing Liu</a>, not like <a href="https://www.bing.com">bing.com</a>) sentiment lexicon, which simply categorizes each word as having a positive or negative sentiment.</p>
 <pre class="r"><code>bing_sentiments = get_sentiments(&quot;bing&quot;)</code></pre>
-<p>Not perfect (e.g. this scores <code>cold</code> as <code>negative</code> which might not be accurate), but we’ll use it.</p>
-<pre class="r"><code>restaurant_word_sentiments = restaurant_words %&gt;% 
+<p>Note this is not perfect for this dataset – for example, this scores <code>cold</code> as <code>negative</code> which might not be accurate – but we’ll use it anyway.</p>
+<p>We need to combine this lexicon with our tidy dataset containing words from each inspection. Note that only words that are in the sentiment lexicon will be retained, as the rest of the words are not considered meaningful. We’ll also count the number of positive and negative words in each violation description, and create a score that is the difference between the number of positive words and negative words.</p>
+<pre class="r"><code>inspection_sentiments = inspection_words %&gt;% 
   inner_join(., bing_sentiments) %&gt;% 
   count(inspection_num, sentiment) %&gt;% 
   spread(sentiment, n, fill = 0) %&gt;% 
   mutate(sentiment = positive - negative) %&gt;% 
   select(inspection_num, sentiment)
 ## Joining, by = &quot;word&quot;</code></pre>
+<p>We now have sentiment scores for each inspection. We’ll combine these with our original dataset, which had inspections in each row rather than words in each row – the data tidied for text analysis aren’t really suitable for our current needs.</p>
 <pre class="r"><code>inspection_sentiments = 
-  right_join(nyc_inspections, restaurant_word_sentiments, 
-             by = &quot;inspection_num&quot;)
+  right_join(nyc_inspections, inspection_sentiments, 
+             by = &quot;inspection_num&quot;)</code></pre>
+<p>Finally, let’s make a plot showing inspection sentiments and grades. This could be a pretty big plot, so I’ll restrict to Manhattan and sample only a few thousand entries.</p>
+<pre class="r"><code>set.seed(1)
 
 inspection_sentiments %&gt;% 
-  filter(sentiment &lt; -5) %&gt;% 
-  select(violation_description) %&gt;% 
-  print(n = 2)
-## # A tibble: 8,071 x 1
-##                                                         violation_description
-##                                                                         &lt;chr&gt;
-## 1 &quot;Filth flies or food/refuse/sewage-associated (FRSA) flies present in facil
-## 2 &quot;Filth flies or food/refuse/sewage-associated (FRSA) flies present in facil
-## # ... with 8,069 more rows</code></pre>
-<pre class="r"><code>inspection_sentiments %&gt;% 
   filter(boro == &quot;Manhattan&quot;) %&gt;% 
+  sample_n(5000) %&gt;% 
   mutate(inspection_num = factor(inspection_num),
     inspection_num = fct_reorder(inspection_num, sentiment)) %&gt;% 
   ggplot(aes(x = inspection_num, 
@@ -489,16 +498,17 @@ inspection_sentiments %&gt;%
   scale_fill_viridis(discrete = TRUE) + 
   scale_color_viridis(discrete = TRUE) </code></pre>
 <p><img src="tidy_text_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p>It’s not clear that sentiment is related to grade; this could reflect the very formal language of inspections or the inappropriateness of our lexicon.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
 <ul>
-<li><a href="https://www.youtube.com/watch?v=0poJP8WQxew" class="uri">https://www.youtube.com/watch?v=0poJP8WQxew</a></li>
-<li><a href="http://tidytextmining.com" class="uri">http://tidytextmining.com</a></li>
-<li><a href="http://varianceexplained.org/r/trump-tweets/" class="uri">http://varianceexplained.org/r/trump-tweets/</a></li>
+<li>The framework we used is explained in detail in the <a href="http://tidytextmining.com">Tidy Text book</a></li>
+<li>One of the book’s authors, Julia Silge, has a <a href="https://www.youtube.com/watch?v=0poJP8WQxew">nice video</a> talking about the work</li>
+<li>The other of the book’s authors, Dave Robinson, used the approach to examine Donald Trump’s tweets in this this <a href="http://varianceexplained.org/r/trump-tweets/">blog post</a></li>
 </ul>
-<p>The code that I produced working examples in lecture is <a href="">here</a>.</p>
+<p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_data_wrangling_ii">here</a>.</p>
 </div>
 
 <br><br>
