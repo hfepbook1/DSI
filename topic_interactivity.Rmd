@@ -2,10 +2,13 @@
 title: "Interactivity"
 ---
 
-Brief overview of content
+Connections between statistical software and web-style output formats allow the incorporation of interactivity into deliverable products, even when those products are not online. In this topic, we first explore individual interactive graphics (scatterplots, bar charts, box plots) and collections of these in dashboards, and then build on these using dynamic computaiton through Shiny.
 
 This topic is made up of the following components:
 
 * [Plot.ly and `flexdashboards`](plotly_and_dashboards.html)
 * [Shiny](shiny.html)
 
+The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C7RJ9G3SP).
+
+The code that I produced working examples in lecture is [here]().
