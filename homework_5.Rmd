@@ -12,7 +12,7 @@ This assignment reinforces ideas in [Data Wrangling II](topic_data_wrangling_ii.
 
 ### Due date
 
-Due: November 8 at 1:00pm. 
+Due: November 10 at 1:00pm. 
 
 ### Points
 
