@@ -22,8 +22,8 @@ knitr::opts_chunk$set(
 
 ## Some slides
 
-<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<script async class="speakerdeck-embed" data-id="674218dc49484b6898ee32eb47ba646d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Plotly and Dashboards" target="_blank">Plotly and Dashboards</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example
