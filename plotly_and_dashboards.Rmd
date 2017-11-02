@@ -42,7 +42,7 @@ library(plotly)
 
 We're going to focus on the [Airbnb](dataset_airbnb.html) data for this topic. The code below extracts what we need right now; specifically, we select only a few of the variables, filter to include a subset of the data, and down-sample for computational efficiency. 
 
-```{r import_data, include = FALSE}
+```{r import_data}
 set.seed(1)
 
 airbnb_data = read_csv("./data/nyc_airbnb.zip") %>%
