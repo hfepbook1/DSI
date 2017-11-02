@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Shiny and flexdashboard</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.7.1/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_i.html">Data Wrangling I</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_iteration.html">Iteration</a>
+    </li>
+    <li>
+      <a href="topic_r_packages.html">R Packages</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Datasets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dataset_mr_trash_wheel.html">Mr. Trash Wheel</a>
+    </li>
+    <li>
+      <a href="dataset_restaurant_inspections.html">NYC Restaurant Inspections</a>
+    </li>
+    <li>
+      <a href="dataset_instacart.html">Instacart</a>
+    </li>
+    <li>
+      <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
+    </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
+    <li>
+      <a href="dataset_airbnb.html">Airbnb</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="homework_and_projects.html">Homework and Projects</a>
+</li>
+<li>
+  <a href="course_communication.html">Communication</a>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore"><code>Shiny</code> and <code>flexdashboard</code></h1>
+
+</div>
+
+
+<p><code>Shiny</code> is RStudio’s framework for creating interactive graphics and web-like applications. There are several ways to use the power of <code>Shiny</code> and we’re going to focus on how to use it in conjunction with <code>flexdashboard</code> to make interactive dashboards within R Markdown.</p>
+<p>This is the second module in the <a href="topic_interactivity.html">Interactivity</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7RJ9G3SP">here</a>.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>To gear up for this topic, we’ll create a directory, start an R Project, initialize git, and create a new <code>flexdashboard</code> document.</p>
+<p><img src="images/shiny_flexdash_yaml_header.png" style="width:55%"></p>
+<p>I’m also going to use a slightly different layout than we used in the last class. Edit the default specifications to match the ones below.</p>
+<p><img src="images/shiny_flexdash_layout.png" style="width:75%"></p>
+<p>Go ahead and add the following libraries to your dashboard as well.</p>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+library(janitor)
+library(stringr)
+library(forcats)
+library(viridis)
+## Loading required package: viridisLite
+
+library(plotly)
+## 
+## Attaching package: &#39;plotly&#39;
+## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter
+## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout
+
+library(shiny)</code></pre>
+<p>Once again we’re going to focus on the <a href="dataset_airbnb.html">Airbnb</a> data for this topic. The goal is to make a dashboard similar to the one from the last lecture but with additional interactive elements. The code below extracts loads and cleans the data, and selects only a few of the variables.</p>
+<p>We are going to filter the dataset interactively by taking in user input, and use this dataset as the basis for our plots.</p>
+<div id="selectinput-widget" class="section level3">
+<h3>selectInput widget</h3>
+<p>We will place code for widgets in the sidebar, but this is a choice and they can be placed elsewhere in the dashboard. The <code>selectInput</code> widget creates a drop-down menu with choices for the user to select from.</p>
+<pre class="r"><code>boros = airbnb_data %&gt;% distinct(boro) %&gt;% pull()
+
+# selectInput widget
+selectInput(&quot;boro_choice&quot;, label = h3(&quot;Select boro&quot;),
+            choices = boros, selected = &quot;Manhattan&quot;)
+</code></pre>
+<p>Now we can select each of the different boros in New York. But how do we use this to update our dataset or plot?</p>
+<pre class="r"><code>renderPrint({ 
+  input$boro_choice
+})</code></pre>
+<p>We see that the user-select boro is stored as a string ‘under the hood’.</p>
+</div>
+<div id="sliderinput-widget" class="section level3">
+<h3>sliderInput widget</h3>
+<p>What would the <code>renderPrint</code> return if we wanted the user to select a numeric value Let’s add another widget and find out.</p>
+<pre class="r"><code>max_price = 1000
+min_price = airbnb_data %&gt;% distinct(price) %&gt;% min()
+  
+# sliderInput widget
+sliderInput(&quot;price_range&quot;, label = h3(&quot;Choose price range&quot;), min = min_price, 
+        max = max_price, value = c(100, 400))</code></pre>
+</div>
+<div id="radiobuttons-widget" class="section level3">
+<h3>radioButtons widget</h3>
+<p>Let’s add one more widget and then build out the plots.</p>
+<pre class="r"><code>room_choice = airbnb_data %&gt;% distinct(room_type) %&gt;% pull()
+
+# radioButtons widget
+radioButtons(&quot;room_choice&quot;, label = h3(&quot;Choose room type&quot;),
+    choices = room_choice, 
+    selected = &quot;Entire home/apt&quot;)</code></pre>
+<p>This last widget provides a button which allows the user to select among the types of rooms. For other types of widgets check out the <a href="https://shiny.rstudio.com/gallery/widget-gallery.html">widget gallery</a>.</p>
+</div>
+<div id="interactive-scatterplot" class="section level3">
+<h3>Interactive scatterplot</h3>
+<p>We start with the same <code>plot_ly</code> scatter plot we used in the last class. The only difference is now we will wrap it in a <code>renderPlotly</code> call. Go ahead and replace the <code>renderText</code> with the code below in your <code>flexdashboard</code>.</p>
+<pre class="r"><code>renderPlotly({ 
+  airbnb_data %&gt;%
+  mutate(text_label = str_c(&quot;Price: $&quot;, price, &#39;\nRating: &#39;, rating)) %&gt;% 
+  plot_ly(x = ~longitude, y = ~latitude, type = &quot;scatter&quot;, mode = &quot;markers&quot;,
+          alpha = 0.5, 
+          color = ~price,
+          text = ~text_label)
+})
+</code></pre>
+<p>The plot shows up, but in order to get it to change along with user input options from the sidebar, we need to add some Shiny <code>input$</code> calls.</p>
+</div>
+<div id="interactive-barchart" class="section level3">
+<h3>Interactive barchart</h3>
+<p>Similarly, we’ll take the boxplot code from last lecture, add it to our dashboard, and edit the code so it incorporates user input.</p>
+<pre class="r"><code>airbnb_data %&gt;% 
+  count(neighbourhood) %&gt;% 
+  mutate(neighbourhood = fct_reorder(neighbourhood, n)) %&gt;% 
+  plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = &quot;bar&quot;)
+## Warning in RColorBrewer::brewer.pal(N, &quot;Set2&quot;): n too large, allowed maximum for palette Set2 is 8
+## Returning the palette you asked for with that many colors</code></pre>
+<div id="84104ce84fd1" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="84104ce84fd1">{"x":{"visdat":{"8410fe23874":["function () ","plotlyVisDat"]},"cur_data":"8410fe23874","attrs":{"8410fe23874":{"x":{},"y":{},"color":{},"alpha":1,"sizes":[10,100],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"title":"neighbourhood","type":"category","categoryorder":"array","categoryarray":["Bergen Beach","Castle Hill","Douglaston","Howland Hook","Huguenot","Lighthouse Hill","Mill Basin","Olinville","Richmondtown","Silver Lake","West Farms","Westchester Square","Baychester","Edenwald","Eltingville","Graniteville","Hollis Hills","Hunts Point","Morris Park","New Springville","North Riverdale","Oakwood","Port Richmond","Todt Hill","Tottenville","Bay Terrace","Belle Harbor","Castleton Corners","Co-op City","Dongan Hills","East Morrisania","Edgemere","Glen Oaks","Grymes Hill","Holliswood","Jamaica Hills","Little Neck","Melrose","New Brighton","Sea Gate","South Beach","Unionport","Whitestone","Great Kills","Morrisania","Mount Eden","Schuylerville","Tremont","City Island","Emerson Hill","Howard Beach","Mariners Harbor","Midland Beach","Riverdale","Soundview","Throgs Neck","Woodlawn","Arden Heights","Bath Beach","Bayswater","Belmont","Claremont Village","Concord","Hollis","Laurelton","Mount Hope","Pelham Gardens","Bellerose","Shore Acres","Van Nest","Arrochar","Cambria Heights","College Point","Marble Hill","Pelham Bay","Clifton","Manhattan Beach","South Ozone Park","West Brighton","Bronxdale","Fieldston","Kew Gardens Hills","Morris Heights","Spuyten Duyvil","Jamaica Estates","Navy Yard","University Heights","Eastchester","Wakefield","Highbridge","Stapleton","Coney Island","Dyker Heights","Randall Manor","Glendale","Middle Village","Fordham","Clason Point","Fresh Meadows","Kew Gardens","Far Rockaway","Port Morris","Williamsbridge","Concourse Village","Parkchester","Queens Village","Rosedale","Tompkinsville","Allerton","Briarwood","Stuyvesant Town","Vinegar Hill","Norwood","Springfield Gardens","Columbia St","DUMBO","Longwood","Civic Center","Concourse","Ozone Park","Gravesend","Rockaway Beach","Bayside","Brighton Beach","Kingsbridge","Woodhaven","Bensonhurst","Richmond Hill","Brownsville","Battery Park City","Fort Hamilton","St. Albans","Two Bridges","Flatlands","Mott Haven","St. George","Roosevelt Island","Corona","Canarsie","Red Hook","Rego Park","Midwood","Maspeth","NoHo","Cypress Hills","Arverne","Flatiron District","Bay Ridge","Borough Park","Jamaica","Forest Hills","Cobble Hill","East Elmhurst","Downtown Brooklyn","Little Italy","Woodside","Sheepshead Bay","East New York","Brooklyn Heights","Elmhurst","Tribeca","Windsor Terrace","Kensington","Jackson Heights","Theater District","Boerum Hill","Gowanus","Inwood","Carroll Gardens","Sunnyside","Murray Hill","Ridgewood","Ditmars Steinway","East Flatbush","Flushing","South Slope","Sunset Park","Gramercy","Nolita","Financial District","Morningside Heights","Prospect Heights","Chinatown","SoHo","Greenwich Village","Kips Bay","Long Island City","Fort Greene","Park Slope","Flatbush","Prospect-Lefferts Gardens","Clinton Hill","Astoria","West Village","Washington Heights","Midtown","Greenpoint","Lower East Side","East Harlem","Chelsea","Crown Heights","Upper East Side","Hell's Kitchen","Upper West Side","Bushwick","East Village","Harlem","Bedford-Stuyvesant","Williamsburg"]},"yaxis":{"domain":[0,1],"title":"n"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":[{"name":"Collaborate","icon":{"width":1000,"ascent":500,"descent":-50,"path":"M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 13-5 25-1 37 0 0 0 3 1 7 1 5 1 8 1 11 0 2 0 4-1 6 0 3-1 5-1 6 1 2 2 4 3 6 1 2 2 4 4 6 2 3 4 5 5 7 5 7 9 16 13 26 4 10 7 19 9 26 0 2 0 5 0 9-1 4-1 6 0 8 0 2 2 5 4 8 3 3 5 5 5 7 4 6 8 15 12 26 4 11 7 19 7 26 1 1 0 4 0 9-1 4-1 7 0 8 1 2 3 5 6 8 4 4 6 6 6 7 4 5 8 13 13 24 4 11 7 20 7 28 1 1 0 4 0 7-1 3-1 6-1 7 0 2 1 4 3 6 1 1 3 4 5 6 2 3 3 5 5 6 1 2 3 5 4 9 2 3 3 7 5 10 1 3 2 6 4 10 2 4 4 7 6 9 2 3 4 5 7 7 3 2 7 3 11 3 3 0 8 0 13-1l0-1c7 2 12 2 14 2l218 0c14 0 25-5 32-16 8-10 10-23 6-37l-79-259c-7-22-13-37-20-43-7-7-19-10-37-10l-248 0c-5 0-9-2-11-5-2-3-2-7 0-12 4-13 18-20 41-20l264 0c5 0 10 2 16 5 5 3 8 6 10 11l85 282c2 5 2 10 2 17 7-3 13-7 17-13z m-304 0c-1-3-1-5 0-7 1-1 3-2 6-2l174 0c2 0 4 1 7 2 2 2 4 4 5 7l6 18c0 3 0 5-1 7-1 1-3 2-6 2l-173 0c-3 0-5-1-8-2-2-2-4-4-4-7z m-24-73c-1-3-1-5 0-7 2-2 3-2 6-2l174 0c2 0 5 0 7 2 3 2 4 4 5 7l6 18c1 2 0 5-1 6-1 2-3 3-5 3l-174 0c-3 0-5-1-7-3-3-1-4-4-5-6z"},"click":"function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') {\n          alert('To learn about plotly for collaboration, visit:\\n https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html');\n        } else {\n          window.open('https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html', '_blank');\n        }\n      }"}],"cloud":false},"data":[{"x":["Bergen Beach"],"y":[1],"type":"bar","name":"Bergen Beach","marker":{"fillcolor":"rgba(102,194,165,0.5)","color":"rgba(102,194,165,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Castle Hill"],"y":[1],"type":"bar","name":"Castle Hill","marker":{"fillcolor":"rgba(111,193,163,0.5)","color":"rgba(111,193,163,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Douglaston"],"y":[1],"type":"bar","name":"Douglaston","marker":{"fillcolor":"rgba(119,191,160,0.5)","color":"rgba(119,191,160,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Howland Hook"],"y":[1],"type":"bar","name":"Howland Hook","marker":{"fillcolor":"rgba(127,190,158,0.5)","color":"rgba(127,190,158,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Huguenot"],"y":[1],"type":"bar","name":"Huguenot","marker":{"fillcolor":"rgba(134,189,156,0.5)","color":"rgba(134,189,156,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lighthouse Hill"],"y":[1],"type":"bar","name":"Lighthouse Hill","marker":{"fillcolor":"rgba(141,187,154,0.5)","color":"rgba(141,187,154,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mill Basin"],"y":[1],"type":"bar","name":"Mill Basin","marker":{"fillcolor":"rgba(147,186,151,0.5)","color":"rgba(147,186,151,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Olinville"],"y":[1],"type":"bar","name":"Olinville","marker":{"fillcolor":"rgba(153,184,149,0.5)","color":"rgba(153,184,149,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Richmondtown"],"y":[1],"type":"bar","name":"Richmondtown","marker":{"fillcolor":"rgba(159,183,147,0.5)","color":"rgba(159,183,147,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Silver Lake"],"y":[1],"type":"bar","name":"Silver Lake","marker":{"fillcolor":"rgba(164,181,144,0.5)","color":"rgba(164,181,144,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["West Farms"],"y":[1],"type":"bar","name":"West Farms","marker":{"fillcolor":"rgba(170,180,142,0.5)","color":"rgba(170,180,142,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Westchester Square"],"y":[1],"type":"bar","name":"Westchester Square","marker":{"fillcolor":"rgba(175,178,140,0.5)","color":"rgba(175,178,140,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Baychester"],"y":[2],"type":"bar","name":"Baychester","marker":{"fillcolor":"rgba(180,176,138,0.5)","color":"rgba(180,176,138,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Edenwald"],"y":[2],"type":"bar","name":"Edenwald","marker":{"fillcolor":"rgba(185,175,135,0.5)","color":"rgba(185,175,135,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Eltingville"],"y":[2],"type":"bar","name":"Eltingville","marker":{"fillcolor":"rgba(189,173,133,0.5)","color":"rgba(189,173,133,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Graniteville"],"y":[2],"type":"bar","name":"Graniteville","marker":{"fillcolor":"rgba(194,171,131,0.5)","color":"rgba(194,171,131,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hollis Hills"],"y":[2],"type":"bar","name":"Hollis Hills","marker":{"fillcolor":"rgba(198,170,129,0.5)","color":"rgba(198,170,129,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hunts Point"],"y":[2],"type":"bar","name":"Hunts Point","marker":{"fillcolor":"rgba(203,168,126,0.5)","color":"rgba(203,168,126,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morris Park"],"y":[2],"type":"bar","name":"Morris Park","marker":{"fillcolor":"rgba(207,166,124,0.5)","color":"rgba(207,166,124,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Springville"],"y":[2],"type":"bar","name":"New Springville","marker":{"fillcolor":"rgba(211,164,122,0.5)","color":"rgba(211,164,122,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["North Riverdale"],"y":[2],"type":"bar","name":"North Riverdale","marker":{"fillcolor":"rgba(215,162,120,0.5)","color":"rgba(215,162,120,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Oakwood"],"y":[2],"type":"bar","name":"Oakwood","marker":{"fillcolor":"rgba(219,160,117,0.5)","color":"rgba(219,160,117,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Port Richmond"],"y":[2],"type":"bar","name":"Port Richmond","marker":{"fillcolor":"rgba(223,158,115,0.5)","color":"rgba(223,158,115,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Todt Hill"],"y":[2],"type":"bar","name":"Todt Hill","marker":{"fillcolor":"rgba(227,156,113,0.5)","color":"rgba(227,156,113,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tottenville"],"y":[2],"type":"bar","name":"Tottenville","marker":{"fillcolor":"rgba(231,154,111,0.5)","color":"rgba(231,154,111,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bay Terrace"],"y":[3],"type":"bar","name":"Bay Terrace","marker":{"fillcolor":"rgba(235,152,109,0.5)","color":"rgba(235,152,109,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Belle Harbor"],"y":[3],"type":"bar","name":"Belle Harbor","marker":{"fillcolor":"rgba(239,150,106,0.5)","color":"rgba(239,150,106,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Castleton Corners"],"y":[3],"type":"bar","name":"Castleton Corners","marker":{"fillcolor":"rgba(242,147,104,0.5)","color":"rgba(242,147,104,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Co-op City"],"y":[3],"type":"bar","name":"Co-op City","marker":{"fillcolor":"rgba(246,145,102,0.5)","color":"rgba(246,145,102,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Dongan Hills"],"y":[3],"type":"bar","name":"Dongan Hills","marker":{"fillcolor":"rgba(249,143,100,0.5)","color":"rgba(249,143,100,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["East Morrisania"],"y":[3],"type":"bar","name":"East Morrisania","marker":{"fillcolor":"rgba(251,141,99,0.5)","color":"rgba(251,141,99,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Edgemere"],"y":[3],"type":"bar","name":"Edgemere","marker":{"fillcolor":"rgba(249,142,103,0.5)","color":"rgba(249,142,103,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Glen Oaks"],"y":[3],"type":"bar","name":"Glen Oaks","marker":{"fillcolor":"rgba(246,143,106,0.5)","color":"rgba(246,143,106,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Grymes Hill"],"y":[3],"type":"bar","name":"Grymes Hill","marker":{"fillcolor":"rgba(243,144,110,0.5)","color":"rgba(243,144,110,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Holliswood"],"y":[3],"type":"bar","name":"Holliswood","marker":{"fillcolor":"rgba(240,144,114,0.5)","color":"rgba(240,144,114,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jamaica Hills"],"y":[3],"type":"bar","name":"Jamaica Hills","marker":{"fillcolor":"rgba(237,145,117,0.5)","color":"rgba(237,145,117,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Little Neck"],"y":[3],"type":"bar","name":"Little Neck","marker":{"fillcolor":"rgba(234,146,121,0.5)","color":"rgba(234,146,121,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Melrose"],"y":[3],"type":"bar","name":"Melrose","marker":{"fillcolor":"rgba(231,146,124,0.5)","color":"rgba(231,146,124,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Brighton"],"y":[3],"type":"bar","name":"New Brighton","marker":{"fillcolor":"rgba(228,147,128,0.5)","color":"rgba(228,147,128,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Sea Gate"],"y":[3],"type":"bar","name":"Sea Gate","marker":{"fillcolor":"rgba(225,148,131,0.5)","color":"rgba(225,148,131,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Beach"],"y":[3],"type":"bar","name":"South Beach","marker":{"fillcolor":"rgba(222,149,135,0.5)","color":"rgba(222,149,135,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Unionport"],"y":[3],"type":"bar","name":"Unionport","marker":{"fillcolor":"rgba(219,149,139,0.5)","color":"rgba(219,149,139,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Whitestone"],"y":[3],"type":"bar","name":"Whitestone","marker":{"fillcolor":"rgba(216,150,142,0.5)","color":"rgba(216,150,142,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Great Kills"],"y":[4],"type":"bar","name":"Great Kills","marker":{"fillcolor":"rgba(212,150,146,0.5)","color":"rgba(212,150,146,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morrisania"],"y":[4],"type":"bar","name":"Morrisania","marker":{"fillcolor":"rgba(209,151,149,0.5)","color":"rgba(209,151,149,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mount Eden"],"y":[4],"type":"bar","name":"Mount Eden","marker":{"fillcolor":"rgba(206,152,153,0.5)","color":"rgba(206,152,153,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Schuylerville"],"y":[4],"type":"bar","name":"Schuylerville","marker":{"fillcolor":"rgba(202,152,156,0.5)","color":"rgba(202,152,156,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tremont"],"y":[4],"type":"bar","name":"Tremont","marker":{"fillcolor":"rgba(198,153,160,0.5)","color":"rgba(198,153,160,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["City Island"],"y":[5],"type":"bar","name":"City Island","marker":{"fillcolor":"rgba(195,154,163,0.5)","color":"rgba(195,154,163,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Emerson Hill"],"y":[5],"type":"bar","name":"Emerson Hill","marker":{"fillcolor":"rgba(191,154,167,0.5)","color":"rgba(191,154,167,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Howard Beach"],"y":[5],"type":"bar","name":"Howard Beach","marker":{"fillcolor":"rgba(187,155,170,0.5)","color":"rgba(187,155,170,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mariners Harbor"],"y":[5],"type":"bar","name":"Mariners Harbor","marker":{"fillcolor":"rgba(183,155,173,0.5)","color":"rgba(183,155,173,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Midland Beach"],"y":[5],"type":"bar","name":"Midland Beach","marker":{"fillcolor":"rgba(178,156,177,0.5)","color":"rgba(178,156,177,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Riverdale"],"y":[5],"type":"bar","name":"Riverdale","marker":{"fillcolor":"rgba(174,157,180,0.5)","color":"rgba(174,157,180,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Soundview"],"y":[5],"type":"bar","name":"Soundview","marker":{"fillcolor":"rgba(169,157,184,0.5)","color":"rgba(169,157,184,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Throgs Neck"],"y":[5],"type":"bar","name":"Throgs Neck","marker":{"fillcolor":"rgba(165,158,187,0.5)","color":"rgba(165,158,187,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Woodlawn"],"y":[5],"type":"bar","name":"Woodlawn","marker":{"fillcolor":"rgba(160,158,191,0.5)","color":"rgba(160,158,191,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arden Heights"],"y":[6],"type":"bar","name":"Arden Heights","marker":{"fillcolor":"rgba(155,159,194,0.5)","color":"rgba(155,159,194,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bath Beach"],"y":[6],"type":"bar","name":"Bath Beach","marker":{"fillcolor":"rgba(149,159,198,0.5)","color":"rgba(149,159,198,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bayswater"],"y":[6],"type":"bar","name":"Bayswater","marker":{"fillcolor":"rgba(144,160,201,0.5)","color":"rgba(144,160,201,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Belmont"],"y":[6],"type":"bar","name":"Belmont","marker":{"fillcolor":"rgba(143,160,203,0.5)","color":"rgba(143,160,203,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Claremont Village"],"y":[6],"type":"bar","name":"Claremont Village","marker":{"fillcolor":"rgba(147,159,203,0.5)","color":"rgba(147,159,203,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Concord"],"y":[6],"type":"bar","name":"Concord","marker":{"fillcolor":"rgba(150,159,202,0.5)","color":"rgba(150,159,202,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hollis"],"y":[6],"type":"bar","name":"Hollis","marker":{"fillcolor":"rgba(154,158,202,0.5)","color":"rgba(154,158,202,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Laurelton"],"y":[6],"type":"bar","name":"Laurelton","marker":{"fillcolor":"rgba(157,157,202,0.5)","color":"rgba(157,157,202,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mount Hope"],"y":[6],"type":"bar","name":"Mount Hope","marker":{"fillcolor":"rgba(161,157,201,0.5)","color":"rgba(161,157,201,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Pelham Gardens"],"y":[6],"type":"bar","name":"Pelham Gardens","marker":{"fillcolor":"rgba(164,156,201,0.5)","color":"rgba(164,156,201,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bellerose"],"y":[7],"type":"bar","name":"Bellerose","marker":{"fillcolor":"rgba(167,156,201,0.5)","color":"rgba(167,156,201,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Shore Acres"],"y":[7],"type":"bar","name":"Shore Acres","marker":{"fillcolor":"rgba(170,155,201,0.5)","color":"rgba(170,155,201,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Van Nest"],"y":[7],"type":"bar","name":"Van Nest","marker":{"fillcolor":"rgba(174,154,200,0.5)","color":"rgba(174,154,200,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arrochar"],"y":[8],"type":"bar","name":"Arrochar","marker":{"fillcolor":"rgba(177,154,200,0.5)","color":"rgba(177,154,200,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cambria Heights"],"y":[8],"type":"bar","name":"Cambria Heights","marker":{"fillcolor":"rgba(180,153,200,0.5)","color":"rgba(180,153,200,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["College Point"],"y":[8],"type":"bar","name":"College Point","marker":{"fillcolor":"rgba(183,152,200,0.5)","color":"rgba(183,152,200,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Marble Hill"],"y":[8],"type":"bar","name":"Marble Hill","marker":{"fillcolor":"rgba(186,152,199,0.5)","color":"rgba(186,152,199,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Pelham Bay"],"y":[8],"type":"bar","name":"Pelham Bay","marker":{"fillcolor":"rgba(189,151,199,0.5)","color":"rgba(189,151,199,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Clifton"],"y":[9],"type":"bar","name":"Clifton","marker":{"fillcolor":"rgba(192,150,199,0.5)","color":"rgba(192,150,199,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Manhattan Beach"],"y":[9],"type":"bar","name":"Manhattan Beach","marker":{"fillcolor":"rgba(195,149,198,0.5)","color":"rgba(195,149,198,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Ozone Park"],"y":[9],"type":"bar","name":"South Ozone Park","marker":{"fillcolor":"rgba(198,149,198,0.5)","color":"rgba(198,149,198,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["West Brighton"],"y":[9],"type":"bar","name":"West Brighton","marker":{"fillcolor":"rgba(201,148,198,0.5)","color":"rgba(201,148,198,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bronxdale"],"y":[10],"type":"bar","name":"Bronxdale","marker":{"fillcolor":"rgba(203,147,198,0.5)","color":"rgba(203,147,198,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fieldston"],"y":[10],"type":"bar","name":"Fieldston","marker":{"fillcolor":"rgba(206,146,197,0.5)","color":"rgba(206,146,197,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kew Gardens Hills"],"y":[10],"type":"bar","name":"Kew Gardens Hills","marker":{"fillcolor":"rgba(209,145,197,0.5)","color":"rgba(209,145,197,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morris Heights"],"y":[10],"type":"bar","name":"Morris Heights","marker":{"fillcolor":"rgba(212,145,197,0.5)","color":"rgba(212,145,197,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Spuyten Duyvil"],"y":[10],"type":"bar","name":"Spuyten Duyvil","marker":{"fillcolor":"rgba(215,144,197,0.5)","color":"rgba(215,144,197,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jamaica Estates"],"y":[11],"type":"bar","name":"Jamaica Estates","marker":{"fillcolor":"rgba(217,143,196,0.5)","color":"rgba(217,143,196,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Navy Yard"],"y":[11],"type":"bar","name":"Navy Yard","marker":{"fillcolor":"rgba(220,142,196,0.5)","color":"rgba(220,142,196,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["University Heights"],"y":[11],"type":"bar","name":"University Heights","marker":{"fillcolor":"rgba(223,141,196,0.5)","color":"rgba(223,141,196,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Eastchester"],"y":[12],"type":"bar","name":"Eastchester","marker":{"fillcolor":"rgba(225,140,196,0.5)","color":"rgba(225,140,196,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Wakefield"],"y":[12],"type":"bar","name":"Wakefield","marker":{"fillcolor":"rgba(228,139,195,0.5)","color":"rgba(228,139,195,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Highbridge"],"y":[13],"type":"bar","name":"Highbridge","marker":{"fillcolor":"rgba(231,138,195,0.5)","color":"rgba(231,138,195,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Stapleton"],"y":[13],"type":"bar","name":"Stapleton","marker":{"fillcolor":"rgba(230,141,192,0.5)","color":"rgba(230,141,192,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Coney Island"],"y":[14],"type":"bar","name":"Coney Island","marker":{"fillcolor":"rgba(228,144,189,0.5)","color":"rgba(228,144,189,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Dyker Heights"],"y":[14],"type":"bar","name":"Dyker Heights","marker":{"fillcolor":"rgba(227,147,185,0.5)","color":"rgba(227,147,185,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Randall Manor"],"y":[14],"type":"bar","name":"Randall Manor","marker":{"fillcolor":"rgba(225,150,182,0.5)","color":"rgba(225,150,182,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Glendale"],"y":[15],"type":"bar","name":"Glendale","marker":{"fillcolor":"rgba(224,153,179,0.5)","color":"rgba(224,153,179,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Middle Village"],"y":[15],"type":"bar","name":"Middle Village","marker":{"fillcolor":"rgba(222,156,175,0.5)","color":"rgba(222,156,175,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fordham"],"y":[16],"type":"bar","name":"Fordham","marker":{"fillcolor":"rgba(220,159,172,0.5)","color":"rgba(220,159,172,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Clason Point"],"y":[17],"type":"bar","name":"Clason Point","marker":{"fillcolor":"rgba(219,162,168,0.5)","color":"rgba(219,162,168,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fresh Meadows"],"y":[17],"type":"bar","name":"Fresh Meadows","marker":{"fillcolor":"rgba(217,165,165,0.5)","color":"rgba(217,165,165,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kew Gardens"],"y":[17],"type":"bar","name":"Kew Gardens","marker":{"fillcolor":"rgba(215,167,162,0.5)","color":"rgba(215,167,162,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Far Rockaway"],"y":[19],"type":"bar","name":"Far Rockaway","marker":{"fillcolor":"rgba(213,170,158,0.5)","color":"rgba(213,170,158,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Port Morris"],"y":[19],"type":"bar","name":"Port Morris","marker":{"fillcolor":"rgba(211,173,155,0.5)","color":"rgba(211,173,155,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Williamsbridge"],"y":[19],"type":"bar","name":"Williamsbridge","marker":{"fillcolor":"rgba(209,175,151,0.5)","color":"rgba(209,175,151,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Concourse Village"],"y":[20],"type":"bar","name":"Concourse Village","marker":{"fillcolor":"rgba(207,178,148,0.5)","color":"rgba(207,178,148,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Parkchester"],"y":[20],"type":"bar","name":"Parkchester","marker":{"fillcolor":"rgba(205,181,144,0.5)","color":"rgba(205,181,144,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Queens Village"],"y":[20],"type":"bar","name":"Queens Village","marker":{"fillcolor":"rgba(203,183,140,0.5)","color":"rgba(203,183,140,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Rosedale"],"y":[20],"type":"bar","name":"Rosedale","marker":{"fillcolor":"rgba(201,186,137,0.5)","color":"rgba(201,186,137,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tompkinsville"],"y":[20],"type":"bar","name":"Tompkinsville","marker":{"fillcolor":"rgba(199,188,133,0.5)","color":"rgba(199,188,133,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Allerton"],"y":[21],"type":"bar","name":"Allerton","marker":{"fillcolor":"rgba(196,191,129,0.5)","color":"rgba(196,191,129,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Briarwood"],"y":[21],"type":"bar","name":"Briarwood","marker":{"fillcolor":"rgba(194,193,126,0.5)","color":"rgba(194,193,126,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Stuyvesant Town"],"y":[21],"type":"bar","name":"Stuyvesant Town","marker":{"fillcolor":"rgba(191,195,122,0.5)","color":"rgba(191,195,122,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Vinegar Hill"],"y":[21],"type":"bar","name":"Vinegar Hill","marker":{"fillcolor":"rgba(189,198,118,0.5)","color":"rgba(189,198,118,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Norwood"],"y":[22],"type":"bar","name":"Norwood","marker":{"fillcolor":"rgba(186,200,114,0.5)","color":"rgba(186,200,114,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Springfield Gardens"],"y":[22],"type":"bar","name":"Springfield Gardens","marker":{"fillcolor":"rgba(184,203,110,0.5)","color":"rgba(184,203,110,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Columbia St"],"y":[23],"type":"bar","name":"Columbia St","marker":{"fillcolor":"rgba(181,205,106,0.5)","color":"rgba(181,205,106,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["DUMBO"],"y":[24],"type":"bar","name":"DUMBO","marker":{"fillcolor":"rgba(178,207,101,0.5)","color":"rgba(178,207,101,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Longwood"],"y":[24],"type":"bar","name":"Longwood","marker":{"fillcolor":"rgba(175,210,97,0.5)","color":"rgba(175,210,97,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Civic Center"],"y":[25],"type":"bar","name":"Civic Center","marker":{"fillcolor":"rgba(172,212,93,0.5)","color":"rgba(172,212,93,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Concourse"],"y":[25],"type":"bar","name":"Concourse","marker":{"fillcolor":"rgba(169,214,88,0.5)","color":"rgba(169,214,88,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ozone Park"],"y":[25],"type":"bar","name":"Ozone Park","marker":{"fillcolor":"rgba(166,216,84,0.5)","color":"rgba(166,216,84,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Gravesend"],"y":[28],"type":"bar","name":"Gravesend","marker":{"fillcolor":"rgba(170,216,83,0.5)","color":"rgba(170,216,83,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Rockaway Beach"],"y":[28],"type":"bar","name":"Rockaway Beach","marker":{"fillcolor":"rgba(173,216,82,0.5)","color":"rgba(173,216,82,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bayside"],"y":[30],"type":"bar","name":"Bayside","marker":{"fillcolor":"rgba(176,216,81,0.5)","color":"rgba(176,216,81,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brighton Beach"],"y":[31],"type":"bar","name":"Brighton Beach","marker":{"fillcolor":"rgba(180,216,80,0.5)","color":"rgba(180,216,80,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kingsbridge"],"y":[31],"type":"bar","name":"Kingsbridge","marker":{"fillcolor":"rgba(183,217,79,0.5)","color":"rgba(183,217,79,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Woodhaven"],"y":[31],"type":"bar","name":"Woodhaven","marker":{"fillcolor":"rgba(186,217,78,0.5)","color":"rgba(186,217,78,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bensonhurst"],"y":[32],"type":"bar","name":"Bensonhurst","marker":{"fillcolor":"rgba(189,217,77,0.5)","color":"rgba(189,217,77,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Richmond Hill"],"y":[32],"type":"bar","name":"Richmond Hill","marker":{"fillcolor":"rgba(192,217,75,0.5)","color":"rgba(192,217,75,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brownsville"],"y":[33],"type":"bar","name":"Brownsville","marker":{"fillcolor":"rgba(196,217,74,0.5)","color":"rgba(196,217,74,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Battery Park City"],"y":[34],"type":"bar","name":"Battery Park City","marker":{"fillcolor":"rgba(199,217,73,0.5)","color":"rgba(199,217,73,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fort Hamilton"],"y":[36],"type":"bar","name":"Fort Hamilton","marker":{"fillcolor":"rgba(202,217,72,0.5)","color":"rgba(202,217,72,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["St. Albans"],"y":[39],"type":"bar","name":"St. Albans","marker":{"fillcolor":"rgba(205,217,71,0.5)","color":"rgba(205,217,71,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Two Bridges"],"y":[39],"type":"bar","name":"Two Bridges","marker":{"fillcolor":"rgba(208,217,70,0.5)","color":"rgba(208,217,70,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Flatlands"],"y":[40],"type":"bar","name":"Flatlands","marker":{"fillcolor":"rgba(211,217,69,0.5)","color":"rgba(211,217,69,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mott Haven"],"y":[40],"type":"bar","name":"Mott Haven","marker":{"fillcolor":"rgba(214,217,67,0.5)","color":"rgba(214,217,67,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["St. George"],"y":[41],"type":"bar","name":"St. George","marker":{"fillcolor":"rgba(217,217,66,0.5)","color":"rgba(217,217,66,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Roosevelt Island"],"y":[42],"type":"bar","name":"Roosevelt Island","marker":{"fillcolor":"rgba(219,217,65,0.5)","color":"rgba(219,217,65,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Corona"],"y":[52],"type":"bar","name":"Corona","marker":{"fillcolor":"rgba(222,217,64,0.5)","color":"rgba(222,217,64,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Canarsie"],"y":[53],"type":"bar","name":"Canarsie","marker":{"fillcolor":"rgba(225,217,62,0.5)","color":"rgba(225,217,62,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Red Hook"],"y":[54],"type":"bar","name":"Red Hook","marker":{"fillcolor":"rgba(228,217,61,0.5)","color":"rgba(228,217,61,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Rego Park"],"y":[55],"type":"bar","name":"Rego Park","marker":{"fillcolor":"rgba(231,217,60,0.5)","color":"rgba(231,217,60,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Midwood"],"y":[58],"type":"bar","name":"Midwood","marker":{"fillcolor":"rgba(234,217,58,0.5)","color":"rgba(234,217,58,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maspeth"],"y":[60],"type":"bar","name":"Maspeth","marker":{"fillcolor":"rgba(237,217,57,0.5)","color":"rgba(237,217,57,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["NoHo"],"y":[60],"type":"bar","name":"NoHo","marker":{"fillcolor":"rgba(240,217,56,0.5)","color":"rgba(240,217,56,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cypress Hills"],"y":[61],"type":"bar","name":"Cypress Hills","marker":{"fillcolor":"rgba(242,217,54,0.5)","color":"rgba(242,217,54,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arverne"],"y":[63],"type":"bar","name":"Arverne","marker":{"fillcolor":"rgba(245,217,53,0.5)","color":"rgba(245,217,53,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Flatiron District"],"y":[64],"type":"bar","name":"Flatiron District","marker":{"fillcolor":"rgba(248,217,51,0.5)","color":"rgba(248,217,51,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bay Ridge"],"y":[65],"type":"bar","name":"Bay Ridge","marker":{"fillcolor":"rgba(251,217,50,0.5)","color":"rgba(251,217,50,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Borough Park"],"y":[68],"type":"bar","name":"Borough Park","marker":{"fillcolor":"rgba(253,217,48,0.5)","color":"rgba(253,217,48,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jamaica"],"y":[68],"type":"bar","name":"Jamaica","marker":{"fillcolor":"rgba(255,217,49,0.5)","color":"rgba(255,217,49,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Forest Hills"],"y":[70],"type":"bar","name":"Forest Hills","marker":{"fillcolor":"rgba(254,216,55,0.5)","color":"rgba(254,216,55,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cobble Hill"],"y":[73],"type":"bar","name":"Cobble Hill","marker":{"fillcolor":"rgba(253,215,60,0.5)","color":"rgba(253,215,60,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["East Elmhurst"],"y":[73],"type":"bar","name":"East Elmhurst","marker":{"fillcolor":"rgba(253,215,64,0.5)","color":"rgba(253,215,64,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Downtown Brooklyn"],"y":[76],"type":"bar","name":"Downtown Brooklyn","marker":{"fillcolor":"rgba(252,214,68,0.5)","color":"rgba(252,214,68,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Little Italy"],"y":[77],"type":"bar","name":"Little Italy","marker":{"fillcolor":"rgba(251,213,72,0.5)","color":"rgba(251,213,72,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Woodside"],"y":[80],"type":"bar","name":"Woodside","marker":{"fillcolor":"rgba(250,212,76,0.5)","color":"rgba(250,212,76,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Sheepshead Bay"],"y":[88],"type":"bar","name":"Sheepshead Bay","marker":{"fillcolor":"rgba(250,212,80,0.5)","color":"rgba(250,212,80,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["East New York"],"y":[93],"type":"bar","name":"East New York","marker":{"fillcolor":"rgba(249,211,84,0.5)","color":"rgba(249,211,84,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brooklyn Heights"],"y":[97],"type":"bar","name":"Brooklyn Heights","marker":{"fillcolor":"rgba(248,210,87,0.5)","color":"rgba(248,210,87,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Elmhurst"],"y":[98],"type":"bar","name":"Elmhurst","marker":{"fillcolor":"rgba(247,209,91,0.5)","color":"rgba(247,209,91,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tribeca"],"y":[104],"type":"bar","name":"Tribeca","marker":{"fillcolor":"rgba(246,209,94,0.5)","color":"rgba(246,209,94,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Windsor Terrace"],"y":[104],"type":"bar","name":"Windsor Terrace","marker":{"fillcolor":"rgba(246,208,97,0.5)","color":"rgba(246,208,97,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kensington"],"y":[108],"type":"bar","name":"Kensington","marker":{"fillcolor":"rgba(245,207,101,0.5)","color":"rgba(245,207,101,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jackson Heights"],"y":[113],"type":"bar","name":"Jackson Heights","marker":{"fillcolor":"rgba(244,207,104,0.5)","color":"rgba(244,207,104,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Theater District"],"y":[120],"type":"bar","name":"Theater District","marker":{"fillcolor":"rgba(243,206,107,0.5)","color":"rgba(243,206,107,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Boerum Hill"],"y":[123],"type":"bar","name":"Boerum Hill","marker":{"fillcolor":"rgba(242,205,110,0.5)","color":"rgba(242,205,110,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Gowanus"],"y":[130],"type":"bar","name":"Gowanus","marker":{"fillcolor":"rgba(241,204,113,0.5)","color":"rgba(241,204,113,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Inwood"],"y":[165],"type":"bar","name":"Inwood","marker":{"fillcolor":"rgba(240,204,116,0.5)","color":"rgba(240,204,116,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Carroll Gardens"],"y":[172],"type":"bar","name":"Carroll Gardens","marker":{"fillcolor":"rgba(239,203,119,0.5)","color":"rgba(239,203,119,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Sunnyside"],"y":[179],"type":"bar","name":"Sunnyside","marker":{"fillcolor":"rgba(239,202,122,0.5)","color":"rgba(239,202,122,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Murray Hill"],"y":[181],"type":"bar","name":"Murray Hill","marker":{"fillcolor":"rgba(238,202,125,0.5)","color":"rgba(238,202,125,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ridgewood"],"y":[196],"type":"bar","name":"Ridgewood","marker":{"fillcolor":"rgba(237,201,128,0.5)","color":"rgba(237,201,128,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ditmars Steinway"],"y":[199],"type":"bar","name":"Ditmars Steinway","marker":{"fillcolor":"rgba(236,200,131,0.5)","color":"rgba(236,200,131,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["East Flatbush"],"y":[203],"type":"bar","name":"East Flatbush","marker":{"fillcolor":"rgba(235,200,133,0.5)","color":"rgba(235,200,133,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Flushing"],"y":[204],"type":"bar","name":"Flushing","marker":{"fillcolor":"rgba(234,199,136,0.5)","color":"rgba(234,199,136,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Slope"],"y":[208],"type":"bar","name":"South Slope","marker":{"fillcolor":"rgba(233,198,139,0.5)","color":"rgba(233,198,139,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Sunset Park"],"y":[231],"type":"bar","name":"Sunset Park","marker":{"fillcolor":"rgba(231,198,142,0.5)","color":"rgba(231,198,142,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Gramercy"],"y":[235],"type":"bar","name":"Gramercy","marker":{"fillcolor":"rgba(230,197,144,0.5)","color":"rgba(230,197,144,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Nolita"],"y":[240],"type":"bar","name":"Nolita","marker":{"fillcolor":"rgba(229,196,147,0.5)","color":"rgba(229,196,147,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Financial District"],"y":[246],"type":"bar","name":"Financial District","marker":{"fillcolor":"rgba(228,196,149,0.5)","color":"rgba(228,196,149,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morningside Heights"],"y":[251],"type":"bar","name":"Morningside Heights","marker":{"fillcolor":"rgba(226,195,150,0.5)","color":"rgba(226,195,150,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Prospect Heights"],"y":[266],"type":"bar","name":"Prospect Heights","marker":{"fillcolor":"rgba(225,194,151,0.5)","color":"rgba(225,194,151,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chinatown"],"y":[273],"type":"bar","name":"Chinatown","marker":{"fillcolor":"rgba(223,194,152,0.5)","color":"rgba(223,194,152,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["SoHo"],"y":[282],"type":"bar","name":"SoHo","marker":{"fillcolor":"rgba(222,193,153,0.5)","color":"rgba(222,193,153,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Greenwich Village"],"y":[296],"type":"bar","name":"Greenwich Village","marker":{"fillcolor":"rgba(220,193,154,0.5)","color":"rgba(220,193,154,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kips Bay"],"y":[313],"type":"bar","name":"Kips Bay","marker":{"fillcolor":"rgba(218,192,155,0.5)","color":"rgba(218,192,155,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Long Island City"],"y":[337],"type":"bar","name":"Long Island City","marker":{"fillcolor":"rgba(217,192,156,0.5)","color":"rgba(217,192,156,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fort Greene"],"y":[340],"type":"bar","name":"Fort Greene","marker":{"fillcolor":"rgba(215,191,157,0.5)","color":"rgba(215,191,157,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Park Slope"],"y":[352],"type":"bar","name":"Park Slope","marker":{"fillcolor":"rgba(214,190,158,0.5)","color":"rgba(214,190,158,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Flatbush"],"y":[384],"type":"bar","name":"Flatbush","marker":{"fillcolor":"rgba(212,190,159,0.5)","color":"rgba(212,190,159,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Prospect-Lefferts Gardens"],"y":[406],"type":"bar","name":"Prospect-Lefferts Gardens","marker":{"fillcolor":"rgba(210,189,161,0.5)","color":"rgba(210,189,161,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Clinton Hill"],"y":[439],"type":"bar","name":"Clinton Hill","marker":{"fillcolor":"rgba(209,189,162,0.5)","color":"rgba(209,189,162,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Astoria"],"y":[562],"type":"bar","name":"Astoria","marker":{"fillcolor":"rgba(207,188,163,0.5)","color":"rgba(207,188,163,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["West Village"],"y":[587],"type":"bar","name":"West Village","marker":{"fillcolor":"rgba(205,187,164,0.5)","color":"rgba(205,187,164,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Washington Heights"],"y":[619],"type":"bar","name":"Washington Heights","marker":{"fillcolor":"rgba(204,187,165,0.5)","color":"rgba(204,187,165,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Midtown"],"y":[686],"type":"bar","name":"Midtown","marker":{"fillcolor":"rgba(202,186,166,0.5)","color":"rgba(202,186,166,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Greenpoint"],"y":[721],"type":"bar","name":"Greenpoint","marker":{"fillcolor":"rgba(200,186,167,0.5)","color":"rgba(200,186,167,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lower East Side"],"y":[755],"type":"bar","name":"Lower East Side","marker":{"fillcolor":"rgba(199,185,168,0.5)","color":"rgba(199,185,168,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["East Harlem"],"y":[814],"type":"bar","name":"East Harlem","marker":{"fillcolor":"rgba(197,185,169,0.5)","color":"rgba(197,185,169,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chelsea"],"y":[838],"type":"bar","name":"Chelsea","marker":{"fillcolor":"rgba(195,184,170,0.5)","color":"rgba(195,184,170,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Crown Heights"],"y":[1004],"type":"bar","name":"Crown Heights","marker":{"fillcolor":"rgba(193,184,171,0.5)","color":"rgba(193,184,171,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Upper East Side"],"y":[1192],"type":"bar","name":"Upper East Side","marker":{"fillcolor":"rgba(192,183,172,0.5)","color":"rgba(192,183,172,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hell's Kitchen"],"y":[1218],"type":"bar","name":"Hell's Kitchen","marker":{"fillcolor":"rgba(190,182,173,0.5)","color":"rgba(190,182,173,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Upper West Side"],"y":[1340],"type":"bar","name":"Upper West Side","marker":{"fillcolor":"rgba(188,182,174,0.5)","color":"rgba(188,182,174,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bushwick"],"y":[1385],"type":"bar","name":"Bushwick","marker":{"fillcolor":"rgba(186,181,175,0.5)","color":"rgba(186,181,175,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["East Village"],"y":[1471],"type":"bar","name":"East Village","marker":{"fillcolor":"rgba(185,181,176,0.5)","color":"rgba(185,181,176,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Harlem"],"y":[1945],"type":"bar","name":"Harlem","marker":{"fillcolor":"rgba(183,180,177,0.5)","color":"rgba(183,180,177,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bedford-Stuyvesant"],"y":[2193],"type":"bar","name":"Bedford-Stuyvesant","marker":{"fillcolor":"rgba(181,180,178,0.5)","color":"rgba(181,180,178,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Williamsburg"],"y":[2776],"type":"bar","name":"Williamsburg","marker":{"fillcolor":"rgba(179,179,179,0.5)","color":"rgba(179,179,179,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1}},"base_url":"https://plot.ly"},"evals":["config.modeBarButtonsToAdd.0.click"],"jsHooks":{"render":[{"code":"function(el, x) { var ctConfig = crosstalk.var('plotlyCrosstalkOpts').set({\"on\":\"plotly_click\",\"persistent\":false,\"dynamic\":false,\"selectize\":false,\"opacityDim\":0.2,\"selected\":{\"opacity\":1}}); }","data":null}]}}</script>
+<p>Notice that neighborhoods change with choice of boro.</p>
+</div>
+<div id="interactive-boxplot" class="section level3">
+<h3>Interactive boxplot</h3>
+<p>Lastly, we’ll make the boxplot from last lecture and add in the Shiny user input elements. I’ve provided the code below.</p>
+<pre class="r"><code>renderPlotly({ 
+  common_neighborhoods =
+    airbnb_data %&gt;% 
+    filter(boro == input$boro_choice,
+           price %in% input$price_range[1]:input$price_range[2],
+           room_type == input$room_choice) %&gt;%
+    count(neighbourhood, sort = TRUE) %&gt;% 
+    top_n(8) %&gt;% 
+    select(neighbourhood)
+
+  airbnb_data %&gt;%
+    filter(boro == input$boro_choice,
+                          price %in% input$price_range[1]:input$price_range[2],
+                          room_type == input$room_choice) %&gt;%
+    inner_join(., common_neighborhoods, by = &quot;neighbourhood&quot;) %&gt;% 
+    plot_ly(y = ~price, color = ~neighbourhood, type = &quot;box&quot;,
+          colors = &quot;Set2&quot;)
+  
+})</code></pre>
+<p>Now you have a <code>flexdashboard</code> with Shiny elements!</p>
+</div>
+<div id="hosting-shiny-documents" class="section level3">
+<h3>Hosting Shiny documents</h3>
+<p>You can’t email Shiny-based HTML files like you can a static HTML file generated by R Markdown. This is because Shiny-based documents need to run <code>R</code> locally. However, you can host them through <a href="https://www.shinyapps.io/">Shinyapps.io</a>. A slightly fancier version of the Shiny-based <code>flexdashboard</code> for this class is hosted <a href="">here</a>.</p>
+</div>
+<div id="shiny-apps" class="section level3">
+<h3>Shiny apps</h3>
+<p>So far we’ve focused on adding Shiny to <code>flexdashboard</code>. We refer to our completed dashboard as a <em>Shiny document</em>. However, there other ways to use Shiny! The most common way is to make a Shiny <em>application</em>, or <em>app</em>. So you know how these work, we’re going to make a super simple one and deploy it. If you are interested in making a more complicated <em>Shiny app</em>, I’ve included some resources below.</p>
+<p>Shiny apps use <strong>.R</strong> files, rather than <strong>.Rmd</strong>. You can initialize a Shiny app right from R Studio! Let’s do that now.</p>
+<p><img src="images/shiny_new_app.png" style="width:75%"></p>
+<p>Make sure to set a new directory for your app. Let’s put an R project in there too, and open up that R project. In order to deploy the app, you can either open the file, and click the <strong>RunApp</strong> button, or run the following line of code in your console:</p>
+<pre class="r"><code>shiny::runApp(&quot;../my_app&quot;)</code></pre>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<ul>
+<li>For more on using flexdashboards with Shiny, here’s a <a href="http://rmarkdown.rstudio.com/flexdashboard/shiny.html">tutorial</a></li>
+<li>There are also several <a href="http://rmarkdown.rstudio.com/flexdashboard/examples.html">examples</a> of people making these types flexdashboards, many which incorporate Shiny</li>
+<li>Hosting your shiny app or document online through <a href="https://shiny.rstudio.com/articles/shinyapps.html">shinyapps.io</a>.</li>
+<li>For more on making Shiny apps, check out R Studio’s <a href="https://shiny.rstudio.com/tutorial/">tutorial</a>, or <a href="https://deanattali.com/blog/building-shiny-apps-tutorial/">this one</a></li>
+</ul>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
