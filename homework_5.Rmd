@@ -42,7 +42,8 @@ We will assess adherence to the instructions above and whether we are able to kn
 
 Subway stations in NYC have multiple entrances; data on [this page](https://dev.socrata.com/foundry/data.ny.gov/hvwh-qtfg) contains information on the entrances for each station. 
 
-Using the State of New York API, read the complete dataset using functions in `httr`. By default, the API will return only the first 1000 entries, so using the `GET` option `query = list(`$limit` = 2000)` in your request will be useful. 
+Using the State of New York API, read the complete dataset using functions in `httr`. By default, the API will return only the first 1000 entries, so using the `GET` option ``query = list(`$limit` = 2000)`` in your request will be useful. 
+
 
 After you've read the data, clean it up: retain variables on station name, entrance latitude and longitude, East/West street, North/South street, and corner. 
 

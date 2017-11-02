@@ -400,7 +400,7 @@ div.tocify {
 <div id="problem-1" class="section level3">
 <h3>Problem 1</h3>
 <p>Subway stations in NYC have multiple entrances; data on <a href="https://dev.socrata.com/foundry/data.ny.gov/hvwh-qtfg">this page</a> contains information on the entrances for each station.</p>
-<p>Using the State of New York API, read the complete dataset using functions in <code>httr</code>. By default, the API will return only the first 1000 entries, so using the <code>GET</code> option <code>query = list(</code>$limit<code>= 2000)</code> in your request will be useful.</p>
+<p>Using the State of New York API, read the complete dataset using functions in <code>httr</code>. By default, the API will return only the first 1000 entries, so using the <code>GET</code> option <code>query = list(`$limit` = 2000)</code> in your request will be useful.</p>
 <p>After you’ve read the data, clean it up: retain variables on station name, entrance latitude and longitude, East/West street, North/South street, and corner.</p>
 <p>Make a plot showing the number of entrances for each subway station. Restrict your plot to stations that have more than 10 entrances, and order stations according to the number of entrances.</p>
 <p>Overall (not only in stations that have more than 10 entrances), how many subway station names contain the abbreviation “St”? How many end with “St”?</p>
