@@ -28,15 +28,15 @@ knitr::opts_chunk$set(
 
 ## Example
 
-To gear up for this topic, we’ll create a directory, start an R Project, initialize git, and create a new `flexdashboard` document.
+To gear up for this topic, we’ll create a directory, start an R Project, initialize git, and create a new `flexdashboard` document. Here is a [template](resources/shiny_dashboard_template.Rmd.zip) for the `flexdashboard` we'll be creating today, go ahead and download that and put it in your directory.
 
-<img src="images/shiny_flexdash_yaml_header.png" style="width:55%">
+```{r, echo = FALSE, comment = ""}
+cat(htmltools::includeText("resources/shiny_dashboard_template.Rmd"))
+```
 
-I'm also going to use a slightly different layout than we used in the last class. Edit the default specifications to match the ones below.
+Notice that we have added `runtime: shiny` to the YAML header. We are also using slightly different layout than we used in the last class. We have a sidebar column, spaces for plots are in rows instead of columns, and we have tabsets. 
 
-<img src="images/shiny_flexdash_layout.png" style="width:75%">
-
-Go ahead and add the following libraries to your dashboard as well.
+Add the following libraries to your dashboard.
 
 ```{r}
 library(tidyverse)
@@ -50,9 +50,9 @@ library(plotly)
 library(shiny)
 ```
 
-Once again we're going to focus on the [Airbnb](dataset_airbnb.html) data for this topic. The goal is to make a dashboard similar to the one from the last lecture but with additional interactive elements. The code below extracts loads and cleans the data, and selects only a few of the variables. 
+Once again we're going to focus on the [Airbnb](dataset_airbnb.html) data for this topic. The goal is to make a dashboard similar to the one from the last lecture but with additional interactive elements. The code below extracts, loads and cleans the data, and selects only a few of the variables. 
 
-```{r import_data, include = FALSE}
+```{r import_data}
 set.seed(1)
 
 airbnb_data = read_csv("./data/nyc_airbnb.zip") %>%
@@ -64,11 +64,11 @@ airbnb_data = read_csv("./data/nyc_airbnb.zip") %>%
 
 ```
 
-We are going to filter the dataset interactively by taking in user input, and use this dataset as the basis for our plots.
+We are going to filter the dataset interactively by taking user input, and use this dataset as the basis for our plots.
 
 ### selectInput widget
 
-We will place code for widgets in the sidebar, but this is a choice and they can be placed elsewhere in the dashboard. The `selectInput` widget creates a drop-down menu with choices for the user to select from.
+We will place code for widgets in the sidebar, but this is a choice and they can be placed elsewhere in the dashboard. The `selectInput` widget creates a drop-down menu with choices for the user to select from. We will render the plots in the rows.
 
 ```{r, eval = FALSE}
 boros = airbnb_data %>% distinct(boro) %>% pull()
@@ -91,7 +91,7 @@ We see that the user-select boro is stored as a string 'under the hood'.
 
 ### sliderInput widget
 
-What would the `renderPrint` return if we wanted the user to select a numeric value  Let's add another widget and find out.
+What would the `renderPrint` return if we wanted the user to select a numeric value? Let's add another widget and find out.
 
 ```{r, eval = FALSE}
 max_price = 1000
@@ -135,15 +135,35 @@ renderPlotly({
 
 The plot shows up, but in order to get it to change along with user input options from the sidebar, we need to add some Shiny `input$` calls.  
 
+Here's a code chunk that incorporates the user input.
+
+```{r, eval = FALSE}
+renderPlotly({
+    airbnb_data %>%
+    filter(boro == input$boro_choice, 
+           price %in% input$price_range[1]:input$price_range[2],
+           room_type == input$room_choice) %>%
+    mutate(text_label = str_c("Price: $", price, '\nRating: ', rating)) %>% 
+    plot_ly(x = ~longitude, y = ~latitude, type = "scatter", mode = "markers",
+          alpha = 0.5, 
+          color = ~price,
+          text = ~text_label)
+})
+```
+
+
 ### Interactive barchart
 
 Similarly, we'll take the boxplot code from last lecture, add it to our dashboard, and edit the code so it incorporates user input. 
 
-```{r}
-airbnb_data %>% 
+```{r, eval = FALSE}
+renderPlotly({
+  airbnb_data %>% 
   count(neighbourhood) %>% 
   mutate(neighbourhood = fct_reorder(neighbourhood, n)) %>% 
   plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = "bar")
+})
+
 ```
 
 Notice that neighborhoods change with choice of boro.
