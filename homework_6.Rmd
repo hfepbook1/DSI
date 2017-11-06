@@ -1,0 +1,52 @@
+---
+title: "Homework 6"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Context
+
+This assignment reinforces ideas in [Interactivity](topic_interactivity.html). 
+
+### Due date
+
+Due: November 17 at 5:00pm. 
+
+### Points
+
+* Problem 0: 25 points
+* Problem 1: 25 points
+* Problem 2: 25 points
+* Problem 3: 25 points
+
+
+### Problem 0
+
+This "problem" focuses on structure of your submission, including reproducibility, organization, clearness, naming structures, and the use of Git and GiuHub for collaboration. 
+
+To that end, you will submit only an HTML file for this homework named `p8105_hw6_YOURUNI.html`. Throughout this assignment you'll work with a partner; include the name and UNI of your partner in the HTML file. Also include a link to the website produced in Problem 3. 
+
+We will assess adherence to the best practices, reproducibility, and collaboration (especially clear and frequent commit messages) in the grading of this problem. Adherence to appropriate styling and clarity of code will be assessed in Problems 1+. 
+
+
+### Problem 1
+
+Create a flexdashboard using plotly for interactive graphics using one the following datasets:
+
+* [Instacart](dataset_instacart.html)
+* [NY NOAA](dataset_noaa.html)
+* [NYC Restaurant Inspections](dataset_restaurant_inspections.html)
+
+Your dashboard should include at least three distinct plot types (e.g. scatterplots, line plots, bar plots, box plots, etc.). 
+
+
+### Problem 2
+
+Create a shiny-enabled dashboard based on your work in Problem 1. Include at least two distinct widget types (e.g. slider inputs, drop-down menus, radio buttons, etc).
+
+
+### Problem 3
+
+Create a website for this Homework. Include a landing page that describes the data you used and any relevant processing steps. Your landing page should also link to the dashboard from Problem 1 (hosted as part of the website), to the dashboard from Problem 2, and to the GitHub repo(s) that underly your dashboards and the webpage. 
