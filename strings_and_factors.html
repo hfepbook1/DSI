@@ -381,12 +381,35 @@ div.tocify {
 <h2>Example</h2>
 <p>I’ll write code for today’s content in a new R Markdown document called <code>strings_and_factors.Rmd</code>, and put it in the same directory / GitHub repo as <code>reading_data.Rmd</code>. I’m also going to load the usual packages, as well as <code>stringr</code> and <code>forcats</code>.</p>
 <pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
 library(janitor)
 library(haven)
 library(rvest)
+## Loading required package: xml2
+## 
+## Attaching package: &#39;rvest&#39;
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     pluck
+## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding
 
 library(stringr)
 library(forcats)
+## 
+## Attaching package: &#39;forcats&#39;
+## The following object is masked from &#39;package:haven&#39;:
+## 
+##     as_factor
 
 theme_set(theme_bw())
 theme_update(legend.position = &quot;bottom&quot;)</code></pre>
@@ -413,13 +436,13 @@ print(pulse_data, n = 12)
 ##  3 10003 48.03836  male    06m     2
 ##  4 10003 48.03836  male    12m     0
 ##  5 10015 72.47123  male    00m     6
-##  6 10015 72.47123  male    01m    NA
-##  7 10015 72.47123  male    06m    NA
-##  8 10015 72.47123  male    12m    NA
+##  6 10015 72.47123  male    01m   NaN
+##  7 10015 72.47123  male    06m   NaN
+##  8 10015 72.47123  male    12m   NaN
 ##  9 10022 58.50959  male    00m    14
 ## 10 10022 58.50959  male    01m     3
 ## 11 10022 58.50959  male    06m     8
-## 12 10022 58.50959  male    12m    NA
+## 12 10022 58.50959  male    12m   NaN
 ## # ... with 4,336 more rows</code></pre>
 </div>
 <div id="nsduh" class="section level3">
@@ -466,30 +489,30 @@ urls = str_c(url_base, 1:5)
 read_html(urls[1]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;thanks, as described,&quot;                                                                             
-##  [2] &quot;Way better than traditional toothbrush&quot;                                                            
-##  [3] &quot;Clean power a little bit stronger than what I expect ...&quot;                                          
-##  [4] &quot;Not worth the price.&quot;                                                                              
-##  [5] &quot;Five Stars&quot;                                                                                        
-##  [6] &quot;Five Stars&quot;                                                                                        
-##  [7] &quot;Five Stars&quot;                                                                                        
-##  [8] &quot;Five Stars&quot;                                                                                        
-##  [9] &quot;... toothbrush Wasn’t sufficient as far as Amazon service I’m happy with that but I did return the&quot;
-## [10] &quot;Not as powerful as other/older models&quot;
+##  [1] &quot;I love it.&quot;                                  
+##  [2] &quot;Five Stars&quot;                                  
+##  [3] &quot;Five Stars&quot;                                  
+##  [4] &quot;Five Stars&quot;                                  
+##  [5] &quot;Better to invest in the higher price product&quot;
+##  [6] &quot;Five Stars&quot;                                  
+##  [7] &quot;Five Stars&quot;                                  
+##  [8] &quot;Five Stars&quot;                                  
+##  [9] &quot;Not as good as the more expensive versions&quot;  
+## [10] &quot;Sonicare works as advertised&quot;
 
 read_html(urls[2]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;So far so good. Does the job very well&quot;               
-##  [2] &quot;Love this toothbrush&quot;                                 
-##  [3] &quot;Five Stars&quot;                                           
-##  [4] &quot;Noticeable Improvement in gum health - per my dentist&quot;
-##  [5] &quot;Five Stars&quot;                                           
-##  [6] &quot;I&#39;m really glad I got this model&quot;                     
-##  [7] &quot;Four Stars&quot;                                           
-##  [8] &quot;Great value. Works Well !&quot;                            
-##  [9] &quot;Three Stars&quot;                                          
-## [10] &quot;Happy Happy Gums and Wallet !!&quot;</code></pre>
+##  [1] &quot;Three Stars&quot;                                              
+##  [2] &quot;Better than Oral-B&quot;                                       
+##  [3] &quot;Five Stars&quot;                                               
+##  [4] &quot;This is a great brush. I charge it on weekends and it ...&quot;
+##  [5] &quot;Five Stars&quot;                                               
+##  [6] &quot;Five Stars&quot;                                               
+##  [7] &quot;\U0001f600 It really cleans my teeth much better.&quot;        
+##  [8] &quot;Five Stars&quot;                                               
+##  [9] &quot;Good&quot;                                                     
+## [10] &quot;Good buy.&quot;</code></pre>
 <p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
 </div>
 <div id="biostat-methods-i-example" class="section level3">
@@ -715,6 +738,7 @@ nyc_inspections %&gt;%
 <li>R for Data Science has chapters on both <a href="http://r4ds.had.co.nz/strings.html">strings</a> and <a href="http://r4ds.had.co.nz/factors.html">factors</a></li>
 <li>There are useful materials by Jenny Bryan on <a href="http://stat545.com/block022_regular-expression.html">strings</a> and <a href="http://stat545.com/block029_factors.html">factors</a> as well</li>
 <li>Dealing with text entries can be a <a href="https://www.youtube.com/watch?v=15nNY7uofNw">real challenge</a></li>
+<li>Cheatsheet for <a href="https://github.com/rstudio/cheatsheets/raw/master/strings.pdf">stringr</a></li>
 </ul>
 <p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_data_wrangling_ii">here</a>.</p>
 </div>

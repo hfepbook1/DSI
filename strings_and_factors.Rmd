@@ -292,5 +292,6 @@ Success!
 * R for Data Science has chapters on both [strings](http://r4ds.had.co.nz/strings.html) and [factors](http://r4ds.had.co.nz/factors.html)
 * There are useful materials by Jenny Bryan on [strings](http://stat545.com/block022_regular-expression.html) and [factors](http://stat545.com/block029_factors.html) as well
 * Dealing with text entries can be a [real challenge](https://www.youtube.com/watch?v=15nNY7uofNw)
+* Cheatsheet for [stringr](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf)
 
 The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_data_wrangling_ii).
