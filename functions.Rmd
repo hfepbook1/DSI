@@ -28,18 +28,20 @@ knitr::opts_chunk$set(
 
 ## Example
 
-For this topic, I'll create a directory called `example_data_wrangling_ii` and take the steps to make it a public GitHub repo. I'll write code for today's content in a new R Markdown document called `functions.Rmd`, and I'm going to load the usual packages.
+For this topic, I'll create a directory called `example_iteration` and take the steps to make it a public GitHub repo. I'll write code for today's content in a new R Markdown document called `functions.Rmd`, and I'm going to load the usual packages. I'm also setting the seed so that the output on this page is fixed. 
 
 ```{r}
 library(tidyverse)
 
 theme_set(theme_bw())
 theme_update(legend.position = "bottom")
+
+set.seed(1)
 ```
 
-### A first function
+### My first function
 
-start with code
+The best way to build up a function is to start with code you've written outside a function. To see how this might work, I'll start with a simple example: the chunk below takes a sample from a standard normal and then computes the Z score for the sample. 
 
 ```{r}
 x = rnorm(25)
@@ -47,35 +49,37 @@ x = rnorm(25)
 mean(x) / sd(x)
 ```
 
-convert to function
+If I want to repeat this (admittedly simple) process for lots of samples, I might want to have a function that takes the sample as an *argument*, computes the Z score in the *body*, and *returns* the result. I define such a function below. 
 
 ```{r}
 z_score = function(x) {
-  z = mean(x) / sd(x)
   
+  z = mean(x) / sd(x)
   z
+  
 }
 
 z_score(x)
 ```
 
-try to break it
+I can try this with a few samples and confirm that it works. I should also try to think of ways this code might break; the attempts below try a variety of inputs to see what happens. 
 
-```{r}
+```{r, error = TRUE}
 z_score(3)
 z_score("my name is jeff")
+z_score(iris)
 z_score(sample(c(TRUE, FALSE), 25, replace = TRUE))
 ```
 
-add some conditions
+These all did something I didn't want, but only two returned errors. To avoid behavior you don't want (i.e. to fail loudly) we'll add some checks on the argument values using conditional statements.
 
 ```{r}
 z_score = function(x) {
   
   if (!is.numeric(x)) {
-    stop("argument x should be numeric")
+    stop("Argument x should be numeric")
   } else if (length(x) == 1) {
-    stop("z-scores cannot be computed for length 1 vectors")
+    stop("Z scores cannot be computed for length 1 vectors")
   }
   
   z = mean(x) / sd(x)
@@ -84,12 +88,11 @@ z_score = function(x) {
 }
 ```
 
+Fantastic -- we have a pretty solid function for computing Z scores!
 
 ### Multiple outputs
 
-might want to keep the mean and sd
-
-return as a named list
+In some cases it might be good to return not just the Z score, but the mean and standard deviation as well. A first option is to store each of the values in a named list, and to return that list. 
 
 ```{r}
 z_score = function(x) {
@@ -110,8 +113,7 @@ z_score = function(x) {
 }
 ```
 
-
-return as a DF
+Alternatively, we might store values in a data frame. 
 
 ```{r}
 z_score = function(x) {
@@ -134,10 +136,28 @@ z_score = function(x) {
 }
 ```
 
+In general, either of these will be fine; which one you choose will depend on what kind of values you want to return, and what you plan to do with the function itself. If you want to return the original sample along with the computed values, a list might make sense; if you plan to run your function a lot and study the results, having a data frame will make it easier to use other tools. We'll see more of that in [iteration and simulation](iteration_and_simulation.html).
+
 
 ### Multiple inputs
 
-get a little fancier -- think about regression.
+As exciting as it is to compute Z scores, let's start setting our sights higher. I'd like to have a function that takes a given sample size and true simple linear regression line, simulates data from that model, and returns the estimated intercept and slope. I'll start from the code below.
+
+```{r}
+sim_data = tibble(
+  x = runif(30),
+  y = 2 + 3 * x + rnorm(30, 0, 1)
+)
+
+ls_fit = lm(y ~ x, data = sim_data)
+  
+beta0_hat = coef(ls_fit)[1]
+beta1_hat = coef(ls_fit)[2]
+```
+
+You should take a few minutes to examine this code -- make a plot of the simulated data to make sure it "makes sense", take a look at the result of the `lm` call, etc. 
+
+Once you're satisfied, it's time to wrap things up in a function. I'd like to be able to change the sample size and regression parameters, so those will be my *arguments*; the code that simulates data and fits the regression goes in the *body*; and the *return* statement should include the intercept and slope. A function that does all this is below. 
 
 ```{r}
 sim_regression = function(n, beta0, beta1) {
@@ -154,16 +174,14 @@ sim_regression = function(n, beta0, beta1) {
     beta1_hat = coef(ls_fit)[2]
   )
 }
-
-
-sim_regression(30, 2, 3)
-
 ```
 
-Repeated calls to `sim_regression()` will give a sense of sampling variability in regression coefficients in SLR; we'll examine this more formally in [simulation](simulation.html)
+Repeated calls to `sim_regression()` will give a sense of sampling variability in regression coefficients in SLR; take a few minutes to run `sim_regression(30, 2, 3)` a few times, and then to run `sim_regression(300, 2, 3)`, and think about the results. We'll examine this more formally in [simulation](simulation.html)
 
 
 ### Revisiting past examples
+
+There have been a couple of times in this class that I've had to write code I didn't like, because it would have made sense to write a function. We'll revisit those quickly to see how we could improve our code. 
 
 #### Scraping Amazon
 
@@ -238,12 +256,32 @@ lotr_tidy =
   select(movie, everything()) 
 ```
 
+Having a function that handles the loading and cleaning is great -- if I decide I want to change the tidying step, I only have to do it once, and I don't have to worry about mistakes creeping in through copy-and-paste errors!
+
 
 ### Functions as arguments
 
+One powerful tool is the ability to pass functions as arguments into functions. This might seem like a weird thing to do, but it has a lot of handy applications -- we'll see just how far it goes in the next modules in the topic.
 
+As a quick example, suppose we wanted to get a sense of how similar or different values in a vector are to each other. There are lots of ways to measure this -- variance, standard deviation, range, inter-quartile range -- and some are more appropriate in some cases than in others. The function below allows you to input a vector and a function, and returns the result of applying the specified function to the vector input.
+
+```{r}
+x = rnorm(25, 0, 1)
+
+my_summary = function(x, summ_func) {
+  summ_func(x)
+}
+
+my_summary(x, sd)
+my_summary(x, IQR)
+my_summary(x, var)
+```
+
+This example is pretty trivial -- you could just apply those functions directly to  `x` and skip the hassle -- but in many cases the idea of passing functions as arguments is really powerful. As an example, remember that you can reorder factors according to different summaries in `fct_reorder`!
 
 ### Scoping and names
+
+Take a look at the code below. Will the call `f(x = y)` work? If so, what will it produce? What is the current value of `x`, `y`, and `z`?
 
 ```{r, eval = FALSE}
 f = function(x) {
@@ -257,11 +295,12 @@ y = 2
 f(x = y)
 ```
 
+Examples like this are tricky, but emphasize an issue that comes up a lot in writing functions: you define a variable in your global environment and use it in your function, but it isn't passed as an argument. This is easy to miss, especially when you go from written code to a function, and can be hard to track down if you empty your working directory or change a variable name. The best advice I have is to give your arguments useful names and think carefully about where everything is defined, and to periodically empty your environment and try everything again!
+
+
 ## Other materials
 
+* There are chapters on functions in [R for Data Science](http://r4ds.had.co.nz/functions.html) and [Advanced R](http://adv-r.had.co.nz/Functions.html)
+* Jenny Bryan has a [three](http://stat545.com/block011_write-your-own-function-01.html) [part](http://stat545.com/block011_write-your-own-function-02.html) [series](http://stat545.com/block011_write-your-own-function-03.html) on writing functions (each part is short)
 
-* http://r4ds.had.co.nz/functions.html and http://adv-r.had.co.nz/Functions.html
-* http://stat545.com/block011_write-your-own-function-01.html, http://stat545.com/block011_write-your-own-function-02.html, and http://stat545.com/block011_write-your-own-function-03.html
-
-
-The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_data_wrangling_ii).
+The code that I produced working examples in lecture is [here](ZZZZZ).
