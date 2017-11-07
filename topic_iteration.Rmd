@@ -6,7 +6,7 @@ When writing code in general, and when implementing modern statistical approache
 
 This topic is made up of the following components:
 
-* [Functions](functions.html)
+* [Writing functions](writing_functions.html)
 * [Iteration and simulation](iteration_and_simulation.html)
 * [List columns and resampling](listcols_and_resampling.html)
 

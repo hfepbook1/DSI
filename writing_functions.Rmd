@@ -1,5 +1,5 @@
 ---
-title: "Functions"
+title: "Writing functions"
 output:
   html_document: 
     toc: true
