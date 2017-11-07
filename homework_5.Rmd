@@ -72,13 +72,13 @@ The code below will scrape the 1000 most recent reviews of the movie "Napoleon D
 ```{r, eval = FALSE}
 read_page_reviews <- function(url) {
   
-  h <- read_html(url)
+  h = read_html(url)
   
-  title <- h %>%
+  title = h %>%
     html_nodes("#cm_cr-review_list .review-title") %>%
     html_text()
   
-  stars <- h %>%
+  stars = h %>%
     html_nodes("#cm_cr-review_list .review-rating") %>%
     html_text() %>%
     str_extract("\\d") %>%

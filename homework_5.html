@@ -418,13 +418,13 @@ div.tocify {
 <p>The code below will scrape the 1000 most recent reviews of the movie “Napoleon Dynamite” from Amazon.</p>
 <pre class="r"><code>read_page_reviews &lt;- function(url) {
   
-  h &lt;- read_html(url)
+  h = read_html(url)
   
-  title &lt;- h %&gt;%
+  title = h %&gt;%
     html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
     html_text()
   
-  stars &lt;- h %&gt;%
+  stars = h %&gt;%
     html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
     html_text() %&gt;%
     str_extract(&quot;\\d&quot;) %&gt;%
