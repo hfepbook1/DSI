@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Functions</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_i.html">Data Wrangling I</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_iteration.html">Iteration</a>
+    </li>
+    <li>
+      <a href="topic_r_packages.html">R Packages</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Datasets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dataset_mr_trash_wheel.html">Mr. Trash Wheel</a>
+    </li>
+    <li>
+      <a href="dataset_restaurant_inspections.html">NYC Restaurant Inspections</a>
+    </li>
+    <li>
+      <a href="dataset_instacart.html">Instacart</a>
+    </li>
+    <li>
+      <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
+    </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
+    <li>
+      <a href="dataset_airbnb.html">Airbnb</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="homework_and_projects.html">Homework and Projects</a>
+</li>
+<li>
+  <a href="course_communication.html">Communication</a>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Functions</h1>
+
+</div>
+
+
+<p>If you use the same code twice, you need a function – this will improve code readability, facilitate troubleshooting, and reduce chances for mistakes. This content looks at the best approaches for writing R functions.</p>
+<p>This is the first module in the <a href="topic_iteration.html">Iteration</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7WC2UPT7">here</a>.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>For this topic, I’ll create a directory called <code>example_data_wrangling_ii</code> and take the steps to make it a public GitHub repo. I’ll write code for today’s content in a new R Markdown document called <code>functions.Rmd</code>, and I’m going to load the usual packages.</p>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+
+theme_set(theme_bw())
+theme_update(legend.position = &quot;bottom&quot;)</code></pre>
+<div id="a-first-function" class="section level3">
+<h3>A first function</h3>
+<p>start with code</p>
+<pre class="r"><code>x = rnorm(25)
+
+mean(x) / sd(x)
+## [1] -0.1000524</code></pre>
+<p>convert to function</p>
+<pre class="r"><code>z_score = function(x) {
+  z = mean(x) / sd(x)
+  
+  z
+}
+
+z_score(x)
+## [1] -0.1000524</code></pre>
+<p>try to break it</p>
+<pre class="r"><code>z_score(3)
+## [1] NA
+z_score(&quot;my name is jeff&quot;)
+## Warning in mean.default(x): argument is not numeric or logical: returning
+## NA
+## Warning in var(if (is.vector(x) || is.factor(x)) x else as.double(x), na.rm
+## = na.rm): NAs introduced by coercion
+## [1] NA
+z_score(sample(c(TRUE, FALSE), 25, replace = TRUE))
+## [1] 1.019804</code></pre>
+<p>add some conditions</p>
+<pre class="r"><code>z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop(&quot;argument x should be numeric&quot;)
+  } else if (length(x) == 1) {
+    stop(&quot;z-scores cannot be computed for length 1 vectors&quot;)
+  }
+  
+  z = mean(x) / sd(x)
+  
+  z
+}</code></pre>
+</div>
+<div id="multiple-outputs" class="section level3">
+<h3>Multiple outputs</h3>
+<p>might want to keep the mean and sd</p>
+<p>return as a named list</p>
+<pre class="r"><code>z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop(&quot;argument x should be numeric&quot;)
+  } else if (length(x) == 1) {
+    stop(&quot;z-scores cannot be computed for length 1 vectors&quot;)
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  z = mean_x / sd_x
+  
+  list(mean = mean_x, 
+       sd = sd_x,
+       z = z)
+}</code></pre>
+<p>return as a DF</p>
+<pre class="r"><code>z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop(&quot;argument x should be numeric&quot;)
+  } else if (length(x) == 1) {
+    stop(&quot;z-scores cannot be computed for length 1 vectors&quot;)
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  z = mean_x / sd_x
+  
+  tibble(
+    mean = mean_x, 
+    sd = sd_x,
+    z = z
+  )
+}</code></pre>
+</div>
+<div id="multiple-inputs" class="section level3">
+<h3>Multiple inputs</h3>
+<p>get a little fancier – think about regression.</p>
+<pre class="r"><code>sim_regression = function(n, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = runif(n),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+
+
+sim_regression(30, 2, 3)
+## # A tibble: 1 x 2
+##   beta0_hat beta1_hat
+##       &lt;dbl&gt;     &lt;dbl&gt;
+## 1  2.146801  2.915826</code></pre>
+<p>Repeated calls to <code>sim_regression()</code> will give a sense of sampling variability in regression coefficients in SLR; we’ll examine this more formally in <a href="simulation.html">simulation</a></p>
+</div>
+<div id="revisiting-past-examples" class="section level3">
+<h3>Revisiting past examples</h3>
+<div id="scraping-amazon" class="section level4">
+<h4>Scraping Amazon</h4>
+<p>In <a href="reading_data_from_the_web.html">reading data from the web</a>, we wrote code that allowed us to scrape information in Amazon reviews. That code is below.</p>
+<pre class="r"><code>url = &quot;https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+
+toothbrush_html = read_html(url)
+
+review_titles = toothbrush_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+  html_text()
+
+review_stars = toothbrush_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+  html_text()
+
+reviews = data_frame(
+  title = review_titles,
+  stars = review_stars
+)</code></pre>
+<p>Let’s write a quick function to scrape review information for any URL to an Amazon review page. Hint: this code appears in <a href="homework_5.html">Homework 5</a> …</p>
+</div>
+<div id="loading-lotr-data" class="section level4">
+<h4>Loading LoTR data</h4>
+<p>In <a href="tidy_data.html">tidy data</a>, we broke the “only copy code twice” rule when we used the code below:</p>
+<pre class="r"><code>fellowship_ring = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
+  clean_names() %&gt;%
+  gather(key = sex, value = words, female:male) %&gt;%
+  mutate(race = tolower(race),
+         movie = &quot;Fellowship&quot;)
+
+two_towers = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) %&gt;%
+  clean_names() %&gt;%
+  gather(key = sex, value = words, female:male) %&gt;%
+  mutate(race = tolower(race),
+         movie = &quot;Two Towers&quot;)
+
+return_king = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;%
+  clean_names() %&gt;%
+  gather(key = sex, value = words, female:male) %&gt;%
+  mutate(race = tolower(race),
+         movie = &quot;Return&quot;)</code></pre>
+<p>Try to write a function that can be used to abstract the data loading and cleaning process. Use this function to recreate the tidied LoTR dataset.</p>
+</div>
+</div>
+<div id="functions-as-arguments" class="section level3">
+<h3>Functions as arguments</h3>
+</div>
+<div id="scoping-and-names" class="section level3">
+<h3>Scoping and names</h3>
+<pre class="r"><code>f = function(x) {
+  z = x + y
+  z
+}
+
+x = 1
+y = 2
+
+f(x = y)</code></pre>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
+<ul>
+<li><a href="http://r4ds.had.co.nz/functions.html" class="uri">http://r4ds.had.co.nz/functions.html</a> and <a href="http://adv-r.had.co.nz/Functions.html" class="uri">http://adv-r.had.co.nz/Functions.html</a></li>
+<li><a href="http://stat545.com/block011_write-your-own-function-01.html" class="uri">http://stat545.com/block011_write-your-own-function-01.html</a>, <a href="http://stat545.com/block011_write-your-own-function-02.html" class="uri">http://stat545.com/block011_write-your-own-function-02.html</a>, and <a href="http://stat545.com/block011_write-your-own-function-03.html" class="uri">http://stat545.com/block011_write-your-own-function-03.html</a></li>
+</ul>
+<p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_data_wrangling_ii">here</a>.</p>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

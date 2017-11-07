@@ -1,0 +1,267 @@
+---
+title: "Functions"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+If you use the same code twice, you need a function -- this will improve code readability, facilitate troubleshooting, and reduce chances for mistakes. This content looks at the best approaches for writing R functions.
+
+This is the first module in the [Iteration](topic_iteration.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7WC2UPT7).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+For this topic, I'll create a directory called `example_data_wrangling_ii` and take the steps to make it a public GitHub repo. I'll write code for today's content in a new R Markdown document called `functions.Rmd`, and I'm going to load the usual packages.
+
+```{r}
+library(tidyverse)
+
+theme_set(theme_bw())
+theme_update(legend.position = "bottom")
+```
+
+### A first function
+
+start with code
+
+```{r}
+x = rnorm(25)
+
+mean(x) / sd(x)
+```
+
+convert to function
+
+```{r}
+z_score = function(x) {
+  z = mean(x) / sd(x)
+  
+  z
+}
+
+z_score(x)
+```
+
+try to break it
+
+```{r}
+z_score(3)
+z_score("my name is jeff")
+z_score(sample(c(TRUE, FALSE), 25, replace = TRUE))
+```
+
+add some conditions
+
+```{r}
+z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("z-scores cannot be computed for length 1 vectors")
+  }
+  
+  z = mean(x) / sd(x)
+  
+  z
+}
+```
+
+
+### Multiple outputs
+
+might want to keep the mean and sd
+
+return as a named list
+
+```{r}
+z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("z-scores cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  z = mean_x / sd_x
+  
+  list(mean = mean_x, 
+       sd = sd_x,
+       z = z)
+}
+```
+
+
+return as a DF
+
+```{r}
+z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("z-scores cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  z = mean_x / sd_x
+  
+  tibble(
+    mean = mean_x, 
+    sd = sd_x,
+    z = z
+  )
+}
+```
+
+
+### Multiple inputs
+
+get a little fancier -- think about regression.
+
+```{r}
+sim_regression = function(n, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = runif(n),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+
+
+sim_regression(30, 2, 3)
+
+```
+
+Repeated calls to `sim_regression()` will give a sense of sampling variability in regression coefficients in SLR; we'll examine this more formally in [simulation](simulation.html)
+
+
+### Revisiting past examples
+
+#### Scraping Amazon
+
+In [reading data from the web](reading_data_from_the_web.html), we wrote code that allowed us to scrape information in Amazon reviews. That code is below.
+
+```{r, eval = FALSE}
+url = "https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
+
+toothbrush_html = read_html(url)
+
+review_titles = toothbrush_html %>%
+  html_nodes("#cm_cr-review_list .review-title") %>%
+  html_text()
+
+review_stars = toothbrush_html %>%
+  html_nodes("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+reviews = data_frame(
+  title = review_titles,
+  stars = review_stars
+)
+```
+
+Let's write a quick function to scrape review information for any URL to an Amazon review page. Hint: this code appears in [Homework 5](homework_5.html) ...
+
+#### Loading LoTR data
+
+In [tidy data](tidy_data.html), we broke the "only copy code twice" rule when we used the code below:
+
+```{r, eval = FALSE}
+fellowship_ring = read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
+  clean_names() %>%
+  gather(key = sex, value = words, female:male) %>%
+  mutate(race = tolower(race),
+         movie = "Fellowship")
+
+two_towers = read_excel("./data/LotR_Words.xlsx", range = "F3:H6") %>%
+  clean_names() %>%
+  gather(key = sex, value = words, female:male) %>%
+  mutate(race = tolower(race),
+         movie = "Two Towers")
+
+return_king = read_excel("./data/LotR_Words.xlsx", range = "J3:L6") %>%
+  clean_names() %>%
+  gather(key = sex, value = words, female:male) %>%
+  mutate(race = tolower(race),
+         movie = "Return")
+```
+
+Try to write a function that can be used to abstract the data loading and cleaning process. Use this function to recreate the tidied LoTR dataset.
+
+```{r, eval = FALSE, echo = FALSE}
+lotr_load_and_tidy = function(path, range, movie_name) {
+  
+  df = readxl::read_excel(path, range = range) %>%
+    janitor::clean_names() %>%
+    gather(key = sex, value = words, female:male) %>%
+    mutate(race = tolower(race),
+           movie = movie_name)
+  
+  df
+  
+}
+
+lotr_tidy = 
+  bind_rows(
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "B3:D6", "Fellowship"),
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "F3:H6", "Two Towers"),
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "J3:L6", "Return")
+  ) %>%
+  select(movie, everything()) 
+```
+
+
+### Functions as arguments
+
+
+
+### Scoping and names
+
+```{r, eval = FALSE}
+f = function(x) {
+  z = x + y
+  z
+}
+
+x = 1
+y = 2
+
+f(x = y)
+```
+
+## Other materials
+
+
+* http://r4ds.had.co.nz/functions.html and http://adv-r.had.co.nz/Functions.html
+* http://stat545.com/block011_write-your-own-function-01.html, http://stat545.com/block011_write-your-own-function-02.html, and http://stat545.com/block011_write-your-own-function-03.html
+
+
+The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_data_wrangling_ii).
