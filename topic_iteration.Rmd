@@ -7,8 +7,8 @@ When writing code in general, and when implementing modern statistical approache
 This topic is made up of the following components:
 
 * [Functions](functions.html)
-* [Iteration and Simulation](simulations.html)
-* [Iteration and Resampling](resampling.html)
+* [Iteration and simulation](iteration_and_simulation.html)
+* [List columns and resampling](listcols_and_resampling.html)
 
 The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C7CGD92CX).
 

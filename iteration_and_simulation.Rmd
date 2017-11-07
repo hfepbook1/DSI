@@ -1,0 +1,111 @@
+---
+title: "Iteration and Simulation"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+text
+
+This is the second module in the [Iteration](topic_iteration.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7WC2UPT7).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+I'll write code for today's content in a new R Markdown document called `iteration_and_simulation.Rmd` in the `example_iteration` directory / repo. The code chunk below loads the usual packages.
+
+```{r}
+library(tidyverse)
+
+theme_set(theme_bw())
+theme_update(legend.position = "bottom")
+```
+
+### `for` loop approach
+
+do simulation 1000 times
+
+do simulation for 4 sample sizes
+
+### rerun
+
+get a little fancier -- think about regression.
+
+```{r}
+sim_regression = function(n, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = runif(n),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+
+
+sim_regression(30, 2, 3)
+
+```
+
+### map
+
+
+### combine rerun and map
+
+### Revisiting past examples
+
+#### Scraping Amazon
+
+In [reading data from the web](reading_data_from_the_web.html), we wrote code that allowed us to scrape information in Amazon reviews. That code is below.
+
+```{r, eval = FALSE}
+url = "https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
+
+toothbrush_html = read_html(url)
+
+review_titles = toothbrush_html %>%
+  html_nodes("#cm_cr-review_list .review-title") %>%
+  html_text()
+
+review_stars = toothbrush_html %>%
+  html_nodes("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+reviews = data_frame(
+  title = review_titles,
+  stars = review_stars
+)
+```
+
+Let's write a quick function to scrape review information for any URL to an Amazon review page. Hint: this code appears in [Homework 5](homework_5.html) ...
+
+
+## Other materials
+
+
+* http://r4ds.had.co.nz/iteration.html
+* https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply 
+* https://jennybc.github.io/purrr-tutorial/
+
+The code that I produced working examples in lecture is [here](ZZZZZ).

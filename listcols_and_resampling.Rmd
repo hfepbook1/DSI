@@ -1,0 +1,56 @@
+---
+title: "List Columns and Resampling"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+text
+
+This is the third module in the [Iteration](topic_iteration.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7WC2UPT7).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+I'll write code for today's content in a new R Markdown document called `listcols_and_resampling.Rmd` in the `example_iteration` directory / repo. The code chunk below loads the usual packages.
+
+
+```{r}
+library(tidyverse)
+
+theme_set(theme_bw())
+theme_update(legend.position = "bottom")
+```
+
+
+things are gonna get weird.
+
+
+## Other materials
+
+
+* http://r4ds.had.co.nz/many-models.html
+* https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply 
+* https://jennybc.github.io/purrr-tutorial/
+* https://drsimonj.svbtle.com/k-fold-cross-validation-with-modelr-and-broom
+* http://rpubs.com/dgrtwo/cv-modelr
+* https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html
+* https://github.com/tidyverse/broom/blob/master/vignettes/bootstrapping.Rmd
+* https://github.com/tidyverse/modelr
+The code that I produced working examples in lecture is [here](ZZZZZ).

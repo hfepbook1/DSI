@@ -11,7 +11,7 @@
 
 
 
-<title>Iteration</title>
+<title>Iteration and Simulation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +166,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -264,20 +362,107 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Iteration</h1>
+<h1 class="title toc-ignore">Iteration and Simulation</h1>
 
 </div>
 
 
-<p>When writing code in general, and when implementing modern statistical approaches specifically, you’ll find yourself doing the same thing over and over and <em>over</em> and <strong><em>over</em></strong>. In these cases, abstracting what you’re doing into a function and then using that function across a lot of iterations can simplify your code and make analysis much easier. Here we’ll the material necessary for functions, simulations, and resampling.</p>
-<p>This topic is made up of the following components:</p>
+<p>text</p>
+<p>This is the second module in the <a href="topic_iteration.html">Iteration</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7WC2UPT7">here</a>.</p>
+<div id="some-slides" class="section level2">
+<h2>Some slides</h2>
+<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px">
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+</div>
+<p><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>For this topic, I’ll create a directory called <code>example_data_wrangling_ii</code> and take the steps to make it a public GitHub repo. I’ll write code for today’s content in a new R Markdown document called <code>functions.Rmd</code>, and I’m going to load the usual packages.</p>
+<pre class="r"><code>library(tidyverse)
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+
+theme_set(theme_bw())
+theme_update(legend.position = &quot;bottom&quot;)</code></pre>
+<div id="for-loop-approach" class="section level3">
+<h3><code>for</code> loop approach</h3>
+<p>do simulation 1000 times</p>
+<p>do simulation for 4 sample sizes</p>
+</div>
+<div id="rerun" class="section level3">
+<h3>rerun</h3>
+<p>get a little fancier – think about regression.</p>
+<pre class="r"><code>sim_regression = function(n, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = runif(n),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+
+
+sim_regression(30, 2, 3)
+## # A tibble: 1 x 2
+##   beta0_hat beta1_hat
+##       &lt;dbl&gt;     &lt;dbl&gt;
+## 1  1.947513  3.022975</code></pre>
+</div>
+<div id="map" class="section level3">
+<h3>map</h3>
+</div>
+<div id="combine-rerun-and-map" class="section level3">
+<h3>combine rerun and map</h3>
+</div>
+<div id="revisiting-past-examples" class="section level3">
+<h3>Revisiting past examples</h3>
+<div id="scraping-amazon" class="section level4">
+<h4>Scraping Amazon</h4>
+<p>In <a href="reading_data_from_the_web.html">reading data from the web</a>, we wrote code that allowed us to scrape information in Amazon reviews. That code is below.</p>
+<pre class="r"><code>url = &quot;https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+
+toothbrush_html = read_html(url)
+
+review_titles = toothbrush_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+  html_text()
+
+review_stars = toothbrush_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+  html_text()
+
+reviews = data_frame(
+  title = review_titles,
+  stars = review_stars
+)</code></pre>
+<p>Let’s write a quick function to scrape review information for any URL to an Amazon review page. Hint: this code appears in <a href="homework_5.html">Homework 5</a> …</p>
+</div>
+</div>
+</div>
+<div id="other-materials" class="section level2">
+<h2>Other materials</h2>
 <ul>
-<li><a href="functions.html">Functions</a></li>
-<li><a href="iteration_and_simulation.html">Iteration and simulation</a></li>
-<li><a href="listcols_and_resampling.html">List columns and resampling</a></li>
+<li><a href="http://r4ds.had.co.nz/iteration.html" class="uri">http://r4ds.had.co.nz/iteration.html</a></li>
+<li><a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply" class="uri">https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply</a></li>
+<li><a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></li>
 </ul>
-<p>The slack channel for this topic is <a href="https://p8105-fall2017.slack.com/messages/C7CGD92CX">here</a>.</p>
-<p>The code that I produced working examples in lecture is <a href="">here</a>.</p>
+<p>The code that I produced working examples in lecture is <a href="ZZZZZ">here</a>.</p>
+</div>
 
 <br><br>
 <footer>
@@ -285,6 +470,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 
