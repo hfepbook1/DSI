@@ -22,8 +22,8 @@ knitr::opts_chunk$set(
 
 ## Some slides
 
-<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+<script async class="speakerdeck-embed" data-id="3f91d97c70e641cea46366ac9d90c929" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-writing-functions" title="Writing Functions" target="_blank">Writing Functions</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
 
 
 ## Example
@@ -71,7 +71,7 @@ z_score(iris)
 z_score(sample(c(TRUE, FALSE), 25, replace = TRUE))
 ```
 
-These all did something I didn't want, but only two returned errors. To avoid behavior you don't want (i.e. to fail loudly) we'll add some checks on the argument values using conditional statements.
+These all did something I didn't want, but only two returned errors. To avoid behavior you don't want (i.e. to ["fail noisily and as soon as possible"](http://www.faqs.org/docs/artu/ch01s06.html)) we'll add some checks on the argument values using conditional statements.
 
 ```{r}
 z_score = function(x) {
@@ -210,7 +210,7 @@ Let's write a quick function to scrape review information for any URL to an Amaz
 
 #### Loading LoTR data
 
-In [tidy data](tidy_data.html), we broke the "only copy code twice" rule when we used the code below:
+In [tidy data](tidy_data.html), we broke the "only copy code twice" rule when we used the code below to process the [LoTR words data](./data/LotR_Words.xlsx):
 
 ```{r, eval = FALSE}
 fellowship_ring = read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
@@ -302,5 +302,6 @@ Examples like this are tricky, but emphasize an issue that comes up a lot in wri
 
 * There are chapters on functions in [R for Data Science](http://r4ds.had.co.nz/functions.html) and [Advanced R](http://adv-r.had.co.nz/Functions.html)
 * Jenny Bryan has a [three](http://stat545.com/block011_write-your-own-function-01.html) [part](http://stat545.com/block011_write-your-own-function-02.html) [series](http://stat545.com/block011_write-your-own-function-03.html) on writing functions (each part is short)
+* The [Basics of UNIX Philosophy](http://www.faqs.org/docs/artu/ch01s06.html), linked to above, apply broadly to designing code
 
 The code that I produced working examples in lecture is [here](ZZZZZ).

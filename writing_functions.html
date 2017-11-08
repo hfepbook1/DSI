@@ -371,9 +371,9 @@ div.tocify {
 <p>This is the first module in the <a href="topic_iteration.html">Iteration</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7WC2UPT7">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
-<script async class="speakerdeck-embed" data-id="ee17524f046c49a58cec601fb98bb72d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="3f91d97c70e641cea46366ac9d90c929" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-tidy-text" title="Tidy Text" target="_blank">Tidy Data</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-writing-functions" title="Writing Functions" target="_blank">Writing Functions</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
 </div>
 <p><br></p>
 </div>
@@ -427,7 +427,7 @@ z_score(iris)
 ## Error in is.data.frame(x): (list) object cannot be coerced to type &#39;double&#39;
 z_score(sample(c(TRUE, FALSE), 25, replace = TRUE))
 ## [1] 1.428286</code></pre>
-<p>These all did something I didn’t want, but only two returned errors. To avoid behavior you don’t want (i.e. to fail loudly) we’ll add some checks on the argument values using conditional statements.</p>
+<p>These all did something I didn’t want, but only two returned errors. To avoid behavior you don’t want (i.e. to <a href="http://www.faqs.org/docs/artu/ch01s06.html">“fail noisily and as soon as possible”</a>) we’ll add some checks on the argument values using conditional statements.</p>
 <pre class="r"><code>z_score = function(x) {
   
   if (!is.numeric(x)) {
@@ -538,7 +538,7 @@ reviews = data_frame(
 </div>
 <div id="loading-lotr-data" class="section level4">
 <h4>Loading LoTR data</h4>
-<p>In <a href="tidy_data.html">tidy data</a>, we broke the “only copy code twice” rule when we used the code below:</p>
+<p>In <a href="tidy_data.html">tidy data</a>, we broke the “only copy code twice” rule when we used the code below to process the <a href="./data/LotR_Words.xlsx">LoTR words data</a>:</p>
 <pre class="r"><code>fellowship_ring = read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
   clean_names() %&gt;%
   gather(key = sex, value = words, female:male) %&gt;%
@@ -598,6 +598,7 @@ f(x = y)</code></pre>
 <ul>
 <li>There are chapters on functions in <a href="http://r4ds.had.co.nz/functions.html">R for Data Science</a> and <a href="http://adv-r.had.co.nz/Functions.html">Advanced R</a></li>
 <li>Jenny Bryan has a <a href="http://stat545.com/block011_write-your-own-function-01.html">three</a> <a href="http://stat545.com/block011_write-your-own-function-02.html">part</a> <a href="http://stat545.com/block011_write-your-own-function-03.html">series</a> on writing functions (each part is short)</li>
+<li>The <a href="http://www.faqs.org/docs/artu/ch01s06.html">Basics of UNIX Philosophy</a>, linked to above, apply broadly to designing code</li>
 </ul>
 <p>The code that I produced working examples in lecture is <a href="ZZZZZ">here</a>.</p>
 </div>
