@@ -67,7 +67,7 @@ Fit a linear model that treats number of viewers in each episode as a response a
 
 ### Problem 3
 
-The code below will scrape the 1000 most recent reviews of the movie "Napoleon Dynamite" from Amazon. 
+The code below will scrape the 1000 most recent reviews of the movie "Napoleon Dynamite" from Amazon. You can download the dataset this code produces [here](./data/dynamite_reviews.csv) -- scraping in this way can get your IP address flagged by Amazon's algorithms that prevent large numbers of requests from a single computer.
 
 ```{r, eval = FALSE}
 read_page_reviews <- function(url) {
