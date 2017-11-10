@@ -178,6 +178,10 @@ sim_regression = function(n, beta0, beta1) {
 
 Repeated calls to `sim_regression()` will give a sense of sampling variability in regression coefficients in SLR; take a few minutes to run `sim_regression(30, 2, 3)` a few times, and then to run `sim_regression(300, 2, 3)`, and think about the results. We'll examine this more formally in [simulation](simulation.html)
 
+This is also a good time to point out how R handles argument matching. We can use _positional_ matching, meaning the first value supplied is taken to be the first argument, the second value is the second argument, and so on. We do this with `tidyverse` functions a lot; the first argument is always a dataframe, and we just supply that dataframe in the first position. We also use positional matching when we call `mean(x)` or `sim_regression(30, 2, 3)`.
+
+Alternatively, we can use _named_ matching, which uses the argument name in the function call. Named matching can be a bit more stable when you're writing your own functions (in case you decide to change the order of the inputs, for example) but isn't strictly necessary. Named arguments can be supplied in any order: `sim_regression(n = 30, beta0 = 2, beta1 = 3)` is equivalent to `sim_regression(beta1 = 3, n = 30, beta0 = 2).
+
 
 ### Revisiting past examples
 
@@ -302,6 +306,7 @@ Examples like this are tricky, but emphasize an issue that comes up a lot in wri
 
 * There are chapters on functions in [R for Data Science](http://r4ds.had.co.nz/functions.html) and [Advanced R](http://adv-r.had.co.nz/Functions.html)
 * Jenny Bryan has a [three](http://stat545.com/block011_write-your-own-function-01.html) [part](http://stat545.com/block011_write-your-own-function-02.html) [series](http://stat545.com/block011_write-your-own-function-03.html) on writing functions (each part is short)
+* R Programming for Data Science has nice chapters on [functions](https://bookdown.org/rdpeng/rprogdatascience/functions.html) and [scoping](https://bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html)
 * The [Basics of UNIX Philosophy](http://www.faqs.org/docs/artu/ch01s06.html), linked to above, apply broadly to designing code
 
-The code that I produced working examples in lecture is [here](ZZZZZ).
+The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_iteration).

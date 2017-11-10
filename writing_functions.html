@@ -511,6 +511,8 @@ beta1_hat = coef(ls_fit)[2]</code></pre>
   )
 }</code></pre>
 <p>Repeated calls to <code>sim_regression()</code> will give a sense of sampling variability in regression coefficients in SLR; take a few minutes to run <code>sim_regression(30, 2, 3)</code> a few times, and then to run <code>sim_regression(300, 2, 3)</code>, and think about the results. We’ll examine this more formally in <a href="simulation.html">simulation</a></p>
+<p>This is also a good time to point out how R handles argument matching. We can use <em>positional</em> matching, meaning the first value supplied is taken to be the first argument, the second value is the second argument, and so on. We do this with <code>tidyverse</code> functions a lot; the first argument is always a dataframe, and we just supply that dataframe in the first position. We also use positional matching when we call <code>mean(x)</code> or <code>sim_regression(30, 2, 3)</code>.</p>
+<p>Alternatively, we can use <em>named</em> matching, which uses the argument name in the function call. Named matching can be a bit more stable when you’re writing your own functions (in case you decide to change the order of the inputs, for example) but isn’t strictly necessary. Named arguments can be supplied in any order: <code>sim_regression(n = 30, beta0 = 2, beta1 = 3)</code> is equivalent to `sim_regression(beta1 = 3, n = 30, beta0 = 2).</p>
 </div>
 <div id="revisiting-past-examples" class="section level3">
 <h3>Revisiting past examples</h3>
@@ -598,9 +600,10 @@ f(x = y)</code></pre>
 <ul>
 <li>There are chapters on functions in <a href="http://r4ds.had.co.nz/functions.html">R for Data Science</a> and <a href="http://adv-r.had.co.nz/Functions.html">Advanced R</a></li>
 <li>Jenny Bryan has a <a href="http://stat545.com/block011_write-your-own-function-01.html">three</a> <a href="http://stat545.com/block011_write-your-own-function-02.html">part</a> <a href="http://stat545.com/block011_write-your-own-function-03.html">series</a> on writing functions (each part is short)</li>
+<li>R Programming for Data Science has nice chapters on <a href="https://bookdown.org/rdpeng/rprogdatascience/functions.html">functions</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html">scoping</a></li>
 <li>The <a href="http://www.faqs.org/docs/artu/ch01s06.html">Basics of UNIX Philosophy</a>, linked to above, apply broadly to designing code</li>
 </ul>
-<p>The code that I produced working examples in lecture is <a href="ZZZZZ">here</a>.</p>
+<p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_iteration">here</a>.</p>
 </div>
 
 <br><br>
