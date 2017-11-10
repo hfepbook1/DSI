@@ -145,7 +145,7 @@ As exciting as it is to compute Z scores, let's start setting our sights higher.
 
 ```{r}
 sim_data = tibble(
-  x = runif(30),
+  x = rnorm(30, mean = 3, sd = 1),
   y = 2 + 3 * x + rnorm(30, 0, 1)
 )
 
@@ -163,7 +163,7 @@ Once you're satisfied, it's time to wrap things up in a function. I'd like to be
 sim_regression = function(n, beta0, beta1) {
   
   sim_data = tibble(
-    x = runif(n),
+    x = rnorm(n, mean = 3, sd = 1),
     y = beta0 + beta1 * x + rnorm(n, 0, 1)
   )
   

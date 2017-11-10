@@ -486,7 +486,7 @@ z_score(sample(c(TRUE, FALSE), 25, replace = TRUE))
 <h3>Multiple inputs</h3>
 <p>As exciting as it is to compute Z scores, let’s start setting our sights higher. I’d like to have a function that takes a given sample size and true simple linear regression line, simulates data from that model, and returns the estimated intercept and slope. I’ll start from the code below.</p>
 <pre class="r"><code>sim_data = tibble(
-  x = runif(30),
+  x = rnorm(30, mean = 3, sd = 1),
   y = 2 + 3 * x + rnorm(30, 0, 1)
 )
 
@@ -499,7 +499,7 @@ beta1_hat = coef(ls_fit)[2]</code></pre>
 <pre class="r"><code>sim_regression = function(n, beta0, beta1) {
   
   sim_data = tibble(
-    x = runif(n),
+    x = rnorm(n, mean = 3, sd = 1),
     y = beta0 + beta1 * x + rnorm(n, 0, 1)
   )
   
@@ -573,11 +573,11 @@ my_summary = function(x, summ_func) {
 }
 
 my_summary(x, sd)
-## [1] 0.8495832
+## [1] 0.8988712
 my_summary(x, IQR)
-## [1] 1.206669
+## [1] 1.271572
 my_summary(x, var)
-## [1] 0.7217916</code></pre>
+## [1] 0.8079694</code></pre>
 <p>This example is pretty trivial – you could just apply those functions directly to <code>x</code> and skip the hassle – but in many cases the idea of passing functions as arguments is really powerful. As an example, remember that you can reorder factors according to different summaries in <code>fct_reorder</code>!</p>
 </div>
 <div id="scoping-and-names" class="section level3">
