@@ -367,7 +367,7 @@ div.tocify {
 </div>
 
 
-<p>text</p>
+<p>We’ve noted that functions are helpful when you repeat code more than twice; we’ve also noted that a lot of statistical methods involve doing the same thing a large number of times. Putting those together motivates a careful approach to iteratation; conducting simulations is a very relevant example.</p>
 <p>This is the second module in the <a href="topic_iteration.html">Iteration</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C7WC2UPT7">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
@@ -379,7 +379,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>For this topic, I’ll create a directory called <code>example_data_wrangling_ii</code> and take the steps to make it a public GitHub repo. I’ll write code for today’s content in a new R Markdown document called <code>functions.Rmd</code>, and I’m going to load the usual packages.</p>
+<p>I’ll write code for today’s content in a new R Markdown document called <code>iteration_and_simulation.Rmd</code> in the <code>example_iteration</code> directory / repo. The code chunk below loads the usual packages.</p>
 <pre class="r"><code>library(tidyverse)
 ## Loading tidyverse: ggplot2
 ## Loading tidyverse: tibble
@@ -392,76 +392,321 @@ div.tocify {
 ## lag():    dplyr, stats
 
 theme_set(theme_bw())
-theme_update(legend.position = &quot;bottom&quot;)</code></pre>
+theme_update(legend.position = &quot;bottom&quot;)
+
+set.seed(1)</code></pre>
 <div id="for-loop-approach" class="section level3">
 <h3><code>for</code> loop approach</h3>
-<p>do simulation 1000 times</p>
-<p>do simulation for 4 sample sizes</p>
+<p>I’m going to start with a pretty simple dataframe.</p>
+<pre class="r"><code>df = data_frame(
+  a = rnorm(20),
+  b = rnorm(20),
+  c = rnorm(20),
+  d = rnorm(20)
+)</code></pre>
+<p>Suppose I wanted to apply my simple <code>z_score</code> function from <a href="writing_functions.html">writing functions</a> to each column of this dataframe. For completeness, that function is below.</p>
+<pre class="r"><code>z_score = function(x) {
+  
+  z = mean(x) / sd(x)
+  z
+  
+}</code></pre>
+<p>A direct way to do this application is the following.</p>
+<pre class="r"><code>z_score(df[[1]])
+## [1] 0.208621
+z_score(df[[2]])
+## [1] -0.007426873
+z_score(df[[3]])
+## [1] 0.1714126
+z_score(df[[4]])
+## [1] 0.09686769</code></pre>
+<p>But now we’ve broken our “don’t repeat code” rule! This a problem for loops can solve.</p>
+<p>Below I define an output list with the same number of entries as my target dataframe; a sequence to iterate over; and a for loop body that applies the <code>z_score</code> function for each sequence element and saves the result.</p>
+<pre class="r"><code>output = vector(&quot;list&quot;, length = 4)
+
+for (i in 1:4) {
+  output[[i]] = z_score(df[[i]])
+}</code></pre>
+<p>This is already cleaner, and will make life easier the larger our sequence gets.</p>
 </div>
-<div id="rerun" class="section level3">
-<h3>rerun</h3>
-<p>get a little fancier – think about regression.</p>
-<pre class="r"><code>sim_regression = function(n, beta0, beta1) {
-  
-  sim_data = tibble(
-    x = runif(n),
-    y = beta0 + beta1 * x + rnorm(n, 0, 1)
-  )
-  
-  ls_fit = lm(y ~ x, data = sim_data)
-  
-  tibble(
-    beta0_hat = coef(ls_fit)[1],
-    beta1_hat = coef(ls_fit)[2]
-  )
+<div id="maps" class="section level3">
+<h3>maps</h3>
+<p>A criticism of for loops is that there’s a lot of overhead – you have to define your output, there’s the for loop bookkeeping to do, etc – that distracts from the purpose of the code. In this case, we want to apply <code>z_score</code> to each column of <code>df</code>, but that’s down inside the loop.</p>
+<p>The <code>map</code> functions in <code>purrr</code> try to make the purpose of your code clear. Compare the loop above to the line below.</p>
+<pre class="r"><code>output = map(df, z_score)</code></pre>
+<p>The first argument to <code>map</code> is the vector or list we want to iterate over; the second argument is the function we want to apply each time. This line will produce the same output as the loop above, but (once you’re used to maps …) is clearer and easier to understand.</p>
+<p>This kind of code is why we pointed out that functions can be passed as arguments to other functions. Throughout, the second argument to <code>map</code> is a function we just wrote. To see how powerful this can be, suppose we wanted to apply a different function, say <code>median</code>, to each column of <code>df</code>. The chunk below includes both the loop approach and the map approach.</p>
+<pre class="r"><code>output = vector(&quot;list&quot;, length = 4)
+
+for (i in 1:4) {
+  output[[i]] = median(df[[i]])
 }
 
-
-sim_regression(30, 2, 3)
-## # A tibble: 1 x 2
-##   beta0_hat beta1_hat
-##       &lt;dbl&gt;     &lt;dbl&gt;
-## 1  1.947513  3.022975</code></pre>
-</div>
-<div id="map" class="section level3">
-<h3>map</h3>
-</div>
-<div id="combine-rerun-and-map" class="section level3">
-<h3>combine rerun and map</h3>
+output = map(df, median)</code></pre>
+<p>Again the approaches produce the same <code>output</code>, but the <code>map</code> places the focus squarely on the function you want to apply by removing some of the bookkeeping.</p>
+<p>There are some useful variants if you know what kind of output you’re going to produce. Below we use <code>map_dbl</code> because <code>z_score</code> outputs a single numeric value each time; the result is a vector instead of a list.</p>
+<pre class="r"><code>output = map_dbl(df, z_score)</code></pre>
+<p>Let’s look at a case where the output isn’t a scalar; our modified <code>z_score</code> function is below.</p>
+<pre class="r"><code>z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop(&quot;argument x should be numeric&quot;)
+  } else if (length(x) == 1) {
+    stop(&quot;z-scores cannot be computed for length 1 vectors&quot;)
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  z = mean_x / sd_x
+  
+  data_frame(
+    mean = mean_x, 
+    sd = sd_x,
+    z = z
+  )
+}</code></pre>
+<p>We can apply this function to <code>df</code> using <code>map</code> to produce a list.</p>
+<pre class="r"><code>output = map(df, z_score)</code></pre>
+<p>Since we know this produces a df, though, we can use the output-specific <code>map_df</code>.</p>
+<pre class="r"><code>output = map_df(df, z_score)</code></pre>
+<p>This is pretty handy when your map statement is part of a longer chain of piped commands.</p>
 </div>
 <div id="revisiting-past-examples" class="section level3">
 <h3>Revisiting past examples</h3>
 <div id="scraping-amazon" class="section level4">
 <h4>Scraping Amazon</h4>
 <p>In <a href="reading_data_from_the_web.html">reading data from the web</a>, we wrote code that allowed us to scrape information in Amazon reviews. That code is below.</p>
-<pre class="r"><code>url = &quot;https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&amp;reviewerType=all_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+<pre class="r"><code>library(rvest)
+library(stringr)
 
-toothbrush_html = read_html(url)
+read_page_reviews &lt;- function(url) {
+  
+  h = read_html(url)
+  
+  title = h %&gt;%
+    html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+    html_text()
+  
+  stars = h %&gt;%
+    html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+    html_text() %&gt;%
+    str_extract(&quot;\\d&quot;) %&gt;%
+    as.numeric()
+  
+  text = h %&gt;%
+    html_nodes(&quot;.review-data:nth-child(4)&quot;) %&gt;%
+    html_text()
+  
+  data_frame(title, stars, text)
+}
 
-review_titles = toothbrush_html %&gt;%
-  html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
-  html_text()
+url_base = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
+urls = str_c(url_base, 1:10)
 
-review_stars = toothbrush_html %&gt;%
-  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
-  html_text()
-
-reviews = data_frame(
-  title = review_titles,
-  stars = review_stars
-)</code></pre>
-<p>Let’s write a quick function to scrape review information for any URL to an Amazon review page. Hint: this code appears in <a href="homework_5.html">Homework 5</a> …</p>
+dynamite_reviews = map_df(urls, read_page_reviews)</code></pre>
+<p>Hopefully this code is now 100% clear!</p>
 </div>
+<div id="lotr" class="section level4">
+<h4>LoTR</h4>
+<p>The LoTR data is a bit trickier. A version of the function we wrote last class is below.</p>
+<pre class="r"><code>lotr_load_and_tidy = function(path, range, movie_name) {
+  
+  df = readxl::read_excel(path, range = range) %&gt;%
+    janitor::clean_names() %&gt;%
+    gather(key = sex, value = words, female:male) %&gt;%
+    mutate(race = tolower(race),
+           movie = movie_name)
+  
+  df
+  
+}</code></pre>
+<p>Can’t really using <code>map</code> directly, because there are two arguments we need to iterate over – <code>range</code> and <code>movie_name</code>. This is where <code>map2</code> becomes handy!</p>
+<pre class="r"><code>cell_ranges = list(&quot;B3:D6&quot;, &quot;F3:H6&quot;, &quot;J3:L6&quot;)
+movie_names = list(&quot;Fellowship&quot;, &quot;Two Towers&quot;, &quot;Return&quot;)
+
+lotr_tidy = map2_df(.x = cell_ranges, .y = movie_names, 
+                    ~lotr_load_and_tidy(path = &quot;./data/LotR_Words.xlsx&quot;,
+                                        range = .x,
+                                        movie_name = .y)) %&gt;%
+  select(movie, everything()) 
+
+lotr_tidy
+## # A tibble: 18 x 4
+##         movie   race    sex words
+##         &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+##  1 Fellowship    elf female  1229
+##  2 Fellowship hobbit female    14
+##  3 Fellowship    man female     0
+##  4 Fellowship    elf   male   971
+##  5 Fellowship hobbit   male  3644
+##  6 Fellowship    man   male  1995
+##  7 Two Towers    elf female   331
+##  8 Two Towers hobbit female     0
+##  9 Two Towers    man female   401
+## 10 Two Towers    elf   male   513
+## 11 Two Towers hobbit   male  2463
+## 12 Two Towers    man   male  3589
+## 13     Return    elf female   183
+## 14     Return hobbit female     2
+## 15     Return    man female   268
+## 16     Return    elf   male   510
+## 17     Return hobbit   male  2673
+## 18     Return    man   male  2459</code></pre>
+<p>That code is makes sure all the details are clear, but shorter versions are possible.</p>
+<pre class="r"><code>lotr_tidy = map2_df(cell_ranges, movie_names, 
+                    lotr_load_and_tidy,
+                    path = &quot;./data/LotR_Words.xlsx&quot;) %&gt;%
+  select(movie, everything()) </code></pre>
+<p>We can compare this to code we wrote in <a href="writing_functions.html">writing functions</a>, when we had given the <code>path</code> argument a default value.</p>
+<pre class="r"><code>bind_rows(
+  lotr_load_and_tidy(cell_range = &quot;B3:D6&quot;, movie_name = &quot;Fellowship&quot;),
+  lotr_load_and_tidy(cell_range = &quot;F3:H6&quot;, movie_name = &quot;Two Towers&quot;),
+  lotr_load_and_tidy(cell_range = &quot;J3:L6&quot;, movie_name = &quot;Return&quot;)
+)</code></pre>
+<p>In this case it’s not obvious which is better – using <code>map2_df</code> or three function calls inside <code>bind_rows</code> – and that happens a lot. No matter what, though, you should be able to write code either way so you have a choice instead of being constrained by your skillset!</p>
+</div>
+</div>
+<div id="clt" class="section level3">
+<h3>CLT</h3>
+<pre class="r"><code>output = vector(&quot;numeric&quot;, 1000)
+
+for (i in 1:1000) {
+  
+  output[i] = mean(rbinom(10, 1, .9))
+  
+}</code></pre>
+<pre class="r"><code>sim_func = function(n) {
+  mean(rbinom(n, 1, .9))
+}
+
+output = rerun(1000, sim_func(10))</code></pre>
+</div>
+<div id="simulation" class="section level3">
+<h3>simulation</h3>
+<p>get a little fancier – think about regression.</p>
+<pre class="r"><code>sim_regression = function(n, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = 3, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    n = n,
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}</code></pre>
+</div>
+<div id="map" class="section level3">
+<h3>map</h3>
+<pre class="r"><code>rerun(10, sim_regression(30, 2, 3)) %&gt;% 
+  bind_rows()
+## # A tibble: 10 x 3
+##        n beta0_hat beta1_hat
+##    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1    30 2.0868262  3.046708
+##  2    30 1.5863609  3.248743
+##  3    30 2.1159298  2.896521
+##  4    30 1.9029807  3.096629
+##  5    30 2.5686047  2.813989
+##  6    30 0.8810587  3.353839
+##  7    30 2.9522524  2.721348
+##  8    30 1.9010164  3.057557
+##  9    30 1.8655324  2.990528
+## 10    30 2.0273088  2.989092</code></pre>
+<pre class="r"><code>simulate_n = function(n) {
+  rerun(10, sim_regression(n, 2, 3)) %&gt;% 
+    bind_rows()
+}
+
+
+map_df(c(30, 60, 120), simulate_n) %&gt;% 
+  mutate(n = as.factor(n)) %&gt;% 
+  ggplot(aes(x = n, y = beta0_hat)) + geom_violin()</code></pre>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
+<pre class="r"><code>simulate_n = function(n_rep, n_samp, beta0, beta1) {
+  rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %&gt;% 
+    bind_rows()
+}
+
+sim_results = 
+  map_df(c(30, 60, 120), 
+         simulate_n,
+         n_rep = 1000, beta0 = 2, beta1 = 3) 
+
+sim_results %&gt;% 
+  mutate(n = as.factor(n)) %&gt;% 
+  ggplot(aes(x = n, y = beta1_hat, color = n)) + 
+  geom_violin()</code></pre>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
+<pre class="r"><code>
+sim_results %&gt;% 
+  mutate(n = as.factor(n)) %&gt;% 
+  ggplot(aes(x = beta0_hat, y = beta1_hat, color = n)) + 
+  geom_point() + 
+  facet_grid(~n)</code></pre>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-23-2.png" width="90%" /></p>
+<pre class="r"><code>
+sim_results %&gt;% 
+  group_by(n) %&gt;% 
+  summarize(mean_b0 = mean(beta0_hat),
+            var_b0 = var(beta0_hat),
+            mean_b1 = mean(beta1_hat),
+            var_b1 = var(beta1_hat)) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">n</th>
+<th align="right">mean_b0</th>
+<th align="right">var_b0</th>
+<th align="right">mean_b1</th>
+<th align="right">var_b1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">30</td>
+<td align="right">2.020355</td>
+<td align="right">0.3827800</td>
+<td align="right">2.991305</td>
+<td align="right">0.0383770</td>
+</tr>
+<tr class="even">
+<td align="right">60</td>
+<td align="right">2.008985</td>
+<td align="right">0.1678660</td>
+<td align="right">2.999674</td>
+<td align="right">0.0170015</td>
+</tr>
+<tr class="odd">
+<td align="right">120</td>
+<td align="right">2.020015</td>
+<td align="right">0.0809053</td>
+<td align="right">2.994175</td>
+<td align="right">0.0078940</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
 <ul>
 <li><a href="http://r4ds.had.co.nz/iteration.html" class="uri">http://r4ds.had.co.nz/iteration.html</a></li>
+<li><a href="https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops" class="uri">https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html</a></li>
 <li><a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply" class="uri">https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply</a></li>
 <li><a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></li>
 </ul>
-<p>The code that I produced working examples in lecture is <a href="ZZZZZ">here</a>.</p>
+<p>One of the best ways to learn about writing functions is to see what other people have done and try to figure it out. Take a look at a couple of examples we’ve seen in passing …</p>
+<ul>
+<li>This <a href="https://juliasilge.shinyapps.io/power-app/">app</a> for understanding power</li>
+<li>Check out the <a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R">R file</a> used to create the <code>starwars</code> dataset (in the <code>tidyverse</code>) using the <a href="https://swapi.co">Star Wars API</a></li>
+</ul>
+<p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_iteration">here</a>.</p>
 </div>
 
 <br><br>

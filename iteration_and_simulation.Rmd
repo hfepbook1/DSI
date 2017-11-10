@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-text
+We've noted that functions are helpful when you repeat code more than twice; we've also noted that a lot of statistical methods involve doing the same thing a large number of times. Putting those together motivates a careful approach to iteratation; conducting simulations is a very relevant example. 
 
 This is the second module in the [Iteration](topic_iteration.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7WC2UPT7).
 
@@ -35,43 +35,126 @@ library(tidyverse)
 
 theme_set(theme_bw())
 theme_update(legend.position = "bottom")
+
+set.seed(1)
 ```
 
 ### `for` loop approach
 
-do simulation 1000 times
-
-do simulation for 4 sample sizes
-
-### rerun
-
-get a little fancier -- think about regression.
+I'm going to start with a pretty simple dataframe. 
 
 ```{r}
-sim_regression = function(n, beta0, beta1) {
-  
-  sim_data = tibble(
-    x = runif(n),
-    y = beta0 + beta1 * x + rnorm(n, 0, 1)
-  )
-  
-  ls_fit = lm(y ~ x, data = sim_data)
-  
-  tibble(
-    beta0_hat = coef(ls_fit)[1],
-    beta1_hat = coef(ls_fit)[2]
-  )
-}
-
-
-sim_regression(30, 2, 3)
-
+df = data_frame(
+  a = rnorm(20),
+  b = rnorm(20),
+  c = rnorm(20),
+  d = rnorm(20)
+)
 ```
 
-### map
+Suppose I wanted to apply my simple `z_score` function from [writing functions](writing_functions.html) to each column of this dataframe. For completeness, that function is below. 
+
+```{r}
+z_score = function(x) {
+  
+  z = mean(x) / sd(x)
+  z
+  
+}
+```
+
+A direct way to do this application is the following.
+
+```{r}
+z_score(df[[1]])
+z_score(df[[2]])
+z_score(df[[3]])
+z_score(df[[4]])
+```
+
+But now we've broken our "don't repeat code" rule! This a problem for loops can solve.
+
+Below I define an output list with the same number of entries as my target dataframe; a sequence to iterate over; and a for loop body that applies the `z_score` function for each sequence element and saves the result.
+
+```{r}
+output = vector("list", length = 4)
+
+for (i in 1:4) {
+  output[[i]] = z_score(df[[i]])
+}
+```
+
+This is already cleaner, and will make life easier the larger our sequence gets.
+
+### maps
+
+A criticism of for loops is that there's a lot of overhead -- you have to define your output, there's the for loop bookkeeping to do, etc -- that distracts from the purpose of the code. In this case, we want to apply `z_score` to each column of `df`, but that's down inside the loop.
+
+The `map` functions in `purrr` try to make the purpose of your code clear. Compare the loop above to the line below.
+
+```{r}
+output = map(df, z_score)
+```
+
+The first argument to `map` is the vector or list we want to iterate over; the second argument is the function we want to apply each time. This line will produce the same output as the loop above, but (once you're used to maps ...) is clearer and easier to understand. 
+
+This kind of code is why we pointed out that functions can be passed as arguments to other functions. Throughout, the second argument to `map` is a function we just wrote. To see how powerful this can be, suppose we wanted to apply a different function, say `median`, to each column of `df`. The chunk below includes both the loop approach and the map approach.
+
+```{r}
+output = vector("list", length = 4)
+
+for (i in 1:4) {
+  output[[i]] = median(df[[i]])
+}
+
+output = map(df, median)
+```
+
+Again the approaches produce the same `output`, but the `map` places the focus squarely on the function you want to apply by removing some of the bookkeeping. 
+
+There are some useful variants if you know what kind of output you're going to produce. Below we use `map_dbl` because `z_score` outputs a single numeric value each time; the result is a vector instead of a list.
+
+```{r}
+output = map_dbl(df, z_score)
+```
 
 
-### combine rerun and map
+Let's look at a case where the output isn't a scalar; our modified `z_score` function is below.
+
+```{r}
+z_score = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("z-scores cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  z = mean_x / sd_x
+  
+  data_frame(
+    mean = mean_x, 
+    sd = sd_x,
+    z = z
+  )
+}
+```
+
+We can apply this function to `df` using `map` to produce a list.
+
+```{r}
+output = map(df, z_score)
+```
+
+Since we know this produces a df, though, we can use the output-specific `map_df`. 
+
+```{r}
+output = map_df(df, z_score)
+```
+
+This is pretty handy when your map statement is part of a longer chain of piped commands. 
 
 ### Revisiting past examples
 
@@ -80,32 +163,203 @@ sim_regression(30, 2, 3)
 In [reading data from the web](reading_data_from_the_web.html), we wrote code that allowed us to scrape information in Amazon reviews. That code is below.
 
 ```{r, eval = FALSE}
-url = "https://www.amazon.com/Philips-Sonicare-rechargeable-toothbrush-HX6211/product-reviews/B00YAR7ZFM/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&reviewerType=all_reviews&sortBy=recent&pageNumber=1"
+library(rvest)
+library(stringr)
 
-toothbrush_html = read_html(url)
+read_page_reviews <- function(url) {
+  
+  h = read_html(url)
+  
+  title = h %>%
+    html_nodes("#cm_cr-review_list .review-title") %>%
+    html_text()
+  
+  stars = h %>%
+    html_nodes("#cm_cr-review_list .review-rating") %>%
+    html_text() %>%
+    str_extract("\\d") %>%
+    as.numeric()
+  
+  text = h %>%
+    html_nodes(".review-data:nth-child(4)") %>%
+    html_text()
+  
+  data_frame(title, stars, text)
+}
 
-review_titles = toothbrush_html %>%
-  html_nodes("#cm_cr-review_list .review-title") %>%
-  html_text()
+url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
+urls = str_c(url_base, 1:10)
 
-review_stars = toothbrush_html %>%
-  html_nodes("#cm_cr-review_list .review-rating") %>%
-  html_text()
+dynamite_reviews = map_df(urls, read_page_reviews)
+```
 
-reviews = data_frame(
-  title = review_titles,
-  stars = review_stars
+Hopefully this code is now 100% clear!
+
+#### LoTR
+
+The LoTR data is a bit trickier. A version of the function we wrote last class is below. 
+
+```{r}
+lotr_load_and_tidy = function(path, range, movie_name) {
+  
+  df = readxl::read_excel(path, range = range) %>%
+    janitor::clean_names() %>%
+    gather(key = sex, value = words, female:male) %>%
+    mutate(race = tolower(race),
+           movie = movie_name)
+  
+  df
+  
+}
+```
+
+Can't really using `map` directly, because there are two arguments we need to iterate over -- `range` and `movie_name`. This is where `map2` becomes handy!
+
+```{r}
+cell_ranges = list("B3:D6", "F3:H6", "J3:L6")
+movie_names = list("Fellowship", "Two Towers", "Return")
+
+lotr_tidy = map2_df(.x = cell_ranges, .y = movie_names, 
+                    ~lotr_load_and_tidy(path = "./data/LotR_Words.xlsx",
+                                        range = .x,
+                                        movie_name = .y)) %>%
+  select(movie, everything()) 
+
+lotr_tidy
+```
+
+That code is makes sure all the details are clear, but shorter versions are possible. 
+
+```{r, eval = FALSE}
+lotr_tidy = map2_df(cell_ranges, movie_names, 
+                    lotr_load_and_tidy,
+                    path = "./data/LotR_Words.xlsx") %>%
+  select(movie, everything()) 
+```
+
+We can compare this to code we wrote in [writing functions](writing_functions.html), when we had given the `path` argument a default value.
+
+```{r, eval = FALSE}
+bind_rows(
+  lotr_load_and_tidy(cell_range = "B3:D6", movie_name = "Fellowship"),
+  lotr_load_and_tidy(cell_range = "F3:H6", movie_name = "Two Towers"),
+  lotr_load_and_tidy(cell_range = "J3:L6", movie_name = "Return")
 )
 ```
 
-Let's write a quick function to scrape review information for any URL to an Amazon review page. Hint: this code appears in [Homework 5](homework_5.html) ...
+In this case it's not obvious which is better -- using `map2_df` or three function calls inside `bind_rows` -- and that happens a lot. No matter what, though, you should be able to write code either way so you have a choice instead of being constrained by your skillset!
+
+### CLT
+
+
+
+```{r}
+output = vector("numeric", 1000)
+
+for (i in 1:1000) {
+  
+  output[i] = mean(rbinom(10, 1, .9))
+  
+}
+```
+
+```{r}
+sim_func = function(n) {
+  mean(rbinom(n, 1, .9))
+}
+
+output = rerun(1000, sim_func(10))
+```
+
+
+
+
+### simulation
+
+get a little fancier -- think about regression.
+
+```{r}
+sim_regression = function(n, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = 3, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    n = n,
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+```
+
+### map
+
+```{r}
+rerun(10, sim_regression(30, 2, 3)) %>% 
+  bind_rows()
+```
+
+```{r}
+simulate_n = function(n) {
+  rerun(10, sim_regression(n, 2, 3)) %>% 
+    bind_rows()
+}
+
+
+map_df(c(30, 60, 120), simulate_n) %>% 
+  mutate(n = as.factor(n)) %>% 
+  ggplot(aes(x = n, y = beta0_hat)) + geom_violin()
+```
+
+
+
+```{r}
+simulate_n = function(n_rep, n_samp, beta0, beta1) {
+  rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %>% 
+    bind_rows()
+}
+
+sim_results = 
+  map_df(c(30, 60, 120), 
+         simulate_n,
+         n_rep = 1000, beta0 = 2, beta1 = 3) 
+
+sim_results %>% 
+  mutate(n = as.factor(n)) %>% 
+  ggplot(aes(x = n, y = beta1_hat, color = n)) + 
+  geom_violin()
+
+sim_results %>% 
+  mutate(n = as.factor(n)) %>% 
+  ggplot(aes(x = beta0_hat, y = beta1_hat, color = n)) + 
+  geom_point() + 
+  facet_grid(~n)
+
+sim_results %>% 
+  group_by(n) %>% 
+  summarize(mean_b0 = mean(beta0_hat),
+            var_b0 = var(beta0_hat),
+            mean_b1 = mean(beta1_hat),
+            var_b1 = var(beta1_hat)) %>% 
+  knitr::kable()
+```
 
 
 ## Other materials
 
-
 * http://r4ds.had.co.nz/iteration.html
-* https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply 
+* https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops and https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html
+* https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply and https://twitter.com/drob/status/927217141505581057
 * https://jennybc.github.io/purrr-tutorial/
 
-The code that I produced working examples in lecture is [here](ZZZZZ).
+One of the best ways to learn about writing functions is to see what other people have done and try to figure it out. Take a look at a couple of examples we've seen in passing ...
+
+* This [app](https://juliasilge.shinyapps.io/power-app/) for understanding power
+* Check out the [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.co)
+
+
+The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_iteration).
