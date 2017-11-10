@@ -249,34 +249,13 @@ bind_rows(
 
 In this case it's not obvious which is better -- using `map2_df` or three function calls inside `bind_rows` -- and that happens a lot. No matter what, though, you should be able to write code either way so you have a choice instead of being constrained by your skillset!
 
-### CLT
 
 
+### Simulation: SLR for one $n$
 
-```{r}
-output = vector("numeric", 1000)
-
-for (i in 1:1000) {
-  
-  output[i] = mean(rbinom(10, 1, .9))
-  
-}
-```
-
-```{r}
-sim_func = function(n) {
-  mean(rbinom(n, 1, .9))
-}
-
-output = rerun(1000, sim_func(10))
-```
-
-
-
-
-### simulation
-
-get a little fancier -- think about regression.
+Last class we wrote a short function to simulate data from a simple linear regression, to fit the regression model, and to return estimates of regression coefficients. That is, we generate data from 
+$$ y_i = \beta_0 + \beta_1 x_i + \epsilon_i $$
+for subjects $1 \leq i \leq n$ with $\epsilon_i \sim N[0,1]$ and return estimates $\hat{\beta}_0, \hat{\beta}_1$. That function is below. 
 
 ```{r}
 sim_regression = function(n, beta0, beta1) {
@@ -296,56 +275,112 @@ sim_regression = function(n, beta0, beta1) {
 }
 ```
 
-### map
+Important statistical properties of estimates $\hat{\beta}_0, \hat{\beta}_1$ are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates should follow a known distribution:
+
+$$ \beta_0 \frac{a}{b} \mbox{ and } \beta_1 \sim \frac{a}{b} $$
+
+In the real world, drawing samples is time consuming and costly, so "repeated sampling" remains largely conceptual. On a computer, though, drawing samples is pretty easy. That makes _simulation_ an appealing way to examine the statistical properties of your estimators. 
+
+Let's run `sim_regression()` 100 times to see the effect of randomness in $x$ and $\epsilon$ on estimates $\hat{\beta}_0, \hat{\beta}_1$.
 
 ```{r}
-rerun(10, sim_regression(30, 2, 3)) %>% 
+output = vector("list", 100)
+
+for (i in 1:100) {
+  output[[i]] = sim_regression(30, 2, 3)
+}
+
+sim_results = bind_rows(output)
+```
+
+We can make some quick plots and compute some summaries.
+
+```{r}
+sim_results %>% 
+  ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
+  geom_point()
+
+sim_results %>% 
+  gather(key = parameter, value = estimate, beta0_hat:beta1_hat) %>% 
+  group_by(parameter) %>% 
+  summarize(emp_mean = mean(estimate),
+            emp_var = var(estimate)) %>% 
+  knitr::kable(digits = 3)
+```
+
+This is **_great_**! We can learn things about how our estimates are distributed under our simulation scenario, and compare empirical results to theoretical ones. Again, this is why simulations are such a powerful tool.
+
+Taking a look at the for loop we used to create these results, you might notice that the sequence is used to keep track of the output but doesn't effect the computation performed. In cases like these, the `purrr::rerun` is very handy. 
+
+```{r}
+sim_results = rerun(100, sim_regression(30, 2, 3)) %>% 
   bind_rows()
 ```
 
+As with `map`, we've replaced a for loop with a segment of code that makes our purpose much more transparent; both approaches give the same results. 
+
+### Simulation: SLR for several $n$s
+
+Sample size makes a huge difference on the variance of estimates in the SLR (and pretty much everywhere else). Let's try to clarify that effect through simulating at a few sample sizes. 
+
+I'll start this process with a for loop around the code I established above using `rerun` (I could start from scratch by nesting one for loop in another for loop, but let's not). 
+
 ```{r}
-simulate_n = function(n) {
-  rerun(10, sim_regression(n, 2, 3)) %>% 
-    bind_rows()
+n_samp = list(30, 60, 120, 240)
+output = vector("list", length = 4)
+
+for (i in 1:4) {
+  output[[i]] = rerun(100, sim_regression(n_samp[[i]], 2, 3)) %>% 
+    bind_rows
 }
-
-
-map_df(c(30, 60, 120), simulate_n) %>% 
-  mutate(n = as.factor(n)) %>% 
-  ggplot(aes(x = n, y = beta0_hat)) + geom_violin()
 ```
 
-
+After this loop, `output` is a list of 4 data frames; each data frame contains the results of 100 simulations at different sample sizes. Before we spend time looking at the results of simulation, let's recast this using `map`.
 
 ```{r}
 simulate_n = function(n_rep, n_samp, beta0, beta1) {
+  
   rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %>% 
     bind_rows()
+  
 }
 
 sim_results = 
-  map_df(c(30, 60, 120), 
-         simulate_n,
-         n_rep = 1000, beta0 = 2, beta1 = 3) 
+  map_df(c(30, 60, 120, 240), simulate_n,
+         n_rep = 100, beta0 = 2, beta1 = 3) 
+```
+
+
+Let's take a look at what we've accomplished in our simulations! First I'll take a look at the distribution of slope estimates across sample sizes. 
+
+```{r}
+sim_results = bind_rows(output)
 
 sim_results %>% 
   mutate(n = as.factor(n)) %>% 
   ggplot(aes(x = n, y = beta1_hat, color = n)) + 
   geom_violin()
+```
 
+Next, I'll look at the bivariate distribution of intercept and slope estimates across sample sizes.
+
+```{r}
 sim_results %>% 
   mutate(n = as.factor(n)) %>% 
   ggplot(aes(x = beta0_hat, y = beta1_hat, color = n)) + 
   geom_point() + 
   facet_grid(~n)
+```
 
+Lastly I'll look at the empirical mean and variance of these estimates.
+
+```{r}
 sim_results %>% 
-  group_by(n) %>% 
-  summarize(mean_b0 = mean(beta0_hat),
-            var_b0 = var(beta0_hat),
-            mean_b1 = mean(beta1_hat),
-            var_b1 = var(beta1_hat)) %>% 
-  knitr::kable()
+  gather(key = parameter, value = estimate, beta0_hat:beta1_hat) %>% 
+  group_by(parameter, n) %>% 
+  summarize(emp_mean = mean(estimate),
+            emp_var = var(estimate)) %>% 
+  knitr::kable(digits = 3)
 ```
 
 

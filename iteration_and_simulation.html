@@ -566,24 +566,9 @@ lotr_tidy
 <p>In this case it’s not obvious which is better – using <code>map2_df</code> or three function calls inside <code>bind_rows</code> – and that happens a lot. No matter what, though, you should be able to write code either way so you have a choice instead of being constrained by your skillset!</p>
 </div>
 </div>
-<div id="clt" class="section level3">
-<h3>CLT</h3>
-<pre class="r"><code>output = vector(&quot;numeric&quot;, 1000)
-
-for (i in 1:1000) {
-  
-  output[i] = mean(rbinom(10, 1, .9))
-  
-}</code></pre>
-<pre class="r"><code>sim_func = function(n) {
-  mean(rbinom(n, 1, .9))
-}
-
-output = rerun(1000, sim_func(10))</code></pre>
-</div>
-<div id="simulation" class="section level3">
-<h3>simulation</h3>
-<p>get a little fancier – think about regression.</p>
+<div id="simulation-slr-for-one-n" class="section level3">
+<h3>Simulation: SLR for one <span class="math inline">\(n\)</span></h3>
+<p>Last class we wrote a short function to simulate data from a simple linear regression, to fit the regression model, and to return estimates of regression coefficients. That is, we generate data from <span class="math display">\[ y_i = \beta_0 + \beta_1 x_i + \epsilon_i \]</span> for subjects <span class="math inline">\(1 \leq i \leq n\)</span> with <span class="math inline">\(\epsilon_i \sim N[0,1]\)</span> and return estimates <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span>. That function is below.</p>
 <pre class="r"><code>sim_regression = function(n, beta0, beta1) {
   
   sim_data = tibble(
@@ -599,95 +584,157 @@ output = rerun(1000, sim_func(10))</code></pre>
     beta1_hat = coef(ls_fit)[2]
   )
 }</code></pre>
-</div>
-<div id="map" class="section level3">
-<h3>map</h3>
-<pre class="r"><code>rerun(10, sim_regression(30, 2, 3)) %&gt;% 
-  bind_rows()
-## # A tibble: 10 x 3
-##        n beta0_hat beta1_hat
-##    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1    30 2.0868262  3.046708
-##  2    30 1.5863609  3.248743
-##  3    30 2.1159298  2.896521
-##  4    30 1.9029807  3.096629
-##  5    30 2.5686047  2.813989
-##  6    30 0.8810587  3.353839
-##  7    30 2.9522524  2.721348
-##  8    30 1.9010164  3.057557
-##  9    30 1.8655324  2.990528
-## 10    30 2.0273088  2.989092</code></pre>
-<pre class="r"><code>simulate_n = function(n) {
-  rerun(10, sim_regression(n, 2, 3)) %&gt;% 
-    bind_rows()
+<p>Important statistical properties of estimates <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span> are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates should follow a known distribution:</p>
+<p><span class="math display">\[ \beta_0 \frac{a}{b} \mbox{ and } \beta_1 \sim \frac{a}{b} \]</span></p>
+<p>In the real world, drawing samples is time consuming and costly, so “repeated sampling” remains largely conceptual. On a computer, though, drawing samples is pretty easy. That makes <em>simulation</em> an appealing way to examine the statistical properties of your estimators.</p>
+<p>Let’s run <code>sim_regression()</code> 100 times to see the effect of randomness in <span class="math inline">\(x\)</span> and <span class="math inline">\(\epsilon\)</span> on estimates <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span>.</p>
+<pre class="r"><code>output = vector(&quot;list&quot;, 100)
+
+for (i in 1:100) {
+  output[[i]] = sim_regression(30, 2, 3)
 }
 
+sim_results = bind_rows(output)</code></pre>
+<p>We can make some quick plots and compute some summaries.</p>
+<pre class="r"><code>sim_results %&gt;% 
+  ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
+  geom_point()</code></pre>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-20-1.png" width="90%" /></p>
+<pre class="r"><code>
+sim_results %&gt;% 
+  gather(key = parameter, value = estimate, beta0_hat:beta1_hat) %&gt;% 
+  group_by(parameter) %&gt;% 
+  summarize(emp_mean = mean(estimate),
+            emp_var = var(estimate)) %&gt;% 
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">parameter</th>
+<th align="right">emp_mean</th>
+<th align="right">emp_var</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">beta0_hat</td>
+<td align="right">1.938</td>
+<td align="right">0.428</td>
+</tr>
+<tr class="even">
+<td align="left">beta1_hat</td>
+<td align="right">3.033</td>
+<td align="right">0.044</td>
+</tr>
+</tbody>
+</table>
+<p>This is <strong><em>great</em></strong>! We can learn things about how our estimates are distributed under our simulation scenario, and compare empirical results to theoretical ones. Again, this is why simulations are such a powerful tool.</p>
+<p>Taking a look at the for loop we used to create these results, you might notice that the sequence is used to keep track of the output but doesn’t effect the computation performed. In cases like these, the <code>purrr::rerun</code> is very handy.</p>
+<pre class="r"><code>sim_results = rerun(100, sim_regression(30, 2, 3)) %&gt;% 
+  bind_rows()</code></pre>
+<p>As with <code>map</code>, we’ve replaced a for loop with a segment of code that makes our purpose much more transparent; both approaches give the same results.</p>
+</div>
+<div id="simulation-slr-for-several-ns" class="section level3">
+<h3>Simulation: SLR for several <span class="math inline">\(n\)</span>s</h3>
+<p>Sample size makes a huge difference on the variance of estimates in the SLR (and pretty much everywhere else). Let’s try to clarify that effect through simulating at a few sample sizes.</p>
+<p>I’ll start this process with a for loop around the code I established above using <code>rerun</code> (I could start from scratch by nesting one for loop in another for loop, but let’s not).</p>
+<pre class="r"><code>n_samp = list(30, 60, 120, 240)
+output = vector(&quot;list&quot;, length = 4)
 
-map_df(c(30, 60, 120), simulate_n) %&gt;% 
-  mutate(n = as.factor(n)) %&gt;% 
-  ggplot(aes(x = n, y = beta0_hat)) + geom_violin()</code></pre>
-<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
+for (i in 1:4) {
+  output[[i]] = rerun(100, sim_regression(n_samp[[i]], 2, 3)) %&gt;% 
+    bind_rows
+}</code></pre>
+<p>After this loop, <code>output</code> is a list of 4 data frames; each data frame contains the results of 100 simulations at different sample sizes. Before we spend time looking at the results of simulation, let’s recast this using <code>map</code>.</p>
 <pre class="r"><code>simulate_n = function(n_rep, n_samp, beta0, beta1) {
+  
   rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %&gt;% 
     bind_rows()
+  
 }
 
 sim_results = 
-  map_df(c(30, 60, 120), 
-         simulate_n,
-         n_rep = 1000, beta0 = 2, beta1 = 3) 
+  map_df(c(30, 60, 120, 240), simulate_n,
+         n_rep = 100, beta0 = 2, beta1 = 3) </code></pre>
+<p>Let’s take a look at what we’ve accomplished in our simulations! First I’ll take a look at the distribution of slope estimates across sample sizes.</p>
+<pre class="r"><code>sim_results = bind_rows(output)
 
 sim_results %&gt;% 
   mutate(n = as.factor(n)) %&gt;% 
   ggplot(aes(x = n, y = beta1_hat, color = n)) + 
   geom_violin()</code></pre>
-<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
-<pre class="r"><code>
-sim_results %&gt;% 
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
+<p>Next, I’ll look at the bivariate distribution of intercept and slope estimates across sample sizes.</p>
+<pre class="r"><code>sim_results %&gt;% 
   mutate(n = as.factor(n)) %&gt;% 
   ggplot(aes(x = beta0_hat, y = beta1_hat, color = n)) + 
   geom_point() + 
   facet_grid(~n)</code></pre>
-<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-23-2.png" width="90%" /></p>
-<pre class="r"><code>
-sim_results %&gt;% 
-  group_by(n) %&gt;% 
-  summarize(mean_b0 = mean(beta0_hat),
-            var_b0 = var(beta0_hat),
-            mean_b1 = mean(beta1_hat),
-            var_b1 = var(beta1_hat)) %&gt;% 
-  knitr::kable()</code></pre>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
+<p>Lastly I’ll look at the empirical mean and variance of these estimates.</p>
+<pre class="r"><code>sim_results %&gt;% 
+  gather(key = parameter, value = estimate, beta0_hat:beta1_hat) %&gt;% 
+  group_by(parameter, n) %&gt;% 
+  summarize(emp_mean = mean(estimate),
+            emp_var = var(estimate)) %&gt;% 
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
+<th align="left">parameter</th>
 <th align="right">n</th>
-<th align="right">mean_b0</th>
-<th align="right">var_b0</th>
-<th align="right">mean_b1</th>
-<th align="right">var_b1</th>
+<th align="right">emp_mean</th>
+<th align="right">emp_var</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">beta0_hat</td>
 <td align="right">30</td>
-<td align="right">2.020355</td>
-<td align="right">0.3827800</td>
-<td align="right">2.991305</td>
-<td align="right">0.0383770</td>
+<td align="right">2.078</td>
+<td align="right">0.369</td>
 </tr>
 <tr class="even">
+<td align="left">beta0_hat</td>
 <td align="right">60</td>
-<td align="right">2.008985</td>
-<td align="right">0.1678660</td>
-<td align="right">2.999674</td>
-<td align="right">0.0170015</td>
+<td align="right">2.006</td>
+<td align="right">0.165</td>
 </tr>
 <tr class="odd">
+<td align="left">beta0_hat</td>
 <td align="right">120</td>
-<td align="right">2.020015</td>
-<td align="right">0.0809053</td>
-<td align="right">2.994175</td>
-<td align="right">0.0078940</td>
+<td align="right">2.026</td>
+<td align="right">0.069</td>
+</tr>
+<tr class="even">
+<td align="left">beta0_hat</td>
+<td align="right">240</td>
+<td align="right">1.995</td>
+<td align="right">0.038</td>
+</tr>
+<tr class="odd">
+<td align="left">beta1_hat</td>
+<td align="right">30</td>
+<td align="right">2.982</td>
+<td align="right">0.039</td>
+</tr>
+<tr class="even">
+<td align="left">beta1_hat</td>
+<td align="right">60</td>
+<td align="right">2.998</td>
+<td align="right">0.016</td>
+</tr>
+<tr class="odd">
+<td align="left">beta1_hat</td>
+<td align="right">120</td>
+<td align="right">2.991</td>
+<td align="right">0.007</td>
+</tr>
+<tr class="even">
+<td align="left">beta1_hat</td>
+<td align="right">240</td>
+<td align="right">3.004</td>
+<td align="right">0.004</td>
 </tr>
 </tbody>
 </table>
@@ -698,7 +745,7 @@ sim_results %&gt;%
 <ul>
 <li><a href="http://r4ds.had.co.nz/iteration.html" class="uri">http://r4ds.had.co.nz/iteration.html</a></li>
 <li><a href="https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops" class="uri">https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html</a></li>
-<li><a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply" class="uri">https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply</a></li>
+<li><a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply" class="uri">https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply</a> and <a href="https://twitter.com/drob/status/927217141505581057" class="uri">https://twitter.com/drob/status/927217141505581057</a></li>
 <li><a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></li>
 </ul>
 <p>One of the best ways to learn about writing functions is to see what other people have done and try to figure it out. Take a look at a couple of examples we’ve seen in passing …</p>
