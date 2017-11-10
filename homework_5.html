@@ -416,7 +416,10 @@ div.tocify {
 <div id="problem-3" class="section level3">
 <h3>Problem 3</h3>
 <p>The code below will scrape the 1000 most recent reviews of the movie “Napoleon Dynamite” from Amazon. You can download the dataset this code produces <a href="./data/dynamite_reviews.csv">here</a> – scraping in this way can get your IP address flagged by Amazon’s algorithms that prevent large numbers of requests from a single computer.</p>
-<pre class="r"><code>read_page_reviews &lt;- function(url) {
+<pre class="r"><code>library(rvest)
+library(stringr)
+
+read_page_reviews &lt;- function(url) {
   
   h = read_html(url)
   
@@ -437,10 +440,10 @@ div.tocify {
   data_frame(title, stars, text)
 }
 
-url_base &lt;- &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
-urls &lt;- paste0(url_base, 1:100)
+url_base = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
+urls = stringr::str_c(url_base, 1:100)
 
-dynamite_reviews &lt;- map(urls, ~read_page_reviews(.x)) %&gt;% 
+dynamite_reviews = map(urls, read_page_reviews) %&gt;% 
   bind_rows</code></pre>
 <p>Inspect and describe the resulting dataset. What variables are included? Has the scraping been successful?</p>
 <p>Create a tidy text dataset from the above using the text in the reviews. Use words as the token and remove stop words.</p>

@@ -70,6 +70,9 @@ Fit a linear model that treats number of viewers in each episode as a response a
 The code below will scrape the 1000 most recent reviews of the movie "Napoleon Dynamite" from Amazon. You can download the dataset this code produces [here](./data/dynamite_reviews.csv) -- scraping in this way can get your IP address flagged by Amazon's algorithms that prevent large numbers of requests from a single computer.
 
 ```{r, eval = FALSE}
+library(rvest)
+library(stringr)
+
 read_page_reviews <- function(url) {
   
   h = read_html(url)
@@ -91,10 +94,10 @@ read_page_reviews <- function(url) {
   data_frame(title, stars, text)
 }
 
-url_base <- "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
-urls <- paste0(url_base, 1:100)
+url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
+urls = stringr::str_c(url_base, 1:100)
 
-dynamite_reviews <- map(urls, ~read_page_reviews(.x)) %>% 
+dynamite_reviews = map(urls, read_page_reviews) %>% 
   bind_rows
 ```
 
