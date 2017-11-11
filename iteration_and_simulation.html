@@ -572,7 +572,7 @@ lotr_tidy = bind_rows(output)</code></pre>
 <pre class="r"><code>sim_regression = function(n, beta0, beta1) {
   
   sim_data = tibble(
-    x = rnorm(n, mean = 3, sd = 1),
+    x = rnorm(n, mean = 1, sd = 1),
     y = beta0 + beta1 * x + rnorm(n, 0, 1)
   )
   
@@ -584,8 +584,9 @@ lotr_tidy = bind_rows(output)</code></pre>
     beta1_hat = coef(ls_fit)[2]
   )
 }</code></pre>
-<p>Important statistical properties of estimates <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span> are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates will follow a known distribution:</p>
-<p><span class="math display">\[ \beta_0 \frac{a}{b} \mbox{ and } \beta_1 \sim \frac{a}{b} \]</span></p>
+<p>Important statistical properties of estimates <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span> are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates will have a known mean and variance:</p>
+<p><span class="math display">\[ \hat{\beta}_0 \sim \left[\beta_0, \sigma^2 \left(\frac{1}{n} + \frac{\bar{x}}{\sum (x_i - \bar{x})^2}\right) \right] \mbox{ and } \hat{\beta}_1 \sim \left[\beta_1,\frac{\sigma^2}{\sum (x_i - \bar{x})^2} \right] \]</span></p>
+<p>(From our simulation design we also know that the estimates follow a Normal distribution, although that’s not guaranteed by least squares estimation.)</p>
 <p>In the real world, drawing samples is time consuming and costly, so “repeated sampling” remains conceptual. On a computer, though, drawing samples is pretty easy. That makes simulation an appealing way to examine the statistical properties of your estimators.</p>
 <p>Let’s run <code>sim_regression()</code> 100 times to see the effect of randomness in <span class="math inline">\(x\)</span> and <span class="math inline">\(\epsilon\)</span> on estimates <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span>.</p>
 <pre class="r"><code>output = vector(&quot;list&quot;, 100)
@@ -602,7 +603,7 @@ sim_results = bind_rows(output)</code></pre>
 <pre class="r"><code>sim_results %&gt;% 
   ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
   geom_point()</code></pre>
-<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-21-1.png" width="90%" /></p>
 <pre class="r"><code>
 sim_results %&gt;% 
   gather(key = parameter, value = estimate, beta0_hat:beta1_hat) %&gt;% 
@@ -621,8 +622,8 @@ sim_results %&gt;%
 <tbody>
 <tr class="odd">
 <td align="left">beta0_hat</td>
-<td align="right">1.903</td>
-<td align="right">0.389</td>
+<td align="right">1.955</td>
+<td align="right">0.069</td>
 </tr>
 <tr class="even">
 <td align="left">beta1_hat</td>
@@ -646,7 +647,7 @@ for (i in 1:4) {
     bind_rows
 }</code></pre>
 <p>After this loop, <code>output</code> is a list of 4 data frames; each data frame contains the results of 100 simulations at different sample sizes.</p>
-<p>Before we spend time looking at the results of simulation, let’s recast this using <code>map</code>. I want to use a single function in my call to <code>map_df</code>, so I’m going to write a wrapper for the call to <code>rerun</code> that allows me to change the parameters of the simulation (i.e. the argument <code>sim_regression</code>) and the number of simulation replicates (i.e. the first argument to <code>rerun</code>). Once I have this, I’ll call <code>map_df</code> to perform the complete simulation.</p>
+<p>Before we spend time looking at the results of the simulation, let’s recast this using <code>map</code>. I want to use a single function in my call to <code>map_df</code>, so I’m going to write a wrapper for the call to <code>rerun</code> that allows me to change the parameters of the simulation (i.e. the argument <code>sim_regression</code>) and the number of simulation replicates (i.e. the first argument to <code>rerun</code>). Once I have this, I’ll call <code>map_df</code> to perform the complete simulation.</p>
 <pre class="r"><code>simulate_n = function(n_rep, n_samp, beta0, beta1) {
   
   rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %&gt;% 
@@ -665,7 +666,8 @@ sim_results %&gt;%
          n = fct_relabel(n, relabel_function)) %&gt;% 
   ggplot(aes(x = n, y = beta1_hat, fill = n)) + 
   geom_violin()</code></pre>
-<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
+<p>These estimates are centered around the truth (3) for each sample size, and the width of the distribution shrinks as sample size grows.</p>
 <p>Next, I’ll look at the bivariate distribution of intercept and slope estimates across sample sizes.</p>
 <pre class="r"><code>sim_results %&gt;% 
   mutate(n = as.factor(n),
@@ -673,7 +675,8 @@ sim_results %&gt;%
   ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
   geom_point(alpha = .2) + 
   facet_grid(~n)</code></pre>
-<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-26-1.png" width="90%" /></p>
+<p><img src="iteration_and_simulation_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
+<p>The variability in the slope estimates was shown in the violin plot, but now we have a sense for the bivariate distribution of intercepts and slopes. These estimates seem to be correlated with each other; this is consistent with theoretical results describing the joint distribution of estimated regression coefficients.</p>
 <p>Lastly I’ll look at the empirical mean and variance of these estimates.</p>
 <pre class="r"><code>sim_results %&gt;% 
   gather(key = parameter, value = estimate, beta0_hat:beta1_hat) %&gt;% 
@@ -694,26 +697,26 @@ sim_results %&gt;%
 <tr class="odd">
 <td align="left">beta0_hat</td>
 <td align="right">30</td>
-<td align="right">1.988</td>
-<td align="right">0.334</td>
+<td align="right">2.000</td>
+<td align="right">0.065</td>
 </tr>
 <tr class="even">
 <td align="left">beta0_hat</td>
 <td align="right">60</td>
-<td align="right">2.014</td>
-<td align="right">0.192</td>
+<td align="right">2.007</td>
+<td align="right">0.038</td>
 </tr>
 <tr class="odd">
 <td align="left">beta0_hat</td>
 <td align="right">120</td>
-<td align="right">2.004</td>
-<td align="right">0.079</td>
+<td align="right">2.003</td>
+<td align="right">0.016</td>
 </tr>
 <tr class="even">
 <td align="left">beta0_hat</td>
 <td align="right">240</td>
-<td align="right">1.994</td>
-<td align="right">0.039</td>
+<td align="right">1.999</td>
+<td align="right">0.008</td>
 </tr>
 <tr class="odd">
 <td align="left">beta1_hat</td>
@@ -741,20 +744,22 @@ sim_results %&gt;%
 </tr>
 </tbody>
 </table>
+<p>These values are consistent with the formulas presented above. This kind of check is a useful way to support derivations (although they don’t serve as a formal proof in any way).</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
+<p>Iteration and simulation can be tricky – the readings below will help as you work through this!</p>
 <ul>
-<li><a href="http://r4ds.had.co.nz/iteration.html" class="uri">http://r4ds.had.co.nz/iteration.html</a></li>
-<li><a href="https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops" class="uri">https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html" class="uri">https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html</a></li>
-<li><a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply" class="uri">https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply</a> and <a href="https://twitter.com/drob/status/927217141505581057" class="uri">https://twitter.com/drob/status/927217141505581057</a></li>
-<li><a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></li>
+<li>The chapter on <a href="http://r4ds.had.co.nz/iteration.html">iteration</a> in R for Data Science has a useful treatment of iteration using loops and <code>map</code></li>
+<li>Jenny Bryan’s <a href="https://jennybc.github.io/purrr-tutorial/"><code>purrr</code> tutorial</a> has a lot of useful information and examples</li>
+<li>R Programming for Data Science has information on <a href="https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops">loops</a> and <a href="https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html">loop functions</a>; given Roger Peng’s tendency towards base R he focuses on <code>lapply</code> and others instead of <code>map</code></li>
+<li>This <a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply">question and response</a> on stack overflow explains why one might prefer <code>map</code> to <code>lapply</code></li>
 </ul>
-<p>One of the best ways to learn about writing functions is to see what other people have done and try to figure it out. Take a look at a couple of examples we’ve seen in passing …</p>
+<p>One of the best ways to learn about writing functions is to see what other people have done and try to figure out how it works. We’ve seen a couple of examples in other contexts that might be worth revising</p>
 <ul>
-<li>This <a href="https://juliasilge.shinyapps.io/power-app/">app</a> for understanding power</li>
-<li>Check out the <a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R">R file</a> used to create the <code>starwars</code> dataset (in the <code>tidyverse</code>) using the <a href="https://swapi.co">Star Wars API</a></li>
+<li>This <a href="https://juliasilge.shinyapps.io/power-app/">app</a> for understanding power uses <code>map</code> to generate power curves at various sample sizes</li>
+<li>The <a href="https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R">R file</a> used to create the <code>starwars</code> dataset (in the <code>tidyverse</code>) using the <a href="https://swapi.co">Star Wars API</a> processes list output (from the API) using several <code>map</code> variants</li>
 </ul>
 <p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_iteration">here</a>.</p>
 </div>

@@ -287,11 +287,11 @@ Last class we wrote a short function to simulate data from a simple linear regre
 $$ y_i = \beta_0 + \beta_1 x_i + \epsilon_i $$
 for subjects $1 \leq i \leq n$ with $\epsilon_i \sim N[0,1]$ and return estimates $\hat{\beta}_0, \hat{\beta}_1$. That function is below. 
 
-```{r}
+```{r sim_regression, cache = TRUE}
 sim_regression = function(n, beta0, beta1) {
   
   sim_data = tibble(
-    x = rnorm(n, mean = 3, sd = 1),
+    x = rnorm(n, mean = 1, sd = 1),
     y = beta0 + beta1 * x + rnorm(n, 0, 1)
   )
   
@@ -305,9 +305,11 @@ sim_regression = function(n, beta0, beta1) {
 }
 ```
 
-Important statistical properties of estimates $\hat{\beta}_0, \hat{\beta}_1$ are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates will follow a known distribution:
+Important statistical properties of estimates $\hat{\beta}_0, \hat{\beta}_1$ are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates will have a known mean and variance:
 
-$$ \beta_0 \frac{a}{b} \mbox{ and } \beta_1 \sim \frac{a}{b} $$
+$$ \hat{\beta}_0 \sim \left[\beta_0, \sigma^2 \left(\frac{1}{n} + \frac{\bar{x}}{\sum (x_i - \bar{x})^2}\right) \right] \mbox{ and } \hat{\beta}_1 \sim \left[\beta_1,\frac{\sigma^2}{\sum (x_i - \bar{x})^2} \right] $$
+
+(From our simulation design we also know that the estimates follow a Normal distribution, although that's not guaranteed by least squares estimation.)
 
 In the real world, drawing samples is time consuming and costly, so "repeated sampling" remains conceptual. On a computer, though, drawing samples is pretty easy. That makes simulation an appealing way to examine the statistical properties of your estimators. 
 
@@ -368,9 +370,9 @@ for (i in 1:4) {
 
 After this loop, `output` is a list of 4 data frames; each data frame contains the results of 100 simulations at different sample sizes. 
 
-Before we spend time looking at the results of simulation, let's recast this using `map`. I want to use a single function in my call to `map_df`, so I'm going to write a wrapper for the call to `rerun` that allows me to change the parameters of the simulation (i.e. the argument `sim_regression`) and the number of simulation replicates (i.e. the first argument to `rerun`). Once I have this, I'll call `map_df` to perform the complete simulation.
+Before we spend time looking at the results of the simulation, let's recast this using `map`. I want to use a single function in my call to `map_df`, so I'm going to write a wrapper for the call to `rerun` that allows me to change the parameters of the simulation (i.e. the argument `sim_regression`) and the number of simulation replicates (i.e. the first argument to `rerun`). Once I have this, I'll call `map_df` to perform the complete simulation.
 
-```{r, cache = TRUE}
+```{r, cache = TRUE, dependson=sim_regression}
 simulate_n = function(n_rep, n_samp, beta0, beta1) {
   
   rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %>% 
@@ -395,6 +397,8 @@ sim_results %>%
   geom_violin()
 ```
 
+These estimates are centered around the truth (3) for each sample size, and the width of the distribution shrinks as sample size grows. 
+
 Next, I'll look at the bivariate distribution of intercept and slope estimates across sample sizes.
 
 ```{r}
@@ -405,6 +409,8 @@ sim_results %>%
   geom_point(alpha = .2) + 
   facet_grid(~n)
 ```
+
+The variability in the slope estimates was shown in the violin plot, but now we have a sense for the bivariate distribution of intercepts and slopes. These estimates seem to be correlated with each other; this is consistent with theoretical results describing the joint distribution of estimated regression coefficients. 
 
 Lastly I'll look at the empirical mean and variance of these estimates.
 
@@ -417,19 +423,21 @@ sim_results %>%
   knitr::kable(digits = 3)
 ```
 
+These values are consistent with the formulas presented above. This kind of check is a useful way to support derivations (although they don't serve as a formal proof in any way).
 
 
 ## Other materials
 
-* http://r4ds.had.co.nz/iteration.html
-* https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops and https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html
-* https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply and https://twitter.com/drob/status/927217141505581057
-* https://jennybc.github.io/purrr-tutorial/
+Iteration and simulation can be tricky -- the readings below will help as you work through this!
 
-One of the best ways to learn about writing functions is to see what other people have done and try to figure it out. Take a look at a couple of examples we've seen in passing ...
+* The chapter on [iteration](http://r4ds.had.co.nz/iteration.html) in R for Data Science has a useful treatment of iteration using loops and `map`
+* Jenny Bryan's [`purrr` tutorial](https://jennybc.github.io/purrr-tutorial/) has a lot of useful information and examples
+* R Programming for Data Science has information on [loops](https://bookdown.org/rdpeng/rprogdatascience/control-structures.html#for-loops) and [loop functions](https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html); given Roger Peng's tendency towards base R he focuses on `lapply` and others instead of `map`
+* This [question and response](https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply) on stack overflow explains why one might prefer `map` to `lapply`
 
-* This [app](https://juliasilge.shinyapps.io/power-app/) for understanding power
-* Check out the [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.co)
+One of the best ways to learn about writing functions is to see what other people have done and try to figure out how it works. We've seen a couple of examples in other contexts that might be worth revising
 
+* This [app](https://juliasilge.shinyapps.io/power-app/) for understanding power uses `map` to generate power curves at various sample sizes
+* The [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.co) processes list output (from the API) using several `map` variants
 
 The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_iteration).
