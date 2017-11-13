@@ -23,7 +23,7 @@ All homework assignments are covered by the course [policy on collaboration](pol
     * [Assignment](homework_4.html)
 * Homework 5:  
     * Available 10/30 and due 11/10 by 5:00. 
-    * [Assignment](homework_5.html)
+    * [Assignment](homework_5.html) and [solution](resources/p8105_hw5_ajg2202.zip).
 * Homework 6:  
     * Available 11/8 and due 11/17 by 5:00. 
     * [Assignment](homework_6.html)
