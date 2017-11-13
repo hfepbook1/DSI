@@ -1,5 +1,5 @@
 ---
-title: "List Columns and Resampling"
+title: "List Columns and Bootstrapping"
 output:
   html_document: 
     toc: true
@@ -40,6 +40,112 @@ theme_update(legend.position = "bottom")
 
 
 things are gonna get weird.
+
+### nest weather data
+
+```{r weather_data_create, cache = TRUE}
+library(rnoaa)
+
+weather = 
+  meteo_pull_monitors(c("USW00094728", "USC00519397", "USS0023B17S"),
+                      var = c("PRCP", "TMIN", "TMAX"), 
+                      date_min = "2016-01-01",
+                      date_max = "2016-12-31") %>%
+  mutate(
+    name = recode(id, USW00094728 = "CentralPark_NY", 
+                      USC00519397 = "Waikiki_HA",
+                      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+
+```{r}
+weather = 
+  nest(weather, date:tmin)
+
+weather
+```
+
+
+```{r}
+weather$data[[1]]
+```
+
+### operations on list columns
+
+```{r}
+weather_lm = function(df) {
+  lm(tmax ~ tmin, data = df)
+}
+```
+
+```{r}
+weather_lm(weather$data[[1]])
+```
+
+```{r}
+map(weather$data, weather_lm)
+```
+
+```{r}
+weather = 
+  weather %>% 
+  mutate(models = map(data, weather_lm))
+
+weather
+```
+
+```{r}
+weather = 
+  weather %>% 
+  mutate(results = map(models, broom::tidy)) %>% 
+  select(-data, -models) %>% 
+  unnest()
+
+weather
+```
+
+
+### Instacart data
+
+same process but faster
+
+
+### bootstrapping
+
+Why bootstrap
+
+simulate data coming from a model with increasing variance
+
+point out that OLS estimates will understate variance. 
+
+bootstrapping can help here (note: WLS would also work, and might be better).
+
+### BS samples as list col
+
+```{r, eval = FALSE}
+boot_sample = function(df) {
+  sample_n(df)
+}
+
+boot_straps = data_frame(
+  strap_number = 1:100,
+  strap_sample = boot_sample(sim_data)
+)
+```
+
+fit models
+
+extract results
+
+make some plots
+
+### `bootstrap`
+
+Show how this works using `bootstrap()`
+
 
 
 ## Other materials
