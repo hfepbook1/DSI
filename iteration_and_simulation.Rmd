@@ -43,7 +43,7 @@ set.seed(1)
 
 ### `for` loops
 
-For this content, I'm going to start with the pretty simple data frame defined below.
+For this example, I'm going to start with the pretty simple data frame defined below.
 
 ```{r}
 df = data_frame(
@@ -74,9 +74,9 @@ z_score(df[[3]])
 z_score(df[[4]])
 ```
 
-But now we've broken our "don't repeat code more than twice" rule! Specifically, we've applied the same function / operation to the elements of a list sequentially. This is exactly the kind of problem for loops solve.
+But now we've broken our "don't repeat code more than twice" rule! Specifically, we've applied the same function / operation to the elements of a list sequentially. This is exactly the kind of code repetition for loops address
 
-Below I define an output list with the same number of entries as my target dataframe; a sequence to iterate over; and a for loop body that applies the `z_score` function for each sequence element and saves the result.
+Below, I define an output list with the same number of entries as my target dataframe; a sequence to iterate over; and a for loop body that applies the `z_score` function for each sequence element and saves the result.
 
 ```{r}
 output = vector("list", length = 4)
@@ -101,9 +101,9 @@ The `map` functions in `purrr` try to make the purpose of your code clear. Compa
 output = map(df, z_score)
 ```
 
-The first argument to `map` is the vector or list (or data frame) we want to iterate over, and the second argument is the function we want to apply to each element. The line above will produce the same output as the previous loop, but is clearer and easier to understand (once you're used to `map` ...). 
+The first argument to `map` is the vector /list (/ data frame) we want to iterate over, and the second argument is the function we want to apply to each element. The line above will produce the same output as the previous loop, but is clearer and easier to understand (once you're used to `map` ...). 
 
-This kind of code is why we pointed out in [writing functions](writing_functions.html) that functions can be passed as arguments to other functions. The second argument in `map(df, z_score)` is a function we just wrote. To see how powerful this can be, suppose we wanted to apply a different function, say `median`, to each column of `df`. The chunk below includes both the loop and the `map` approach.
+This code (using `map`) is why we pointed out in [writing functions](writing_functions.html) that functions can be passed as arguments to other functions. The second argument in `map(df, z_score)` is a function we just wrote. To see how powerful this can be, suppose we wanted to apply a different function, say `median`, to each column of `df`. The chunk below includes both the loop and the `map` approach.
 
 ```{r}
 output = vector("list", length = 4)
@@ -150,13 +150,13 @@ z_score = function(x) {
 }
 ```
 
-We can apply this function to `df` using `map` to produce a list.
+We can apply this version `z_score` to `df` using `map`; doing so will produce a list of data frames.
 
 ```{r}
 output = map(df, z_score)
 ```
 
-Since we know this produces a data frame, though, we can use the output-specific `map_df`. 
+Since we know `z_score` produces a data frame, though, we can use the output-specific `map_df`; this will produce a single data frame. 
 
 ```{r}
 output = map_df(df, z_score)
@@ -278,7 +278,7 @@ bind_rows(
 )
 ```
 
-In this case it's not obvious which is better -- using `map2_df` or three function calls inside `bind_rows` -- and that happens a lot. No matter what, though, you should be able to write code either way so you have a choice instead of being constrained by your skillset!
+In this case it's not obvious which coding approach is better -- using `map2_df` or three function calls inside `bind_rows` -- and that happens a lot. No matter what, though, you should be able to write code either way so you have a choice instead of being constrained by your skillset!
 
 
 ### Simulation: SLR for one $n$
@@ -306,14 +306,12 @@ sim_regression = function(n, beta0, beta1) {
 ```
 
 Important statistical properties of estimates $\hat{\beta}_0, \hat{\beta}_1$ are established under the conceptual framework of repeated sampling. If you could draw from a population over and over, your estimates will have a known mean and variance:
-
 $$ \hat{\beta}_0 \sim \left[\beta_0, \sigma^2 \left(\frac{1}{n} + \frac{\bar{x}}{\sum (x_i - \bar{x})^2}\right) \right] \mbox{ and } \hat{\beta}_1 \sim \left[\beta_1,\frac{\sigma^2}{\sum (x_i - \bar{x})^2} \right] $$
-
-(From our simulation design we also know that the estimates follow a Normal distribution, although that's not guaranteed by least squares estimation.)
+(Because our simulation design generates errors from a Normal distribution we also know that the estimates follow a Normal distribution, although that's not guaranteed by least squares estimation.)
 
 In the real world, drawing samples is time consuming and costly, so "repeated sampling" remains conceptual. On a computer, though, drawing samples is pretty easy. That makes simulation an appealing way to examine the statistical properties of your estimators. 
 
-Let's run `sim_regression()` 100 times to see the effect of randomness in $x$ and $\epsilon$ on estimates $\hat{\beta}_0, \hat{\beta}_1$.
+Let's run `sim_regression()` 100 times to see the effect of randomness in $\epsilon$ on estimates $\hat{\beta}_0, \hat{\beta}_1$.
 
 ```{r loop_sim, cache = TRUE}
 output = vector("list", 100)
@@ -325,14 +323,16 @@ for (i in 1:100) {
 sim_results = bind_rows(output)
 ```
 
-Taking a look at the for loop we used to create these results, you might notice that the sequence is used to keep track of the output but doesn't effect the computation performed. In cases like these, the `purrr::rerun` function is very handy. 
+Taking a look at the for loop we used to create these results, you might notice that the sequence is used to keep track of the output but doesn't affect the computation performed. In cases like these, the `purrr::rerun` function is very handy. 
 
 ```{r}
 sim_results = rerun(100, sim_regression(30, 2, 3)) %>% 
   bind_rows()
 ```
 
-We can make some quick plots and compute some summaries for our simulation results.
+Structurally, `rerun` is a lot like `map` -- the first argument defines the amount of iteration and the second argument is the function to use in each iteration step. As with `map`, we've replaced a for loop with a segment of code that makes our purpose much more transparent but both approaches give the same results. 
+
+Let's make some quick plots and compute some summaries for our simulation results.
 
 ```{r}
 sim_results %>% 
@@ -349,12 +349,10 @@ sim_results %>%
 
 This is **_great_**! We've seen how our estimates are distributed under our simulation scenario, and can compare empirical results to theoretical ones. In this way, we can build intution for fundamental statistical procedures under repeated sampling in a way that's not possible with single data sets. 
 
-As with `map`, we've replaced a for loop with a segment of code that makes our purpose much more transparent but both approaches give the same results. 
-
 
 ### Simulation: SLR for several $n$s
 
-Sample size makes a huge difference on the variance of estimates in the SLR (and pretty much everywhere else). Let's try to clarify that effect through simulating at a few sample sizes. 
+Sample size makes a huge difference on the variance of estimates in SLR (and pretty much every statistical method). Let's try to clarify that effect through simulating at a few sample sizes. 
 
 I'll start this process with a for loop around the code I established above using `rerun` (I could start from scratch by nesting one for loop in another for loop, but let's not). 
 
@@ -410,7 +408,7 @@ sim_results %>%
   facet_grid(~n)
 ```
 
-The variability in the slope estimates was shown in the violin plot, but now we have a sense for the bivariate distribution of intercepts and slopes. These estimates seem to be correlated with each other; this is consistent with theoretical results describing the joint distribution of estimated regression coefficients. 
+The variability in the slope estimates was shown in the violin plot, but now we have a sense for the bivariate distribution of intercepts and slopes. Estimates of the intercept and slope are correlated with each other; this is expected from theoretical results describing the joint distribution of estimated regression coefficients. 
 
 Lastly I'll look at the empirical mean and variance of these estimates.
 
