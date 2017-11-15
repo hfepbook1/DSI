@@ -382,12 +382,14 @@ div.tocify {
 <h2>Example</h2>
 <p>I’ll write code for today’s content in a new R Markdown document called <code>listcols_and_bootstrapping.Rmd</code> in the <code>example_iteration</code> directory / repo. The code chunk below loads the usual packages.</p>
 <pre class="r"><code>library(tidyverse)
-## Warning: package &#39;tidyverse&#39; was built under R version 3.4.2
-## ── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.0 ──
-## ✔ ggplot2 2.2.1     ✔ purrr   0.2.3
-## ✔ tibble  1.3.4     ✔ dplyr   0.7.3
-## ✔ tidyr   0.7.1     ✔ stringr 1.2.0
+## ── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.3.4     ✔ dplyr   0.7.4
+## ✔ tidyr   0.7.2     ✔ stringr 1.2.0
 ## ✔ readr   1.1.1     ✔ forcats 0.2.0
+## Warning: package &#39;tidyr&#39; was built under R version 3.4.2
+## Warning: package &#39;purrr&#39; was built under R version 3.4.2
+## Warning: package &#39;dplyr&#39; was built under R version 3.4.2
 ## ── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
@@ -396,10 +398,10 @@ theme_set(theme_bw())
 theme_update(legend.position = &quot;bottom&quot;)
 
 set.seed(1)</code></pre>
-<p>Things are gonna get a little weird.</p>
+<p>Things are gonna get a little weird…</p>
 <div id="weather-data" class="section level3">
 <h3>Weather data</h3>
-<p>Remember the weather data?</p>
+<p>We’ll start by revisiting the weather data from <a href="visualization.html">visualization</a>; these data consist of one year of observations from three monitoring stations. The code below pulls these data into R (using the <code>rnoaa</code> package, which interacts with the NOAA API).</p>
 <pre class="r"><code>library(rnoaa)
 
 weather = 
@@ -414,20 +416,22 @@ weather =
     tmin = tmin / 10,
     tmax = tmax / 10) %&gt;%
   select(name, id, everything())</code></pre>
-<p>The station name and id are constant across remaining observations. For that reason, we could organize a new DF with three rows – one for each station – and a column that includes everything else. This is what the nest function does.</p>
-<pre class="r"><code>weather = 
+<p>The station name and id are constant across the year’s temperature and precipitation data. For that reason, we can reorganize these data into a new data frame with a single row for each station. Weather data will be separated into three station-specific data frames, each of which is the data “observation” for the respective station.</p>
+<pre class="r"><code>weather_nest = 
   nest(weather, date:tmin)
 
-weather
+weather_nest
 ## # A tibble: 3 x 3
 ##             name          id               data
 ##            &lt;chr&gt;       &lt;chr&gt;             &lt;list&gt;
 ## 1 CentralPark_NY USW00094728 &lt;tibble [366 x 4]&gt;
 ## 2     Waikiki_HA USC00519397 &lt;tibble [366 x 4]&gt;
 ## 3   Waterhole_WA USS0023B17S &lt;tibble [366 x 4]&gt;</code></pre>
-<p>The <code>data</code> column is a <em>list column</em> – on it’s own, it’s a list. This is similar to the name column being a character column, becuase it contains a character vector.</p>
-<p>Inpecting the data column gives an idea of what’s going on.</p>
-<pre class="r"><code>weather$data
+<p>Here I’ve used <code>nest</code> to nest a specified column range within remaining variable values.</p>
+<p>The <code>name</code> column is a character column – if you pull this column from the <code>weather</code> data frame, the result is a character vector. Similarly, the <code>data</code> column is a <em>list column</em> – on it’s own, it’s a list.</p>
+<pre class="r"><code>weather_nest %&gt;% pull(name)
+## [1] &quot;CentralPark_NY&quot; &quot;Waikiki_HA&quot;     &quot;Waterhole_WA&quot;
+weather_nest %&gt;% pull(data)
 ## [[1]]
 ## # A tibble: 366 x 4
 ##          date  prcp  tmax  tmin
@@ -475,8 +479,8 @@ weather
 ##  9 2016-01-09     0   1.4  -4.5
 ## 10 2016-01-10     0   2.3  -3.8
 ## # ... with 356 more rows</code></pre>
-<p>We can also access specific entries in the list column, which (in this case) are data frames.</p>
-<pre class="r"><code>weather$data[[1]]
+<p>The list column really is a list, and will behave as such elsewhere in R. So, for example, you can examine the first list entry using usual list index procedures.</p>
+<pre class="r"><code>weather_nest$data[[1]]
 ## # A tibble: 366 x 4
 ##          date  prcp  tmax  tmin
 ##        &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -491,9 +495,8 @@ weather
 ##  9 2016-01-09     0   8.3   4.4
 ## 10 2016-01-10   457  15.0   4.4
 ## # ... with 356 more rows</code></pre>
-<p>Nesting columns can help with data organization / understanding by masking stuff you’re less concerned about right now and clarifying the things you are concerned about. It also simplifies the use of analytic approaches across levels of a higher variable.</p>
-<p>Also possible to reverse if your list col is contains data frames.</p>
-<pre class="r"><code>unnest(weather)
+<p>Of course, if you can <code>nest</code> data you should be able to <code>unnest</code> it as well, and you can (with the caveat that you’re unnesting a list column that contains a data frame).</p>
+<pre class="r"><code>unnest(weather_nest)
 ## # A tibble: 1,098 x 6
 ##              name          id       date  prcp  tmax  tmin
 ##             &lt;chr&gt;       &lt;chr&gt;     &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -508,16 +511,18 @@ weather
 ##  9 CentralPark_NY USW00094728 2016-01-09     0   8.3   4.4
 ## 10 CentralPark_NY USW00094728 2016-01-10   457  15.0   4.4
 ## # ... with 1,088 more rows</code></pre>
+<p>Nesting columns can help with data organization and comprehension by masking complexity you’re less concerned about right now and clarifying the things you are concerned about. In the weather data, it can be helpful to think of stations as the basic unit of observation, and daily weather recordings as a more granular level of observation. Nesting can also simplify the use of analytic approaches across levels of a higher variable.</p>
 </div>
 <div id="operations-on-list-columns" class="section level3">
-<h3>operations on list columns</h3>
-<p>It would be great to be able to manipulate list columns, but usual operations (like <code>mean</code> or <code>recode</code>) often don’t apply to the entries in a list column.</p>
-<p>write a quick function</p>
+<h3>Operations on list columns</h3>
+<p>You will need to be able to manipulate list columns, but usual operations for columns that might appear in <code>mutate</code> (like <code>mean</code> or <code>recode</code>) often don’t apply to the entries in a list column.</p>
+<p>Instead, recognizing list columns as <strong><em>list</em></strong> columns motivates an approach for working with nested data frames.</p>
+<p>Suppose we want to fit the simple linear regression relating <code>tmax</code> to <code>tmin</code> for each station-specific data frame. First I’ll write a quick function that takes a data frame as the sole argument to fit this model.</p>
 <pre class="r"><code>weather_lm = function(df) {
   lm(tmax ~ tmin, data = df)
 }</code></pre>
-<p>try it on one df</p>
-<pre class="r"><code>weather_lm(weather$data[[1]])
+<p>Let’s make sure this works on a single data frame.</p>
+<pre class="r"><code>weather_lm(weather_nest$data[[1]])
 ## 
 ## Call:
 ## lm(formula = tmax ~ tmin, data = df)
@@ -525,8 +530,8 @@ weather
 ## Coefficients:
 ## (Intercept)         tmin  
 ##       7.779        1.045</code></pre>
-<p>use map to apply it everywhere</p>
-<pre class="r"><code>map(weather$data, weather_lm)
+<p>Great! Keeping in mind that <code>weather$data</code> is a <strong><em>list</em></strong>, we can apply our <code>weather_lm</code> function to each data frame using <code>map</code>.</p>
+<pre class="r"><code>map(weather_nest$data, weather_lm)
 ## [[1]]
 ## 
 ## Call:
@@ -555,8 +560,8 @@ weather
 ## Coefficients:
 ## (Intercept)         tmin  
 ##       6.851        1.245</code></pre>
-<p>note you can use an “anonymous” function using <code>map</code>’s syntax.</p>
-<pre class="r"><code>map(weather$data, ~lm(tmax ~ tmin, data = .x))
+<p>I’ll also note that you can avoid the creation of a dedicated function using <code>map</code>’s syntax for “anonymous” (i.e. not named and saved) functions.</p>
+<pre class="r"><code>map(weather_nest$data, ~lm(tmax ~ tmin, data = .x))
 ## [[1]]
 ## 
 ## Call:
@@ -585,33 +590,39 @@ weather
 ## Coefficients:
 ## (Intercept)         tmin  
 ##       6.851        1.245</code></pre>
-<p>result of map is a list; can store results as a new list column.</p>
-<pre class="r"><code>weather = 
-  weather %&gt;% 
+</div>
+<div id="list-columns-for-objects" class="section level3">
+<h3>List columns for objects</h3>
+<p>The <code>map</code> function returns a <em>list</em>; I guess we could store the results as a new <strong><em>list column</em></strong> … !!!</p>
+<p>We’ve been using <code>mutate</code> to define a new variable in a data frame, especially one that is a function of an existing variable. That’s exactly what we will keep doing.</p>
+<pre class="r"><code>weather_nest = 
+  weather_nest %&gt;% 
   mutate(models = map(data, weather_lm))
 
-weather
+weather_nest
 ## # A tibble: 3 x 4
 ##             name          id               data   models
 ##            &lt;chr&gt;       &lt;chr&gt;             &lt;list&gt;   &lt;list&gt;
 ## 1 CentralPark_NY USW00094728 &lt;tibble [366 x 4]&gt; &lt;S3: lm&gt;
 ## 2     Waikiki_HA USC00519397 &lt;tibble [366 x 4]&gt; &lt;S3: lm&gt;
 ## 3   Waterhole_WA USS0023B17S &lt;tibble [366 x 4]&gt; &lt;S3: lm&gt;</code></pre>
-<p>this is great! keeps track of everything</p>
-<p>what about other things – summarizing, for example. that’s easy with <code>broom::tidy</code>. that produces a df; let’s look at a quick example.</p>
-<pre class="r"><code>lm(tmax ~ tmin, data = weather$data[[1]]) %&gt;% 
+<p>This is great! Specifically, we now have a data frame that has rows for each station; columns contain weather datasets and fitted models. This makes it very easy to keep track of models across stations, and to perform additional analyses.</p>
+<p>That said, a list column that contains fitted models might not be immediately helpful. We will generally want to extract some information about the model fit, and I generally recommend <code>broom::tidy</code>. That function (which we’ve seen in passing) produces a data frame.</p>
+<pre class="r"><code>lm(tmax ~ tmin, data = weather_nest$data[[1]]) %&gt;% 
   broom::tidy()
 ##          term estimate  std.error statistic       p.value
 ## 1 (Intercept) 7.779171 0.22116552  35.17352 3.883698e-119
 ## 2        tmin 1.044830 0.01638279  63.77608 1.229687e-199</code></pre>
-<p>we can remove other stuff then unnest. since tidy produces a data frame, unnesting this gives nicely-structured output.</p>
-<pre class="r"><code>weather = 
+<p>All together, we have a possible data analytic pipeline. First, nest data within stations; then fit models for each station; then tidy the result, saving the result in a new list column. Since <code>tidy</code> produces a data frame, we can <code>unnest</code> the result after removing intermediate list columns and check out the result. The complete analytic pipeline is in the chunk below.</p>
+<pre class="r"><code>weather_analysis = 
   weather %&gt;% 
-  mutate(results = map(models, broom::tidy)) %&gt;% 
+  nest(date:tmin) %&gt;% 
+  mutate(models = map(data, weather_lm),
+         results = map(models, broom::tidy)) %&gt;% 
   select(-data, -models) %&gt;% 
   unnest()
 
-weather
+weather_analysis
 ## # A tibble: 6 x 7
 ##             name          id        term   estimate  std.error statistic
 ##            &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
@@ -622,94 +633,187 @@ weather
 ## 5   Waterhole_WA USS0023B17S (Intercept)  6.8507057 0.14323379  47.82884
 ## 6   Waterhole_WA USS0023B17S        tmin  1.2448124 0.02864309  43.45942
 ## # ... with 1 more variables: p.value &lt;dbl&gt;</code></pre>
-<p>This is really handy!!</p>
-<p>Note that this isn’t, generally speaking, the right way to analyze data like these. We have datasets nested within stations – for that kind of data, a hierarchical / random effects model is more appropriate. But this is a quick and easy way to get useful answers in an exploratory way.</p>
+<p>This is, for sure, a fairly complex bit of code, but in just a few lines we’re able to fit separate linear models to each of our stations and extract the results. And, once you get used to list columns, <code>map</code>, and the rest of it, these lines of code are pretty clear.</p>
+<p>I should note that this isn’t, generally speaking, the best way to analyze data like these. We have datasets nested within stations – for that kind of “multilevel” data, a hierarchical or random effects model is more appropriate. But this is a quick and easy way to get useful answers in an exploratory context.</p>
 </div>
 <div id="instacart-data" class="section level3">
 <h3>Instacart data</h3>
-<p>same process but faster</p>
+<p>Let’s revisit the <a href="./dataset_instacart.html">Instacart data</a> (download <a href="./data/instacart_train_data.csv.zip">here</a>) as well as a quick second example.</p>
+<pre class="r"><code>instacart = read_csv(&quot;./data/instacart_train_data.csv.zip&quot;)
+## Parsed with column specification:
+## cols(
+##   order_id = col_integer(),
+##   product_id = col_integer(),
+##   add_to_cart_order = col_integer(),
+##   reordered = col_integer(),
+##   user_id = col_integer(),
+##   eval_set = col_character(),
+##   order_number = col_integer(),
+##   order_dow = col_integer(),
+##   order_hour_of_day = col_integer(),
+##   days_since_prior_order = col_integer(),
+##   product_name = col_character(),
+##   aisle_id = col_integer(),
+##   department_id = col_integer(),
+##   aisle = col_character(),
+##   department = col_character()
+## )
+
+instacart
+## # A tibble: 1,384,617 x 15
+##    order_id product_id add_to_cart_order reordered user_id eval_set
+##       &lt;int&gt;      &lt;int&gt;             &lt;int&gt;     &lt;int&gt;   &lt;int&gt;    &lt;chr&gt;
+##  1        1      49302                 1         1  112108    train
+##  2        1      11109                 2         1  112108    train
+##  3        1      10246                 3         0  112108    train
+##  4        1      49683                 4         0  112108    train
+##  5        1      43633                 5         1  112108    train
+##  6        1      13176                 6         0  112108    train
+##  7        1      47209                 7         0  112108    train
+##  8        1      22035                 8         1  112108    train
+##  9       36      39612                 1         0   79431    train
+## 10       36      19660                 2         1   79431    train
+## # ... with 1,384,607 more rows, and 9 more variables: order_number &lt;int&gt;,
+## #   order_dow &lt;int&gt;, order_hour_of_day &lt;int&gt;,
+## #   days_since_prior_order &lt;int&gt;, product_name &lt;chr&gt;, aisle_id &lt;int&gt;,
+## #   department_id &lt;int&gt;, aisle &lt;chr&gt;, department &lt;chr&gt;</code></pre>
+<p>There are a variety of ways we might nest these data – by order, by aisle, by department – depending on the granularity we’re interested in. I’ll group by department, and also focus on only a few departments.</p>
+<pre class="r"><code>instacart_nest = 
+  instacart %&gt;% 
+  group_by(department) %&gt;% 
+  nest() %&gt;% 
+  filter(department %in% c(&quot;deli&quot;, &quot;produce&quot;, &quot;snacks&quot;, &quot;beverages&quot;))
+
+instacart_nest
+## # A tibble: 4 x 2
+##   department                    data
+##        &lt;chr&gt;                  &lt;list&gt;
+## 1    produce &lt;tibble [409,087 x 14]&gt;
+## 2  beverages &lt;tibble [114,046 x 14]&gt;
+## 3       deli  &lt;tibble [44,291 x 14]&gt;
+## 4     snacks &lt;tibble [118,862 x 14]&gt;</code></pre>
+<p>I’ve used another way to implement <code>nest</code> by preceding that function with a <code>group_by</code> call. I’ve also used <code>filter</code> after <code>nest</code>; in fact, data frames with list columns can be manipulated in the same ways as other data frames using <code>tidyverse</code> tools.</p>
+<p>Instead of fitting a regression, I’d like to extract a summary of <code>order_hour_of_day</code> for each department-specific data frame. The <code>summary</code> function produces a nice collection of metrics, but not a data frame; luckily the <code>broom::tidy</code> function is applicable here as well.</p>
+<pre class="r"><code>instacart_nest %&gt;% 
+  mutate(sub_df = map(data, ~summary(.x[[&quot;order_hour_of_day&quot;]])),
+         tidy_summary = map(sub_df, broom::tidy)) %&gt;% 
+  select(-data, -sub_df) %&gt;% 
+  unnest()
+## # A tibble: 4 x 7
+##   department minimum    q1 median     mean    q3 maximum
+##        &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+## 1    produce       0    10     14 13.55972    16      23
+## 2  beverages       0    10     13 13.48292    16      23
+## 3       deli       0    11     14 13.61703    17      23
+## 4     snacks       0    10     14 13.54126    16      23</code></pre>
+<p>That’s pretty neat!</p>
 </div>
 <div id="bootstrapping" class="section level3">
-<h3>bootstrapping</h3>
-<p>Why bootstrap</p>
-<p>simulate data coming from a model with increasing variance</p>
-<pre class="r"><code>set.seed(10)
+<h3>Bootstrapping</h3>
+<p>Bootstrapping is based on the idea of repeated sampling which underlies most approaches to statistical inference. Traditionally, the distribution of a sample statistic (sample mean, SLR coefficients, etc.) for repeated, random draws from a population has been established theoretically. These theoretical distributions make some assumptions about the underlying population from which samples are drawn, or depend on large sample sizes for asymptotic results.</p>
+<p>In cases where the assumptions aren’t met, or sample sizes aren’t large enough for asymptotics to kick in, it is still necessary to make inferences using the sample statistic. In these cases, drawing repeatedly from the original population would be great – one could simple draw a lot of samples and look at the empirical (rather than theoretical) distribution. But, as we said in <a href="iteration_and_simulation.html">iteration and simulation</a>, repeated sampling just doesn’t happen in the real world.</p>
+<p>Repeated sampling <em>can</em> happen on a computer though. To bootstrap, one draws repeated samples (with the same sample size) from the original sample <strong><em>with replacement</em></strong> to mimic the process of drawing repeated samples from the population. The bootstrap samples will differ from the original sample, and the sample statistic of interest (sample mean, SLR coefficients, etc.) can be computed for each bootstrap sample. Looking at the distribution of the statistic across samples gives a sense of the uncertainty in the estimate.</p>
+</div>
+<div id="bootstrapping-in-slr" class="section level3">
+<h3>Bootstrapping in SLR</h3>
+<p>Let’s look at a couple of simulated data sets. Both are generated from a simple linear regression, but they have different error distributions.</p>
+<pre class="r"><code>n_samp = 250
 
-n_samp = 250
-
-df_1 = tibble(
+sim_df_const = tibble(
   x = rnorm(n_samp, 1, 1),
   error = rnorm(n_samp, 0, 1),
   y = 2 + 3 * x + error
 )
 
-df_2 = df_1 %&gt;% 
+sim_df_nonconst = sim_df_const %&gt;% 
   mutate(
   error = error * .75 * x,
   y = 2 + 3 * x + error
 )
 
 bind_rows(
-  mutate(df_1, data = &quot;df_1&quot;),
-  mutate(df_2, data = &quot;df_2&quot;)
+  mutate(sim_df_const, data = &quot;sim_df_const&quot;),
+  mutate(sim_df_nonconst, data = &quot;sim_df_nonconst&quot;)
 ) %&gt;% 
   ggplot(aes(x = x, y = y)) + 
   geom_point() +
   stat_smooth(method = &quot;lm&quot;) +
   facet_grid(~data) </code></pre>
-<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
-<pre class="r"><code>
-lm(y ~ x, data = df_1) %&gt;% summary()
+<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+<p>These datasets have roughly the same overall variance, but the left panel shows data with constant variance and the right panel shows data with non-constant variance. For this reason, ordinary least squares should provide reasonable estimates in both cases, but inference is standard inference approaches may only be justified for the data on the left.</p>
+<p>The output below shows results from fitting simple linear regressions to both datasets.</p>
+<pre class="r"><code>lm(y ~ x, data = sim_df_const) %&gt;% summary()
 ## 
 ## Call:
-## lm(formula = y ~ x, data = df_1)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.00497 -0.75408 -0.05951  0.80840  2.54356 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  1.96777    0.09435   20.86   &lt;2e-16 ***
-## x            3.11086    0.07193   43.24   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 1.075 on 248 degrees of freedom
-## Multiple R-squared:  0.8829, Adjusted R-squared:  0.8824 
-## F-statistic:  1870 on 1 and 248 DF,  p-value: &lt; 2.2e-16
-lm(y ~ x, data = df_2) %&gt;% summary()
-## 
-## Call:
-## lm(formula = y ~ x, data = df_2)
+## lm(formula = y ~ x, data = sim_df_const)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -4.7759 -0.4854 -0.0520  0.4214  3.3971 
+## -3.7782 -0.7170 -0.0534  0.6775  2.6549 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  2.03488    0.09267   21.96   &lt;2e-16 ***
-## x            3.09472    0.07066   43.80   &lt;2e-16 ***
+## (Intercept)  2.01421    0.10728   18.77   &lt;2e-16 ***
+## x            3.03431    0.06649   45.64   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 1.056 on 248 degrees of freedom
-## Multiple R-squared:  0.8855, Adjusted R-squared:  0.8851 
-## F-statistic:  1918 on 1 and 248 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>point out that OLS estimates will understate variance.</p>
-<p>bootstrapping can help here (note: WLS would also work, and might be better).</p>
-<p>write a function to do resampling from the population.</p>
+## Residual standard error: 1.101 on 248 degrees of freedom
+## Multiple R-squared:  0.8936, Adjusted R-squared:  0.8932 
+## F-statistic:  2083 on 1 and 248 DF,  p-value: &lt; 2.2e-16
+lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
+## 
+## Call:
+## lm(formula = y ~ x, data = sim_df_nonconst)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.0010 -0.4426 -0.0113  0.4326  5.3454 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.86558    0.13464   13.86   &lt;2e-16 ***
+## x            3.17478    0.08344   38.05   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.382 on 248 degrees of freedom
+## Multiple R-squared:  0.8537, Adjusted R-squared:  0.8532 
+## F-statistic:  1448 on 1 and 248 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Despite the very different error structures, standard errors for coefficient estimates are similar in both cases!</p>
+<p>We’ll use the bootstrap to make inference for the data on the right. This is intended largely as an illustration for how to use the bootstrap in cases where the theoretical distribution is “unknown”, although for these data in particular weighted least squares is more appropriate.</p>
 </div>
-<div id="bs-samples-as-list-col" class="section level3">
-<h3>BS samples as list col</h3>
+<div id="drawing-one-bootstrap-sample" class="section level3">
+<h3>Drawing one bootstrap sample</h3>
+<p>Let’s write a quick function to generate our bootstrap samples. This function should have the data frame as the argument, and should return a sample from that dataframe drawn with replacement.</p>
 <pre class="r"><code>boot_sample = function(df) {
   sample_frac(df, replace = TRUE)
-}
-
-boot_straps = data_frame(
+}</code></pre>
+<p>We should also do a quick check to see if this is working.</p>
+<pre class="r"><code>boot_sample(sim_df_nonconst)
+## # A tibble: 250 x 3
+##            x        error        y
+##        &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;
+##  1 0.8143844  0.378151316 4.821305
+##  2 2.5324943  0.003005011 9.600488
+##  3 0.7643021 -0.406254684 3.886652
+##  4 0.4130584 -0.073713187 3.165462
+##  5 0.4468188 -0.189337605 3.151119
+##  6 1.7516382  0.113639546 7.368554
+##  7 0.3410232 -0.466086551 2.556983
+##  8 1.4392126 -0.356144561 5.961493
+##  9 0.5995801  0.963949357 4.762690
+## 10 1.7566668  0.161468988 7.431470
+## # ... with 240 more rows</code></pre>
+<p>That looks about right.</p>
+</div>
+<div id="drawing-many-bootstrap-samples" class="section level3">
+<h3>Drawing many bootstrap samples</h3>
+<p>We’re going to draw repeated samples with replacement, and then analyze each of those samples separately. It would be really great to have a data structure that makes it possible to keep track of everything. Maybe a <strong><em>list column</em></strong>??!</p>
+<p>Let’s give that a try:</p>
+<pre class="r"><code>boot_straps = data_frame(
   strap_number = 1:100,
-  strap_sample = rerun(100, boot_sample(df_2))
+  strap_sample = rerun(100, boot_sample(sim_df_nonconst))
 )
 
 boot_straps
@@ -727,81 +831,102 @@ boot_straps
 ##  9            9 &lt;tibble [250 x 3]&gt;
 ## 10           10 &lt;tibble [250 x 3]&gt;
 ## # ... with 90 more rows</code></pre>
-<p>some quick checks</p>
+<p>We can do a few of quick checks to make sure this has worked as intended. First we’ll look at a couple of bootstrap samples.</p>
 <pre class="r"><code>boot_straps %&gt;% 
-  mutate(mean_y = map_dbl(.x = strap_sample, ~mean(.x$y) ) )
-## # A tibble: 100 x 3
-##    strap_number       strap_sample   mean_y
-##           &lt;int&gt;             &lt;list&gt;    &lt;dbl&gt;
-##  1            1 &lt;tibble [250 x 3]&gt; 4.549890
-##  2            2 &lt;tibble [250 x 3]&gt; 4.942721
-##  3            3 &lt;tibble [250 x 3]&gt; 4.960889
-##  4            4 &lt;tibble [250 x 3]&gt; 5.167353
-##  5            5 &lt;tibble [250 x 3]&gt; 4.866360
-##  6            6 &lt;tibble [250 x 3]&gt; 4.671315
-##  7            7 &lt;tibble [250 x 3]&gt; 4.927128
-##  8            8 &lt;tibble [250 x 3]&gt; 5.112649
-##  9            9 &lt;tibble [250 x 3]&gt; 4.870607
-## 10           10 &lt;tibble [250 x 3]&gt; 5.005710
-## # ... with 90 more rows
-
-boot_straps %&gt;% 
+  filter(strap_number %in% 1:2) %&gt;% 
+  mutate(strap_sample = map(strap_sample, ~arrange(.x, x))) %&gt;% 
+  pull(strap_sample)
+## [[1]]
+## # A tibble: 250 x 3
+##             x       error          y
+##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+##  1 -1.5308715  1.49730217 -1.0953124
+##  2 -1.5308715  1.49730217 -1.0953124
+##  3 -1.2329380 -1.97958137 -3.6783954
+##  4 -1.2329380 -1.97958137 -3.6783954
+##  5 -0.9901198 -0.49614878 -1.4665082
+##  6 -0.9901198 -0.49614878 -1.4665082
+##  7 -0.9083691  1.06963768  0.3445302
+##  8 -0.9060899 -0.03923387 -0.7575034
+##  9 -0.9060899 -0.03923387 -0.7575034
+## 10 -0.6164885 -0.48290977 -0.3323753
+## # ... with 240 more rows
+## 
+## [[2]]
+## # A tibble: 250 x 3
+##             x       error          y
+##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+##  1 -2.0234321 -2.02348598 -6.0937823
+##  2 -2.0234321 -2.02348598 -6.0937823
+##  3 -1.2329380 -1.97958137 -3.6783954
+##  4 -0.9164560 -0.71560010 -1.4649682
+##  5 -0.9083691  1.06963768  0.3445302
+##  6 -0.9083691  1.06963768  0.3445302
+##  7 -0.6164885 -0.48290977 -0.3323753
+##  8 -0.5944465  1.63525512  1.8519156
+##  9 -0.5944465  1.63525512  1.8519156
+## 10 -0.4682730  0.03944407  0.6346249
+## # ... with 240 more rows</code></pre>
+<p>Seems okay – some values are repeated, some don’t appear in both datasets. Next I’ll use ggplot to show some of these datasets, and to include a linear fit for each.</p>
+<pre class="r"><code>boot_straps %&gt;% 
   filter(strap_number %in% 1:3) %&gt;% 
   unnest() %&gt;% 
   ggplot(aes(x = x, y = y)) + 
   geom_point() +
   stat_smooth(method = &quot;lm&quot;, se = FALSE) +
   facet_grid(~strap_number) </code></pre>
-<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
-<p>fit models; extract results</p>
-<pre class="r"><code>boot_straps %&gt;% 
+<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
+<p>This shows some of the differences across bootstrap samples, and shows that the fitted regression lines aren’t the same for every bootstrap sample.</p>
+</div>
+<div id="analyzing-bootstrap-samples" class="section level3">
+<h3>Analyzing bootstrap samples</h3>
+<p>My goal, of course, isn’t to analyze bootstrap samples by plotting them – I’d like to get a sense of the variability in estimated intercepts and slopes across all my bootstrap samples.</p>
+<p>To do that, I’ll use the analytic pipeline we established above: fit the model; tidy the output; unnest and examine the results. The code chunk below uses this pipeline to look at bootstrap standard errors for the estimated regression coefficients.</p>
+<pre class="r"><code>bootstrap_results = 
+  boot_straps %&gt;% 
   mutate(models = map(strap_sample, ~lm(y ~ x, data = .x) ),
          results = map(models, broom::tidy)) %&gt;% 
   select(-strap_sample, -models) %&gt;% 
   unnest() %&gt;% 
   group_by(term) %&gt;% 
-  summarize(boot_se = sd(estimate))
-## # A tibble: 2 x 2
-##          term    boot_se
-##         &lt;chr&gt;      &lt;dbl&gt;
-## 1 (Intercept) 0.05081553
-## 2           x 0.08546541</code></pre>
-<p>make some plots</p>
+  summarize(boot_se = sd(estimate))</code></pre>
+<p>Comparing these to the results of ordinary least squares, we see that the standard error for the intercept is much smaller and the standard error for the intercept is a bit larger. This is reasonable, given the non-constant variance in the data given smaller residuals around zero and larger residuals in the the tails of the <code>x</code> distribution.</p>
+<p>In this case, we can expand the three-panel plot we showed previously to visualize the results of our bootstrap process.</p>
 <pre class="r"><code>boot_straps %&gt;% 
   unnest() %&gt;% 
   ggplot(aes(x = x, y = y)) + 
   geom_line(aes(group = strap_number), stat = &quot;smooth&quot;, method = &quot;lm&quot;, se = FALSE, alpha = .2, color = &quot;blue&quot;) +
-  geom_point(data = df_2)</code></pre>
-<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+  geom_point(data = sim_df_nonconst)</code></pre>
+<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
 </div>
 <div id="bootstrap" class="section level3">
 <h3><code>bootstrap</code></h3>
-<p>Show how this works using <code>bootstrap()</code></p>
+<p>Bootstrapping is common enough that it’s been automated, to some degree, in the <code>modelr::boostrap</code> function. This function makes it easy to draw bootstrap samples, and stores them in a mostly-helpful way – as a <code>resample</code> object that can be converted to and treated like a data frame.</p>
 <pre class="r"><code>library(modelr)
 
 boot_straps = 
-  df_2 %&gt;% 
+  sim_df_nonconst %&gt;% 
   bootstrap(n = 100)
 
 boot_straps$strap[[1]]
-## &lt;resample [250 x 3]&gt; 38, 7, 123, 166, 194, 101, 41, 239, 22, 246, ...
+## &lt;resample [250 x 3]&gt; 243, 50, 152, 185, 171, 189, 30, 135, 188, 39, ...
 as_data_frame(boot_straps$strap[[1]])
 ## # A tibble: 250 x 3
-##             x       error          y
-##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-##  1 -0.7590868  0.14649877 -0.1307615
-##  2 -0.2080762  0.10805601  1.4838275
-##  3  0.9682603 -0.26555346  4.6392273
-##  4  0.3226807 -0.72637797  2.2416641
-##  5 -0.2770572 -0.05697992  1.1118483
-##  6  0.2381957 -0.15842178  2.5561652
-##  7  2.0865514  0.30215294  8.5618071
-##  8 -0.1280560  0.15524447  1.7710765
-##  9 -1.1852868  0.31634043 -1.2395201
-## 10  0.8774499 -0.34412071  4.2882289
+##             x       error         y
+##         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1  1.5914236 -0.06631404  6.707957
+##  2  2.7171293  0.51787611 10.669264
+##  3  3.7832655  0.75271387 14.102510
+##  4  0.7061986 -0.36579665  3.752799
+##  5  0.2119224  0.22232217  2.858089
+##  6  0.6205200 -0.43105296  3.430507
+##  7  0.4293864  0.09282566  3.380985
+##  8  1.0442217 -0.07629384  5.056371
+##  9  2.7794938 -0.84352300  9.494959
+## 10 -0.9164560 -0.71560010 -1.464968
 ## # ... with 240 more rows</code></pre>
-<pre class="r"><code>
-df_2 %&gt;% 
+<p>Let’s repeat our analysis pipeline using the <code>bootstrap</code> function instead of our own process for drawing samples with replacement.</p>
+<pre class="r"><code>sim_df_nonconst %&gt;% 
   bootstrap(n = 100) %&gt;% 
   mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
          results = map(models, broom::tidy)) %&gt;% 
@@ -810,25 +935,27 @@ df_2 %&gt;%
   group_by(term) %&gt;% 
   summarize(boot_se = sd(estimate))
 ## # A tibble: 2 x 2
-##          term    boot_se
-##         &lt;chr&gt;      &lt;dbl&gt;
-## 1 (Intercept) 0.05305057
-## 2           x 0.08127121</code></pre>
+##          term   boot_se
+##         &lt;chr&gt;     &lt;dbl&gt;
+## 1 (Intercept) 0.1191009
+## 2           x 0.1336142</code></pre>
+<p>The results are the same (up to resampling variability), and the code to get here is pretty clean.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
+<p>List columns take some getting used to; there are some materials to help with that.</p>
 <ul>
-<li><a href="http://r4ds.had.co.nz/many-models.html" class="uri">http://r4ds.had.co.nz/many-models.html</a></li>
-<li><a href="https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply" class="uri">https://stackoverflow.com/questions/45101045/why-use-purrrmap-instead-of-lapply</a></li>
-<li><a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></li>
-<li><a href="https://drsimonj.svbtle.com/k-fold-cross-validation-with-modelr-and-broom" class="uri">https://drsimonj.svbtle.com/k-fold-cross-validation-with-modelr-and-broom</a></li>
-<li><a href="http://rpubs.com/dgrtwo/cv-modelr" class="uri">http://rpubs.com/dgrtwo/cv-modelr</a></li>
-<li><a href="https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html" class="uri">https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html</a></li>
-<li><a href="https://github.com/tidyverse/broom/blob/master/vignettes/bootstrapping.Rmd" class="uri">https://github.com/tidyverse/broom/blob/master/vignettes/bootstrapping.Rmd</a></li>
-<li><a href="https://github.com/tidyverse/modelr" class="uri">https://github.com/tidyverse/modelr</a></li>
+<li>R for Data Science has a chapter on <a href="http://r4ds.had.co.nz/many-models.html">fitting many models</a></li>
+<li>Jenny Bryan’s <a href="https://jennybc.github.io/purrr-tutorial/">purrr tutorial</a> has useful list-column examples</li>
 </ul>
-<p>The code that I produced working examples in lecture is <a href="ZZZZZ">here</a>.</p>
+<p>Boostrapping and resampling are also new concepts; the materials below explore these using tidyverse approaches.</p>
+<ul>
+<li>The <a href="https://github.com/tidyverse/modelr"><code>modelr</code> package</a> has a page</li>
+<li>The bootsrapping <a href="https://cran.r-project.org/web/packages/broom/vignettes/bootstrapping.html">vignette</a> uses a framework similar to the one we used</li>
+<li>We didn’t discuss cross validation, another popular approach, ut you can read up on it <a href="https://drsimonj.svbtle.com/k-fold-cross-validation-with-modelr-and-broom">here</a> and <a href="http://rpubs.com/dgrtwo/cv-modelr">here</a></li>
+</ul>
+<p>The code that I produced working examples in lecture is <a href="https://github.com/jeff-goldsmith/example_iteration">here</a>.</p>
 </div>
 
 <br><br>
