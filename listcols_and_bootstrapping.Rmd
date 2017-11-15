@@ -37,6 +37,8 @@ library(tidyverse)
 
 theme_set(theme_bw())
 theme_update(legend.position = "bottom")
+
+set.seed(1)
 ```
 
 Things are gonna get a little weird.

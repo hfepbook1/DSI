@@ -393,7 +393,9 @@ div.tocify {
 ## ✖ dplyr::lag()    masks stats::lag()
 
 theme_set(theme_bw())
-theme_update(legend.position = &quot;bottom&quot;)</code></pre>
+theme_update(legend.position = &quot;bottom&quot;)
+
+set.seed(1)</code></pre>
 <p>Things are gonna get a little weird.</p>
 <div id="weather-data" class="section level3">
 <h3>Weather data</h3>
@@ -655,7 +657,7 @@ bind_rows(
   geom_point() +
   stat_smooth(method = &quot;lm&quot;) +
   facet_grid(~data) </code></pre>
-<p><img src="listcols_and_resampling_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
+<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
 <pre class="r"><code>
 lm(y ~ x, data = df_1) %&gt;% summary()
 ## 
@@ -750,7 +752,7 @@ boot_straps %&gt;%
   geom_point() +
   stat_smooth(method = &quot;lm&quot;, se = FALSE) +
   facet_grid(~strap_number) </code></pre>
-<p><img src="listcols_and_resampling_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
+<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
 <p>fit models; extract results</p>
 <pre class="r"><code>boot_straps %&gt;% 
   mutate(models = map(strap_sample, ~lm(y ~ x, data = .x) ),
@@ -770,7 +772,7 @@ boot_straps %&gt;%
   ggplot(aes(x = x, y = y)) + 
   geom_line(aes(group = strap_number), stat = &quot;smooth&quot;, method = &quot;lm&quot;, se = FALSE, alpha = .2, color = &quot;blue&quot;) +
   geom_point(data = df_2)</code></pre>
-<p><img src="listcols_and_resampling_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
 </div>
 <div id="bootstrap" class="section level3">
 <h3><code>bootstrap</code></h3>
