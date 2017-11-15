@@ -435,8 +435,8 @@ iris_with_missing = iris %&gt;%
 <p>Next, set <span class="math inline">\(\beta_2=0\)</span>. Generate 10000 datasets from the model <span class="math display">\[ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \epsilon_{i} \]</span> with <span class="math inline">\(\epsilon_{i} ∼ N[0,\sigma^2]\)</span>. For each dataset, save <span class="math inline">\(\hat{\beta}_2\)</span> and the p-value arising from a test of <span class="math inline">\(H : \beta_2 = 0\)</span> using <span class="math inline">\(\alpha = 0.05\)</span>.</p>
 <p>Repeat the above for <span class="math inline">\(\beta_2 = \{1, 2, 3, 4, 5, 6\}\)</span>, and complete the following:</p>
 <ul>
-<li>Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Describe the association between effect size and power.</li>
-<li>Make a plot showing the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Make a second plot (or overlay on the first) the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> in tests for which the null is rejected on the y axis and the effect size on the x axis. Is the sample average of <span class="math inline">\(\hat{\beta}_2\)</span> across tests for which the null is rejected approximately equal to the true value of <span class="math inline">\(\beta_2\)</span>? Why or why not?</li>
+<li>Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of <span class="math inline">\(\beta_2\)</span> on the x axis. Describe the association between effect size and power.</li>
+<li>Make a plot showing the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> on the y axis and the true value of <span class="math inline">\(\beta_2\)</span> on the x axis. Make a second plot (or overlay on the first) the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> in tests for which the null is rejected on the y axis and the true value of <span class="math inline">\(\beta_2\)</span> on the x axis. Is the sample average of <span class="math inline">\(\hat{\beta}_2\)</span> across tests for which the null is rejected approximately equal to the true value of <span class="math inline">\(\beta_2\)</span>? Why or why not?</li>
 </ul>
 </div>
 <div id="problem-4" class="section level3">
@@ -452,7 +452,7 @@ sim_df_const = tibble(
   error = rnorm(n_samp, 0, 1),
   y = 2 + 3 * x + error
 )</code></pre>
-<p>For various reasons, I’m interested in the distribution of <span class="math inline">\(\hat{\theta} = \log \left(\frac{\hat{\beta}_0}{\hat{\beta}_1} \right)\)</span>. This distribution can be difficult to obtain analytically (although it is not impossible). Using the bootstrap, produce an empirical distribution for <span class="math inline">\(\hat{\theta}\)</span>; illustrate this distribution graphically.</p>
+<p>For various reasons, I’m interested in the distribution of <span class="math inline">\(\hat{\theta} = \log \left(\frac{\hat{\beta}_0}{\hat{\beta}_1} \right)\)</span>. This distribution can be difficult to obtain analytically (although it is <a href="https://en.wikipedia.org/wiki/Delta_method">not impossible</a>). Using the bootstrap, produce an empirical distribution for <span class="math inline">\(\hat{\theta}\)</span>; illustrate this distribution graphically.</p>
 <p>Increase the size of the simulated dataset to 50 and repeat the bootstrap procedure above. Increase again to 250 and repeat. Comment on your results.</p>
 </div>
 
