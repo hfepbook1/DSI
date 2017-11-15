@@ -390,9 +390,9 @@ div.tocify {
 <p>This “problem” focuses on structure of your submission, including reproducibility, organization, clearness, and naming structures.</p>
 <p>To that end:</p>
 <ul>
-<li>create a directory named <code>p8105_hw5_YOURUNI</code> (e.g. <code>p8105_hw5_ajg2202</code> for Jeff)</li>
+<li>create a directory named <code>p8105_hw7_YOURUNI</code> (e.g. <code>p8105_hw7_ajg2202</code> for Jeff)</li>
 <li>put an R project in the directory</li>
-<li>create a single .Rmd file named <code>p8105_hw5_YOURUNI.Rmd</code></li>
+<li>create a single .Rmd file named <code>p8105_hw7_YOURUNI.Rmd</code></li>
 </ul>
 <p>Data used in this homework will should appear in a separate directory called <code>data</code>; use relative paths starting with <code>../data/</code> to load data.</p>
 <p>Your solutions to Problems 1+ should be included in your .Rmd file, and your submission for this assignment will be a zip file of the directory named <code>p8105_hw7_YOURUNI</code>.</p>
@@ -435,7 +435,7 @@ iris_with_missing = iris %&gt;%
 <p>Next, set <span class="math inline">\(\beta_2=0\)</span>. Generate 10000 datasets from the model <span class="math display">\[ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \epsilon_{i} \]</span> with <span class="math inline">\(\epsilon_{i} ∼ N[0,\sigma^2]\)</span>. For each dataset, save <span class="math inline">\(\hat{\beta}_2\)</span> and the p-value arising from a test of <span class="math inline">\(H : \beta_2 = 0\)</span> using <span class="math inline">\(\alpha = 0.05\)</span>.</p>
 <p>Repeat the above for <span class="math inline">\(\beta_2 = \{1, 2, 3, 4, 5, 6\}\)</span>, and complete the following:</p>
 <ul>
-<li>Make a plot showing the proportion of times the null was rejected (the power of the text) on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Describe the association between effect size and power.</li>
+<li>Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Describe the association between effect size and power.</li>
 <li>Make a plot showing the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Make a second plot (or overlay on the first) the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> in tests for which the null is rejected on the y axis and the effect size on the x axis. Is the sample average of <span class="math inline">\(\hat{\beta}_2\)</span> across tests for which the null is rejected approximately equal to the true value of <span class="math inline">\(\beta_2\)</span>? Why or why not?</li>
 </ul>
 </div>

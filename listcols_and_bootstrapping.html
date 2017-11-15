@@ -382,17 +382,6 @@ div.tocify {
 <h2>Example</h2>
 <p>I’ll write code for today’s content in a new R Markdown document called <code>listcols_and_bootstrapping.Rmd</code> in the <code>example_iteration</code> directory / repo. The code chunk below loads the usual packages.</p>
 <pre class="r"><code>library(tidyverse)
-## ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
-## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
-## ✔ tibble  1.3.4     ✔ dplyr   0.7.4
-## ✔ tidyr   0.7.2     ✔ stringr 1.2.0
-## ✔ readr   1.1.1     ✔ forcats 0.2.0
-## Warning: package &#39;tidyr&#39; was built under R version 3.4.2
-## Warning: package &#39;purrr&#39; was built under R version 3.4.2
-## Warning: package &#39;dplyr&#39; was built under R version 3.4.2
-## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
 
 theme_set(theme_bw())
 theme_update(legend.position = &quot;bottom&quot;)
@@ -434,83 +423,63 @@ weather_nest
 weather_nest %&gt;% pull(data)
 ## [[1]]
 ## # A tibble: 366 x 4
-##          date  prcp  tmax  tmin
-##        &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2016-01-01     0   5.6   1.1
-##  2 2016-01-02     0   4.4   0.0
-##  3 2016-01-03     0   7.2   1.7
-##  4 2016-01-04     0   2.2  -9.9
-##  5 2016-01-05     0  -1.6 -11.6
-##  6 2016-01-06     0   5.0  -3.8
-##  7 2016-01-07     0   7.8  -0.5
-##  8 2016-01-08     0   7.8  -0.5
-##  9 2016-01-09     0   8.3   4.4
-## 10 2016-01-10   457  15.0   4.4
-## # ... with 356 more rows
+##         date  prcp  tmax  tmin
+##       &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2016-01-01     0   5.6   1.1
+## 2 2016-01-02     0   4.4   0.0
+## 3 2016-01-03     0   7.2   1.7
+## 4 2016-01-04     0   2.2  -9.9
+## 5 2016-01-05     0  -1.6 -11.6
+## 6 2016-01-06     0   5.0  -3.8
+## # ... with 360 more rows
 ## 
 ## [[2]]
 ## # A tibble: 366 x 4
-##          date  prcp  tmax  tmin
-##        &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2016-01-01     0  29.4  16.7
-##  2 2016-01-02     0  28.3  16.7
-##  3 2016-01-03     0  28.3  16.7
-##  4 2016-01-04     0  28.3  16.1
-##  5 2016-01-05     0  27.2  16.7
-##  6 2016-01-06     0  27.2  20.0
-##  7 2016-01-07    46  27.8  18.3
-##  8 2016-01-08     3  28.3  17.8
-##  9 2016-01-09     8  27.8  19.4
-## 10 2016-01-10     3  28.3  18.3
-## # ... with 356 more rows
+##         date  prcp  tmax  tmin
+##       &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2016-01-01     0  29.4  16.7
+## 2 2016-01-02     0  28.3  16.7
+## 3 2016-01-03     0  28.3  16.7
+## 4 2016-01-04     0  28.3  16.1
+## 5 2016-01-05     0  27.2  16.7
+## 6 2016-01-06     0  27.2  20.0
+## # ... with 360 more rows
 ## 
 ## [[3]]
 ## # A tibble: 366 x 4
-##          date  prcp  tmax  tmin
-##        &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2016-01-01     0   1.7  -5.9
-##  2 2016-01-02    25  -0.1  -6.0
-##  3 2016-01-03     0  -5.0 -10.0
-##  4 2016-01-04    25   0.3  -9.8
-##  5 2016-01-05    25   1.9  -1.8
-##  6 2016-01-06    25   1.4  -2.6
-##  7 2016-01-07     0   1.4  -3.9
-##  8 2016-01-08     0   1.1  -4.0
-##  9 2016-01-09     0   1.4  -4.5
-## 10 2016-01-10     0   2.3  -3.8
-## # ... with 356 more rows</code></pre>
+##         date  prcp  tmax  tmin
+##       &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2016-01-01     0   1.7  -5.9
+## 2 2016-01-02    25  -0.1  -6.0
+## 3 2016-01-03     0  -5.0 -10.0
+## 4 2016-01-04    25   0.3  -9.8
+## 5 2016-01-05    25   1.9  -1.8
+## 6 2016-01-06    25   1.4  -2.6
+## # ... with 360 more rows</code></pre>
 <p>The list column really is a list, and will behave as such elsewhere in R. So, for example, you can examine the first list entry using usual list index procedures.</p>
 <pre class="r"><code>weather_nest$data[[1]]
 ## # A tibble: 366 x 4
-##          date  prcp  tmax  tmin
-##        &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2016-01-01     0   5.6   1.1
-##  2 2016-01-02     0   4.4   0.0
-##  3 2016-01-03     0   7.2   1.7
-##  4 2016-01-04     0   2.2  -9.9
-##  5 2016-01-05     0  -1.6 -11.6
-##  6 2016-01-06     0   5.0  -3.8
-##  7 2016-01-07     0   7.8  -0.5
-##  8 2016-01-08     0   7.8  -0.5
-##  9 2016-01-09     0   8.3   4.4
-## 10 2016-01-10   457  15.0   4.4
-## # ... with 356 more rows</code></pre>
+##         date  prcp  tmax  tmin
+##       &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2016-01-01     0   5.6   1.1
+## 2 2016-01-02     0   4.4   0.0
+## 3 2016-01-03     0   7.2   1.7
+## 4 2016-01-04     0   2.2  -9.9
+## 5 2016-01-05     0  -1.6 -11.6
+## 6 2016-01-06     0   5.0  -3.8
+## # ... with 360 more rows</code></pre>
 <p>Of course, if you can <code>nest</code> data you should be able to <code>unnest</code> it as well, and you can (with the caveat that you’re unnesting a list column that contains a data frame).</p>
 <pre class="r"><code>unnest(weather_nest)
 ## # A tibble: 1,098 x 6
-##              name          id       date  prcp  tmax  tmin
-##             &lt;chr&gt;       &lt;chr&gt;     &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 CentralPark_NY USW00094728 2016-01-01     0   5.6   1.1
-##  2 CentralPark_NY USW00094728 2016-01-02     0   4.4   0.0
-##  3 CentralPark_NY USW00094728 2016-01-03     0   7.2   1.7
-##  4 CentralPark_NY USW00094728 2016-01-04     0   2.2  -9.9
-##  5 CentralPark_NY USW00094728 2016-01-05     0  -1.6 -11.6
-##  6 CentralPark_NY USW00094728 2016-01-06     0   5.0  -3.8
-##  7 CentralPark_NY USW00094728 2016-01-07     0   7.8  -0.5
-##  8 CentralPark_NY USW00094728 2016-01-08     0   7.8  -0.5
-##  9 CentralPark_NY USW00094728 2016-01-09     0   8.3   4.4
-## 10 CentralPark_NY USW00094728 2016-01-10   457  15.0   4.4
-## # ... with 1,088 more rows</code></pre>
+##             name          id       date  prcp  tmax  tmin
+##            &lt;chr&gt;       &lt;chr&gt;     &lt;date&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 CentralPark_NY USW00094728 2016-01-01     0   5.6   1.1
+## 2 CentralPark_NY USW00094728 2016-01-02     0   4.4   0.0
+## 3 CentralPark_NY USW00094728 2016-01-03     0   7.2   1.7
+## 4 CentralPark_NY USW00094728 2016-01-04     0   2.2  -9.9
+## 5 CentralPark_NY USW00094728 2016-01-05     0  -1.6 -11.6
+## 6 CentralPark_NY USW00094728 2016-01-06     0   5.0  -3.8
+## # ... with 1,092 more rows</code></pre>
 <p>Nesting columns can help with data organization and comprehension by masking complexity you’re less concerned about right now and clarifying the things you are concerned about. In the weather data, it can be helpful to think of stations as the basic unit of observation, and daily weather recordings as a more granular level of observation. Nesting can also simplify the use of analytic approaches across levels of a higher variable.</p>
 </div>
 <div id="operations-on-list-columns" class="section level3">
@@ -661,19 +630,15 @@ weather_analysis
 
 instacart
 ## # A tibble: 1,384,617 x 15
-##    order_id product_id add_to_cart_order reordered user_id eval_set
-##       &lt;int&gt;      &lt;int&gt;             &lt;int&gt;     &lt;int&gt;   &lt;int&gt;    &lt;chr&gt;
-##  1        1      49302                 1         1  112108    train
-##  2        1      11109                 2         1  112108    train
-##  3        1      10246                 3         0  112108    train
-##  4        1      49683                 4         0  112108    train
-##  5        1      43633                 5         1  112108    train
-##  6        1      13176                 6         0  112108    train
-##  7        1      47209                 7         0  112108    train
-##  8        1      22035                 8         1  112108    train
-##  9       36      39612                 1         0   79431    train
-## 10       36      19660                 2         1   79431    train
-## # ... with 1,384,607 more rows, and 9 more variables: order_number &lt;int&gt;,
+##   order_id product_id add_to_cart_order reordered user_id eval_set
+##      &lt;int&gt;      &lt;int&gt;             &lt;int&gt;     &lt;int&gt;   &lt;int&gt;    &lt;chr&gt;
+## 1        1      49302                 1         1  112108    train
+## 2        1      11109                 2         1  112108    train
+## 3        1      10246                 3         0  112108    train
+## 4        1      49683                 4         0  112108    train
+## 5        1      43633                 5         1  112108    train
+## 6        1      13176                 6         0  112108    train
+## # ... with 1.385e+06 more rows, and 9 more variables: order_number &lt;int&gt;,
 ## #   order_dow &lt;int&gt;, order_hour_of_day &lt;int&gt;,
 ## #   days_since_prior_order &lt;int&gt;, product_name &lt;chr&gt;, aisle_id &lt;int&gt;,
 ## #   department_id &lt;int&gt;, aisle &lt;chr&gt;, department &lt;chr&gt;</code></pre>
@@ -794,19 +759,15 @@ lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
 <p>We should also do a quick check to see if this is working.</p>
 <pre class="r"><code>boot_sample(sim_df_nonconst)
 ## # A tibble: 250 x 3
-##              x       error          y
-##          &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-##  1  1.33087649 -1.52057755  4.4720519
-##  2  0.69118694  0.63736907  4.7109299
-##  3  0.16967735  0.30451734  2.8135494
-##  4 -0.06262279  0.02647935  1.8386110
-##  5 -0.96325249 -0.24764635 -1.1374038
-##  6  1.71289428 -2.57029515  4.5683877
-##  7  2.12795361  3.21121251 11.5950734
-##  8  1.65522764  1.58117805  8.5468610
-##  9 -0.70365949 -0.24969978 -0.3606783
-## 10 -0.70365949 -0.24969978 -0.3606783
-## # ... with 240 more rows</code></pre>
+##             x       error         y
+##         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+## 1  1.33087649 -1.52057755  4.472052
+## 2  0.69118694  0.63736907  4.710930
+## 3  0.16967735  0.30451734  2.813549
+## 4 -0.06262279  0.02647935  1.838611
+## 5 -0.96325249 -0.24764635 -1.137404
+## 6  1.71289428 -2.57029515  4.568388
+## # ... with 244 more rows</code></pre>
 <p>That looks about right.</p>
 </div>
 <div id="drawing-many-bootstrap-samples" class="section level3">
@@ -820,19 +781,15 @@ lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
 
 boot_straps
 ## # A tibble: 1,000 x 2
-##    strap_number       strap_sample
-##           &lt;int&gt;             &lt;list&gt;
-##  1            1 &lt;tibble [250 x 3]&gt;
-##  2            2 &lt;tibble [250 x 3]&gt;
-##  3            3 &lt;tibble [250 x 3]&gt;
-##  4            4 &lt;tibble [250 x 3]&gt;
-##  5            5 &lt;tibble [250 x 3]&gt;
-##  6            6 &lt;tibble [250 x 3]&gt;
-##  7            7 &lt;tibble [250 x 3]&gt;
-##  8            8 &lt;tibble [250 x 3]&gt;
-##  9            9 &lt;tibble [250 x 3]&gt;
-## 10           10 &lt;tibble [250 x 3]&gt;
-## # ... with 990 more rows</code></pre>
+##   strap_number       strap_sample
+##          &lt;int&gt;             &lt;list&gt;
+## 1            1 &lt;tibble [250 x 3]&gt;
+## 2            2 &lt;tibble [250 x 3]&gt;
+## 3            3 &lt;tibble [250 x 3]&gt;
+## 4            4 &lt;tibble [250 x 3]&gt;
+## 5            5 &lt;tibble [250 x 3]&gt;
+## 6            6 &lt;tibble [250 x 3]&gt;
+## # ... with 994 more rows</code></pre>
 <p>We can do a few of quick checks to make sure this has worked as intended. First we’ll look at a couple of bootstrap samples.</p>
 <pre class="r"><code>boot_straps %&gt;% 
   filter(strap_number %in% 1:2) %&gt;% 
@@ -840,35 +797,27 @@ boot_straps
   pull(strap_sample)
 ## [[1]]
 ## # A tibble: 250 x 3
-##             x      error          y
-##         &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-##  1 -1.1190612 -0.1869410 -1.5441245
-##  2 -1.1190612 -0.1869410 -1.5441245
-##  3 -0.7590868  0.1464988 -0.1307615
-##  4 -0.6753322  0.3238676  0.2978710
-##  5 -0.6753322  0.3238676  0.2978710
-##  6 -0.6580509 -0.5091784 -0.4833310
-##  7 -0.6066772  0.2805913  0.4605596
-##  8 -0.6066772  0.2805913  0.4605596
-##  9 -0.6066772  0.2805913  0.4605596
-## 10 -0.4899362  0.1486100  0.6788013
-## # ... with 240 more rows
+##            x      error          y
+##        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1 -1.1190612 -0.1869410 -1.5441245
+## 2 -1.1190612 -0.1869410 -1.5441245
+## 3 -0.7590868  0.1464988 -0.1307615
+## 4 -0.6753322  0.3238676  0.2978710
+## 5 -0.6753322  0.3238676  0.2978710
+## 6 -0.6580509 -0.5091784 -0.4833310
+## # ... with 244 more rows
 ## 
 ## [[2]]
 ## # A tibble: 250 x 3
-##             x       error          y
-##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-##  1 -1.3210170  1.93841419 -0.0246369
-##  2 -0.8537405 -0.20970649 -0.7709279
-##  3 -0.8537405 -0.20970649 -0.7709279
-##  4 -0.7590868  0.14649877 -0.1307615
-##  5 -0.6580509 -0.50917842 -0.4833310
-##  6 -0.6266727  0.51447419  0.6344561
-##  7 -0.5800008  0.27154449  0.5315422
-##  8 -0.4899362  0.14861002  0.6788013
-##  9 -0.4798270  0.08344474  0.6439637
-## 10 -0.4686977  0.02825628  0.6221630
-## # ... with 240 more rows</code></pre>
+##            x      error          y
+##        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1 -1.3210170  1.9384142 -0.0246369
+## 2 -0.8537405 -0.2097065 -0.7709279
+## 3 -0.8537405 -0.2097065 -0.7709279
+## 4 -0.7590868  0.1464988 -0.1307615
+## 5 -0.6580509 -0.5091784 -0.4833310
+## 6 -0.6266727  0.5144742  0.6344561
+## # ... with 244 more rows</code></pre>
 <p>Seems okay – some values are repeated, some don’t appear in both datasets. Next I’ll use ggplot to show some of these datasets, and to include a linear fit for each.</p>
 <pre class="r"><code>boot_straps %&gt;% 
   filter(strap_number %in% 1:3) %&gt;% 
@@ -922,19 +871,15 @@ boot_straps$strap[[1]]
 ## &lt;resample [250 x 3]&gt; 77, 192, 117, 181, 71, 156, 25, 164, 5, 190, ...
 as_data_frame(boot_straps$strap[[1]])
 ## # A tibble: 250 x 3
-##             x       error          y
-##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-##  1 -0.4798270  0.08344474  0.6439637
-##  2  1.9953319 -1.13638627  6.8496093
-##  3  2.0399236  1.27244930  9.3922201
-##  4  1.4255131 -0.13224292  6.1442964
-##  5  1.3809222  1.09301221  7.2357789
-##  6 -1.3210170  1.93841419 -0.0246369
-##  7 -0.2651980 -0.48330556  0.7211004
-##  8  0.3005969  0.33207021  3.2338610
-##  9  1.2945451 -0.66055573  5.2230797
-## 10  1.0463614 -0.01826971  5.1208146
-## # ... with 240 more rows</code></pre>
+##           x       error          y
+##       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1 -0.479827  0.08344474  0.6439637
+## 2  1.995332 -1.13638627  6.8496093
+## 3  2.039924  1.27244930  9.3922201
+## 4  1.425513 -0.13224292  6.1442964
+## 5  1.380922  1.09301221  7.2357789
+## 6 -1.321017  1.93841419 -0.0246369
+## # ... with 244 more rows</code></pre>
 <p>Let’s repeat our analysis pipeline using the <code>bootstrap</code> function instead of our own process for drawing samples with replacement.</p>
 <pre class="r"><code>sim_df_nonconst %&gt;% 
   bootstrap(n = 1000) %&gt;% 
