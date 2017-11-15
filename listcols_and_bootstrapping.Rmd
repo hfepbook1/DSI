@@ -197,9 +197,9 @@ Instead of fitting a regression, I'd like to extract a summary of `order_hour_of
 
 ```{r}
 instacart_nest %>% 
-  mutate(sub_df = map(data, ~summary(.x[["order_hour_of_day"]])),
-         tidy_summary = map(sub_df, broom::tidy)) %>% 
-  select(-data, -sub_df) %>% 
+  mutate(order_hour_summary = map(data, ~summary(.x[["order_hour_of_day"]])),
+         tidy_summary = map(order_hour_summary, broom::tidy)) %>% 
+  select(-data, -order_hour_summary) %>% 
   unnest()
 ```
 
@@ -219,6 +219,8 @@ Repeated sampling _can_ happen on a computer though. To bootstrap, one draws rep
 Let's look at a couple of simulated data sets. Both are generated from a simple linear regression, but they have different error distributions. 
 
 ```{r}
+set.seed(10)
+
 n_samp = 250
 
 sim_df_const = tibble(
@@ -238,7 +240,7 @@ bind_rows(
   mutate(sim_df_nonconst, data = "sim_df_nonconst")
 ) %>% 
   ggplot(aes(x = x, y = y)) + 
-  geom_point() +
+  geom_point(alpha = .5) +
   stat_smooth(method = "lm") +
   facet_grid(~data) 
 ```
@@ -283,8 +285,8 @@ Let's give that a try:
 
 ```{r}
 boot_straps = data_frame(
-  strap_number = 1:100,
-  strap_sample = rerun(100, boot_sample(sim_df_nonconst))
+  strap_number = 1:1000,
+  strap_sample = rerun(1000, boot_sample(sim_df_nonconst))
 )
 
 boot_straps
@@ -306,7 +308,7 @@ boot_straps %>%
   filter(strap_number %in% 1:3) %>% 
   unnest() %>% 
   ggplot(aes(x = x, y = y)) + 
-  geom_point() +
+  geom_point(alpha = .5) +
   stat_smooth(method = "lm", se = FALSE) +
   facet_grid(~strap_number) 
 ```
@@ -329,6 +331,8 @@ bootstrap_results =
   unnest() %>% 
   group_by(term) %>% 
   summarize(boot_se = sd(estimate))
+
+bootstrap_results
 ```
 
 Comparing these to the results of ordinary least squares, we see that the standard error for the intercept is much smaller and the standard error for the intercept is a bit larger. This is reasonable, given the non-constant variance in the data given smaller residuals around zero and larger residuals in the the tails of the `x` distribution.
@@ -339,10 +343,11 @@ In this case, we can expand the three-panel plot we showed previously to visuali
 boot_straps %>% 
   unnest() %>% 
   ggplot(aes(x = x, y = y)) + 
-  geom_line(aes(group = strap_number), stat = "smooth", method = "lm", se = FALSE, alpha = .2, color = "blue") +
-  geom_point(data = sim_df_nonconst)
+  geom_line(aes(group = strap_number), stat = "smooth", method = "lm", se = FALSE, alpha = .1, color = "blue") +
+  geom_point(data = sim_df_nonconst, alpha = .5)
 ```
 
+In comparison to the standard error bands in our previous plot (which are based on OLS), the distribution of regression lines is narrower near $x = 0$ and wider at the ends of the $x$ distribution.
 
 ### `bootstrap`
 
@@ -353,7 +358,7 @@ library(modelr)
 
 boot_straps = 
   sim_df_nonconst %>% 
-  bootstrap(n = 100)
+  bootstrap(n = 1000)
 
 boot_straps$strap[[1]]
 as_data_frame(boot_straps$strap[[1]])
@@ -363,7 +368,7 @@ Let's repeat our analysis pipeline using the `bootstrap` function instead of our
 
 ```{r}
 sim_df_nonconst %>% 
-  bootstrap(n = 100) %>% 
+  bootstrap(n = 1000) %>% 
   mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
          results = map(models, broom::tidy)) %>% 
   select(-strap, -models) %>% 
@@ -374,6 +379,20 @@ sim_df_nonconst %>%
 
 The results are the same (up to resampling variability), and the code to get here is pretty clean.
 
+Also, check this out -- to bootstrap the dataset with constant error variance, we only have to change the input dataframe!
+
+```{r}
+sim_df_const %>% 
+  bootstrap(n = 1000) %>% 
+  mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
+         results = map(models, broom::tidy)) %>% 
+  select(-strap, -models) %>% 
+  unnest() %>% 
+  group_by(term) %>% 
+  summarize(boot_se = sd(estimate))
+```
+
+These results generally agree with the output of the OLS procedure, which is nice. 
 
 ## Other materials
 

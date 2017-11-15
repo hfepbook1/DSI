@@ -695,9 +695,9 @@ instacart_nest
 <p>I’ve used another way to implement <code>nest</code> by preceding that function with a <code>group_by</code> call. I’ve also used <code>filter</code> after <code>nest</code>; in fact, data frames with list columns can be manipulated in the same ways as other data frames using <code>tidyverse</code> tools.</p>
 <p>Instead of fitting a regression, I’d like to extract a summary of <code>order_hour_of_day</code> for each department-specific data frame. The <code>summary</code> function produces a nice collection of metrics, but not a data frame; luckily the <code>broom::tidy</code> function is applicable here as well.</p>
 <pre class="r"><code>instacart_nest %&gt;% 
-  mutate(sub_df = map(data, ~summary(.x[[&quot;order_hour_of_day&quot;]])),
-         tidy_summary = map(sub_df, broom::tidy)) %&gt;% 
-  select(-data, -sub_df) %&gt;% 
+  mutate(order_hour_summary = map(data, ~summary(.x[[&quot;order_hour_of_day&quot;]])),
+         tidy_summary = map(order_hour_summary, broom::tidy)) %&gt;% 
+  select(-data, -order_hour_summary) %&gt;% 
   unnest()
 ## # A tibble: 4 x 7
 ##   department minimum    q1 median     mean    q3 maximum
@@ -717,7 +717,9 @@ instacart_nest
 <div id="bootstrapping-in-slr" class="section level3">
 <h3>Bootstrapping in SLR</h3>
 <p>Let’s look at a couple of simulated data sets. Both are generated from a simple linear regression, but they have different error distributions.</p>
-<pre class="r"><code>n_samp = 250
+<pre class="r"><code>set.seed(10)
+
+n_samp = 250
 
 sim_df_const = tibble(
   x = rnorm(n_samp, 1, 1),
@@ -736,7 +738,7 @@ bind_rows(
   mutate(sim_df_nonconst, data = &quot;sim_df_nonconst&quot;)
 ) %&gt;% 
   ggplot(aes(x = x, y = y)) + 
-  geom_point() +
+  geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;) +
   facet_grid(~data) </code></pre>
 <p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
@@ -748,19 +750,19 @@ bind_rows(
 ## lm(formula = y ~ x, data = sim_df_const)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.7782 -0.7170 -0.0534  0.6775  2.6549 
+##      Min       1Q   Median       3Q      Max 
+## -3.00497 -0.75408 -0.05951  0.80840  2.54356 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  2.01421    0.10728   18.77   &lt;2e-16 ***
-## x            3.03431    0.06649   45.64   &lt;2e-16 ***
+## (Intercept)  1.96777    0.09435   20.86   &lt;2e-16 ***
+## x            3.11086    0.07193   43.24   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 1.101 on 248 degrees of freedom
-## Multiple R-squared:  0.8936, Adjusted R-squared:  0.8932 
-## F-statistic:  2083 on 1 and 248 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 1.075 on 248 degrees of freedom
+## Multiple R-squared:  0.8829, Adjusted R-squared:  0.8824 
+## F-statistic:  1870 on 1 and 248 DF,  p-value: &lt; 2.2e-16
 lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
 ## 
 ## Call:
@@ -768,18 +770,18 @@ lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -7.0010 -0.4426 -0.0113  0.4326  5.3454 
+## -4.7759 -0.4854 -0.0520  0.4214  3.3971 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  1.86558    0.13464   13.86   &lt;2e-16 ***
-## x            3.17478    0.08344   38.05   &lt;2e-16 ***
+## (Intercept)  2.03488    0.09267   21.96   &lt;2e-16 ***
+## x            3.09472    0.07066   43.80   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 1.382 on 248 degrees of freedom
-## Multiple R-squared:  0.8537, Adjusted R-squared:  0.8532 
-## F-statistic:  1448 on 1 and 248 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 1.056 on 248 degrees of freedom
+## Multiple R-squared:  0.8855, Adjusted R-squared:  0.8851 
+## F-statistic:  1918 on 1 and 248 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Despite the very different error structures, standard errors for coefficient estimates are similar in both cases!</p>
 <p>We’ll use the bootstrap to make inference for the data on the right. This is intended largely as an illustration for how to use the bootstrap in cases where the theoretical distribution is “unknown”, although for these data in particular weighted least squares is more appropriate.</p>
 </div>
@@ -792,18 +794,18 @@ lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
 <p>We should also do a quick check to see if this is working.</p>
 <pre class="r"><code>boot_sample(sim_df_nonconst)
 ## # A tibble: 250 x 3
-##            x        error        y
-##        &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;
-##  1 0.8143844  0.378151316 4.821305
-##  2 2.5324943  0.003005011 9.600488
-##  3 0.7643021 -0.406254684 3.886652
-##  4 0.4130584 -0.073713187 3.165462
-##  5 0.4468188 -0.189337605 3.151119
-##  6 1.7516382  0.113639546 7.368554
-##  7 0.3410232 -0.466086551 2.556983
-##  8 1.4392126 -0.356144561 5.961493
-##  9 0.5995801  0.963949357 4.762690
-## 10 1.7566668  0.161468988 7.431470
+##              x       error          y
+##          &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+##  1  1.33087649 -1.52057755  4.4720519
+##  2  0.69118694  0.63736907  4.7109299
+##  3  0.16967735  0.30451734  2.8135494
+##  4 -0.06262279  0.02647935  1.8386110
+##  5 -0.96325249 -0.24764635 -1.1374038
+##  6  1.71289428 -2.57029515  4.5683877
+##  7  2.12795361  3.21121251 11.5950734
+##  8  1.65522764  1.58117805  8.5468610
+##  9 -0.70365949 -0.24969978 -0.3606783
+## 10 -0.70365949 -0.24969978 -0.3606783
 ## # ... with 240 more rows</code></pre>
 <p>That looks about right.</p>
 </div>
@@ -812,12 +814,12 @@ lm(y ~ x, data = sim_df_nonconst) %&gt;% summary()
 <p>We’re going to draw repeated samples with replacement, and then analyze each of those samples separately. It would be really great to have a data structure that makes it possible to keep track of everything. Maybe a <strong><em>list column</em></strong>??!</p>
 <p>Let’s give that a try:</p>
 <pre class="r"><code>boot_straps = data_frame(
-  strap_number = 1:100,
-  strap_sample = rerun(100, boot_sample(sim_df_nonconst))
+  strap_number = 1:1000,
+  strap_sample = rerun(1000, boot_sample(sim_df_nonconst))
 )
 
 boot_straps
-## # A tibble: 100 x 2
+## # A tibble: 1,000 x 2
 ##    strap_number       strap_sample
 ##           &lt;int&gt;             &lt;list&gt;
 ##  1            1 &lt;tibble [250 x 3]&gt;
@@ -830,7 +832,7 @@ boot_straps
 ##  8            8 &lt;tibble [250 x 3]&gt;
 ##  9            9 &lt;tibble [250 x 3]&gt;
 ## 10           10 &lt;tibble [250 x 3]&gt;
-## # ... with 90 more rows</code></pre>
+## # ... with 990 more rows</code></pre>
 <p>We can do a few of quick checks to make sure this has worked as intended. First we’ll look at a couple of bootstrap samples.</p>
 <pre class="r"><code>boot_straps %&gt;% 
   filter(strap_number %in% 1:2) %&gt;% 
@@ -838,41 +840,41 @@ boot_straps
   pull(strap_sample)
 ## [[1]]
 ## # A tibble: 250 x 3
-##             x       error          y
-##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-##  1 -1.5308715  1.49730217 -1.0953124
-##  2 -1.5308715  1.49730217 -1.0953124
-##  3 -1.2329380 -1.97958137 -3.6783954
-##  4 -1.2329380 -1.97958137 -3.6783954
-##  5 -0.9901198 -0.49614878 -1.4665082
-##  6 -0.9901198 -0.49614878 -1.4665082
-##  7 -0.9083691  1.06963768  0.3445302
-##  8 -0.9060899 -0.03923387 -0.7575034
-##  9 -0.9060899 -0.03923387 -0.7575034
-## 10 -0.6164885 -0.48290977 -0.3323753
+##             x      error          y
+##         &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1 -1.1190612 -0.1869410 -1.5441245
+##  2 -1.1190612 -0.1869410 -1.5441245
+##  3 -0.7590868  0.1464988 -0.1307615
+##  4 -0.6753322  0.3238676  0.2978710
+##  5 -0.6753322  0.3238676  0.2978710
+##  6 -0.6580509 -0.5091784 -0.4833310
+##  7 -0.6066772  0.2805913  0.4605596
+##  8 -0.6066772  0.2805913  0.4605596
+##  9 -0.6066772  0.2805913  0.4605596
+## 10 -0.4899362  0.1486100  0.6788013
 ## # ... with 240 more rows
 ## 
 ## [[2]]
 ## # A tibble: 250 x 3
 ##             x       error          y
 ##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-##  1 -2.0234321 -2.02348598 -6.0937823
-##  2 -2.0234321 -2.02348598 -6.0937823
-##  3 -1.2329380 -1.97958137 -3.6783954
-##  4 -0.9164560 -0.71560010 -1.4649682
-##  5 -0.9083691  1.06963768  0.3445302
-##  6 -0.9083691  1.06963768  0.3445302
-##  7 -0.6164885 -0.48290977 -0.3323753
-##  8 -0.5944465  1.63525512  1.8519156
-##  9 -0.5944465  1.63525512  1.8519156
-## 10 -0.4682730  0.03944407  0.6346249
+##  1 -1.3210170  1.93841419 -0.0246369
+##  2 -0.8537405 -0.20970649 -0.7709279
+##  3 -0.8537405 -0.20970649 -0.7709279
+##  4 -0.7590868  0.14649877 -0.1307615
+##  5 -0.6580509 -0.50917842 -0.4833310
+##  6 -0.6266727  0.51447419  0.6344561
+##  7 -0.5800008  0.27154449  0.5315422
+##  8 -0.4899362  0.14861002  0.6788013
+##  9 -0.4798270  0.08344474  0.6439637
+## 10 -0.4686977  0.02825628  0.6221630
 ## # ... with 240 more rows</code></pre>
 <p>Seems okay – some values are repeated, some don’t appear in both datasets. Next I’ll use ggplot to show some of these datasets, and to include a linear fit for each.</p>
 <pre class="r"><code>boot_straps %&gt;% 
   filter(strap_number %in% 1:3) %&gt;% 
   unnest() %&gt;% 
   ggplot(aes(x = x, y = y)) + 
-  geom_point() +
+  geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;, se = FALSE) +
   facet_grid(~strap_number) </code></pre>
 <p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
@@ -889,15 +891,23 @@ boot_straps
   select(-strap_sample, -models) %&gt;% 
   unnest() %&gt;% 
   group_by(term) %&gt;% 
-  summarize(boot_se = sd(estimate))</code></pre>
+  summarize(boot_se = sd(estimate))
+
+bootstrap_results
+## # A tibble: 2 x 2
+##          term    boot_se
+##         &lt;chr&gt;      &lt;dbl&gt;
+## 1 (Intercept) 0.05243624
+## 2           x 0.08219472</code></pre>
 <p>Comparing these to the results of ordinary least squares, we see that the standard error for the intercept is much smaller and the standard error for the intercept is a bit larger. This is reasonable, given the non-constant variance in the data given smaller residuals around zero and larger residuals in the the tails of the <code>x</code> distribution.</p>
 <p>In this case, we can expand the three-panel plot we showed previously to visualize the results of our bootstrap process.</p>
 <pre class="r"><code>boot_straps %&gt;% 
   unnest() %&gt;% 
   ggplot(aes(x = x, y = y)) + 
-  geom_line(aes(group = strap_number), stat = &quot;smooth&quot;, method = &quot;lm&quot;, se = FALSE, alpha = .2, color = &quot;blue&quot;) +
-  geom_point(data = sim_df_nonconst)</code></pre>
+  geom_line(aes(group = strap_number), stat = &quot;smooth&quot;, method = &quot;lm&quot;, se = FALSE, alpha = .1, color = &quot;blue&quot;) +
+  geom_point(data = sim_df_nonconst, alpha = .5)</code></pre>
 <p><img src="listcols_and_bootstrapping_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
+<p>In comparison to the standard error bands in our previous plot (which are based on OLS), the distribution of regression lines is narrower near <span class="math inline">\(x = 0\)</span> and wider at the ends of the <span class="math inline">\(x\)</span> distribution.</p>
 </div>
 <div id="bootstrap" class="section level3">
 <h3><code>bootstrap</code></h3>
@@ -906,28 +916,28 @@ boot_straps
 
 boot_straps = 
   sim_df_nonconst %&gt;% 
-  bootstrap(n = 100)
+  bootstrap(n = 1000)
 
 boot_straps$strap[[1]]
-## &lt;resample [250 x 3]&gt; 243, 50, 152, 185, 171, 189, 30, 135, 188, 39, ...
+## &lt;resample [250 x 3]&gt; 77, 192, 117, 181, 71, 156, 25, 164, 5, 190, ...
 as_data_frame(boot_straps$strap[[1]])
 ## # A tibble: 250 x 3
-##             x       error         y
-##         &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
-##  1  1.5914236 -0.06631404  6.707957
-##  2  2.7171293  0.51787611 10.669264
-##  3  3.7832655  0.75271387 14.102510
-##  4  0.7061986 -0.36579665  3.752799
-##  5  0.2119224  0.22232217  2.858089
-##  6  0.6205200 -0.43105296  3.430507
-##  7  0.4293864  0.09282566  3.380985
-##  8  1.0442217 -0.07629384  5.056371
-##  9  2.7794938 -0.84352300  9.494959
-## 10 -0.9164560 -0.71560010 -1.464968
+##             x       error          y
+##         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+##  1 -0.4798270  0.08344474  0.6439637
+##  2  1.9953319 -1.13638627  6.8496093
+##  3  2.0399236  1.27244930  9.3922201
+##  4  1.4255131 -0.13224292  6.1442964
+##  5  1.3809222  1.09301221  7.2357789
+##  6 -1.3210170  1.93841419 -0.0246369
+##  7 -0.2651980 -0.48330556  0.7211004
+##  8  0.3005969  0.33207021  3.2338610
+##  9  1.2945451 -0.66055573  5.2230797
+## 10  1.0463614 -0.01826971  5.1208146
 ## # ... with 240 more rows</code></pre>
 <p>Let’s repeat our analysis pipeline using the <code>bootstrap</code> function instead of our own process for drawing samples with replacement.</p>
 <pre class="r"><code>sim_df_nonconst %&gt;% 
-  bootstrap(n = 100) %&gt;% 
+  bootstrap(n = 1000) %&gt;% 
   mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
          results = map(models, broom::tidy)) %&gt;% 
   select(-strap, -models) %&gt;% 
@@ -935,11 +945,26 @@ as_data_frame(boot_straps$strap[[1]])
   group_by(term) %&gt;% 
   summarize(boot_se = sd(estimate))
 ## # A tibble: 2 x 2
-##          term   boot_se
-##         &lt;chr&gt;     &lt;dbl&gt;
-## 1 (Intercept) 0.1191009
-## 2           x 0.1336142</code></pre>
+##          term    boot_se
+##         &lt;chr&gt;      &lt;dbl&gt;
+## 1 (Intercept) 0.05449120
+## 2           x 0.08205595</code></pre>
 <p>The results are the same (up to resampling variability), and the code to get here is pretty clean.</p>
+<p>Also, check this out – to bootstrap the dataset with constant error variance, we only have to change the input dataframe!</p>
+<pre class="r"><code>sim_df_const %&gt;% 
+  bootstrap(n = 1000) %&gt;% 
+  mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
+         results = map(models, broom::tidy)) %&gt;% 
+  select(-strap, -models) %&gt;% 
+  unnest() %&gt;% 
+  group_by(term) %&gt;% 
+  summarize(boot_se = sd(estimate))
+## # A tibble: 2 x 2
+##          term    boot_se
+##         &lt;chr&gt;      &lt;dbl&gt;
+## 1 (Intercept) 0.08713572
+## 2           x 0.06521388</code></pre>
+<p>These results generally agree with the output of the OLS procedure, which is nice.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
