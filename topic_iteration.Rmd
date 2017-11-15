@@ -8,7 +8,7 @@ This topic is made up of the following components:
 
 * [Writing functions](writing_functions.html)
 * [Iteration and simulation](iteration_and_simulation.html)
-* [List columns and resampling](listcols_and_resampling.html)
+* [List columns and bootstrapping](listcols_and_bootstrapping.html)
 
 The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C7CGD92CX).
 
