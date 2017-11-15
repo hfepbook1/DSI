@@ -28,10 +28,10 @@ All homework assignments are covered by the course [policy on collaboration](pol
     * Available 11/8 and due 11/17 by 5:00. 
     * [Assignment](homework_6.html)
 * Homework 7:  
-    * Available 11/15 and due 11/27 by 1:00. 
+    * Available 11/15 and due 12/1 by 5:00. 
     * [Assignment](homework_7.html)
 * Homework 8:  
-    * Available 12/6 and due 12/13 by 1:00. 
+    * Available 11/29 and due 12/13 by 1:00. 
     * [Assignment](homework_8.html)
 
 The midterm project is not covered by the course policy on collaboration -- you are expected to work independently. 

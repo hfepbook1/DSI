@@ -1,0 +1,120 @@
+---
+title: "Homework 7"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Context
+
+This assignment reinforces ideas in [Iteration](topic_iteration.html). 
+
+### Due date
+
+Due: December 1 at 5:00pm. 
+
+### Points
+
+* Problem 0: 10 points
+* Problem 1: 20 points
+* Problem 2: 20 points
+* Problem 3: 25 points
+* Problem 4: 25 points
+
+
+### Problem 0
+
+This "problem" focuses on structure of your submission, including reproducibility, organization, clearness, and naming structures. 
+
+To that end: 
+
+* create a directory named `p8105_hw5_YOURUNI` (e.g. `p8105_hw5_ajg2202` for Jeff)
+* put an R project in the directory
+* create a single .Rmd file named `p8105_hw5_YOURUNI.Rmd`
+
+Data used in this homework will should appear in a separate directory called `data`; use relative paths starting with `../data/` to load data.
+
+Your solutions to Problems 1+ should be included in your .Rmd file, and your submission for this assignment will be a zip file of the directory named `p8105_hw7_YOURUNI`. 
+
+We will assess adherence to the instructions above and whether we are able to knit your .Rmd -- that is, whether your work is reproducible -- in the grading of this problem. Adherence to appropriate styling and clarity of code will be assessed in Problems 1+. The readability of any embedded plots (e.g. font sizes, axis labels, titles) will be assessed in Problems 1+. 
+
+
+### Problem 1
+
+The code chunk below loads the `iris` dataset from the `tidyverse` package and introduces some missing values in each column. The purpose of this problem is to fill in those missing values.
+
+```{r data_creation, eval = FALSE}
+library(tidyverse)
+
+set.seed(10)
+
+iris_with_missing = iris %>% 
+  map_df(~replace(.x, sample(1:150, 20), NA)) %>%
+  mutate(Species = as.character(Species))
+```
+
+There are two cases to address: 
+
+* For numeric variables, you should fill in missing values with the mean of non-missing values
+* For character variables, you should fill in missing values with `"virginica"`
+
+Write a function that takes a vector as an argument; replaces missing values using the rules defined above; and returns the resulting vector. Apply this function to the columns of `iris_with_missing` using a `map` statement. 
+
+Sometimes you might want to use the mean of numeric variables; other times you might want to use the median. Edit your function so that different summaries can be used for numeric variables. Apply this function to the columns of `iris_with_missing` using a `map` statement, first using `mean` and then using `median`. 
+
+
+### Problem 2
+
+This problem uses the [Airbnb data](./dataset_airbnb.html). 
+
+Load and tidy the data as needed for analysis. Nest columns within boro and describe the resulting data frame. 
+
+Using `mutate` + `map` (and other functions as necessary), fit models for rental price as an outcome using rating and room type as predictors. Extract the results of your modeling and unnest the result. Present the results of your analysis, using text, tables, and figures as appropriate. 
+
+
+### Problem 3
+
+When designing an experiment or analysis, a common question is whether it is likely that a true effect will be detected – put differently, whether a false null hypothesis will be rejected. The probability that a false null hypothesis is rejected is referred to as power, and it depends on several factors, including: the sample size; the effect size; and the error variance. In this problem, you will conduct a simulation to explore power in a multiple linear regression.
+
+First set the following design elements:
+
+* Fix $n=30$
+* Fix $x_{i1}$ and $x_{i2}$ as draws from independent standard normal distributions 
+* Fix $\beta_0=1$ and $\beta_1 = 1$.
+* Fix $\sigma^2 = 50$
+
+Next, set $\beta_2=0$. Generate 10000 datasets from the model 
+$$ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \epsilon_{i} $$
+with $\epsilon_{i} ∼ N[0,\sigma^2]$. For each dataset, save $\hat{\beta}_2$ and the p-value arising from a test of $H : \beta_2 = 0$ using $\alpha = 0.05$.
+
+Repeat the above for $\beta_2 = \{1, 2, 3, 4, 5, 6\}$, and complete the following:
+
+* Make a plot showing the proportion of times the null was rejected (the power of the text) on the y axis and the effect size of $\beta_2$ on the x axis. Describe the association between effect size and power.
+* Make a plot showing the average estimate of $\hat{\beta}_2$ on the y axis and the effect size of $\beta_2$ on the x axis. Make a second plot (or overlay on the first) the average estimate of $\hat{\beta}_2$ in tests for which the null is rejected on the y axis and the effect size on the x axis. Is the sample average of $\hat{\beta}_2$ across tests for which the null is rejected approximately equal to the true value of $\beta_2$? Why or why not?
+
+
+### Problem 4
+
+In [list columns and bootstrapping](listcols_and_bootstrapping.html), we saw an example using the bootstrap when assumptions underlying an approach aren't met. It is also useful when the distribution of a statistic of interest is difficult or impossible to obtain.
+
+In this problem we'll revisit the simulation design below.
+
+```{r, eval = FALSE}
+set.seed(10)
+
+n_samp = 25
+
+sim_df_const = tibble(
+  x = rnorm(n_samp, 1, 1),
+  error = rnorm(n_samp, 0, 1),
+  y = 2 + 3 * x + error
+)
+```
+
+For various reasons, I'm interested in the distribution of $\hat{\theta} = \log \left(\frac{\hat{\beta}_0}{\hat{\beta}_1} \right)$. This distribution can be difficult to obtain analytically (although it is not impossible). Using the bootstrap, produce an empirical distribution for $\hat{\theta}$; illustrate this distribution graphically.
+
+Increase the size of the simulated dataset to 50 and repeat the bootstrap procedure above. Increase again to 250 and repeat. Comment on your results. 
+
+
+

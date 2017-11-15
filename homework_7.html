@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework 7</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Science I</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="topic_what_is_data_science.html">What is Data Science?</a>
+    </li>
+    <li>
+      <a href="topic_building_blocks.html">Building Blocks</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_i.html">Data Wrangling I</a>
+    </li>
+    <li>
+      <a href="topic_visualization_and_eda.html">Visualization and EDA</a>
+    </li>
+    <li>
+      <a href="topic_collaboration.html">Collaboration</a>
+    </li>
+    <li>
+      <a href="topic_data_wrangling_ii.html">Data Wrangling II</a>
+    </li>
+    <li>
+      <a href="topic_interactivity.html">Interactivity</a>
+    </li>
+    <li>
+      <a href="topic_iteration.html">Iteration</a>
+    </li>
+    <li>
+      <a href="topic_r_packages.html">R Packages</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Datasets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dataset_mr_trash_wheel.html">Mr. Trash Wheel</a>
+    </li>
+    <li>
+      <a href="dataset_restaurant_inspections.html">NYC Restaurant Inspections</a>
+    </li>
+    <li>
+      <a href="dataset_instacart.html">Instacart</a>
+    </li>
+    <li>
+      <a href="dataset_fivethirtyeight.html">FiveThirtyEight</a>
+    </li>
+    <li>
+      <a href="dataset_noaa.html">NOAA</a>
+    </li>
+    <li>
+      <a href="dataset_airbnb.html">Airbnb</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="homework_and_projects.html">Homework and Projects</a>
+</li>
+<li>
+  <a href="course_communication.html">Communication</a>
+</li>
+<li>
+  <a href="http://github.com/jeff-goldsmith/DSI/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework 7</h1>
+
+</div>
+
+
+<div id="context" class="section level3">
+<h3>Context</h3>
+<p>This assignment reinforces ideas in <a href="topic_iteration.html">Iteration</a>.</p>
+</div>
+<div id="due-date" class="section level3">
+<h3>Due date</h3>
+<p>Due: December 1 at 5:00pm.</p>
+</div>
+<div id="points" class="section level3">
+<h3>Points</h3>
+<ul>
+<li>Problem 0: 10 points</li>
+<li>Problem 1: 20 points</li>
+<li>Problem 2: 20 points</li>
+<li>Problem 3: 25 points</li>
+<li>Problem 4: 25 points</li>
+</ul>
+</div>
+<div id="problem-0" class="section level3">
+<h3>Problem 0</h3>
+<p>This “problem” focuses on structure of your submission, including reproducibility, organization, clearness, and naming structures.</p>
+<p>To that end:</p>
+<ul>
+<li>create a directory named <code>p8105_hw5_YOURUNI</code> (e.g. <code>p8105_hw5_ajg2202</code> for Jeff)</li>
+<li>put an R project in the directory</li>
+<li>create a single .Rmd file named <code>p8105_hw5_YOURUNI.Rmd</code></li>
+</ul>
+<p>Data used in this homework will should appear in a separate directory called <code>data</code>; use relative paths starting with <code>../data/</code> to load data.</p>
+<p>Your solutions to Problems 1+ should be included in your .Rmd file, and your submission for this assignment will be a zip file of the directory named <code>p8105_hw7_YOURUNI</code>.</p>
+<p>We will assess adherence to the instructions above and whether we are able to knit your .Rmd – that is, whether your work is reproducible – in the grading of this problem. Adherence to appropriate styling and clarity of code will be assessed in Problems 1+. The readability of any embedded plots (e.g. font sizes, axis labels, titles) will be assessed in Problems 1+.</p>
+</div>
+<div id="problem-1" class="section level3">
+<h3>Problem 1</h3>
+<p>The code chunk below loads the <code>iris</code> dataset from the <code>tidyverse</code> package and introduces some missing values in each column. The purpose of this problem is to fill in those missing values.</p>
+<pre class="r"><code>library(tidyverse)
+
+set.seed(10)
+
+iris_with_missing = iris %&gt;% 
+  map_df(~replace(.x, sample(1:150, 20), NA)) %&gt;%
+  mutate(Species = as.character(Species))</code></pre>
+<p>There are two cases to address:</p>
+<ul>
+<li>For numeric variables, you should fill in missing values with the mean of non-missing values</li>
+<li>For character variables, you should fill in missing values with <code>&quot;virginica&quot;</code></li>
+</ul>
+<p>Write a function that takes a vector as an argument; replaces missing values using the rules defined above; and returns the resulting vector. Apply this function to the columns of <code>iris_with_missing</code> using a <code>map</code> statement.</p>
+<p>Sometimes you might want to use the mean of numeric variables; other times you might want to use the median. Edit your function so that different summaries can be used for numeric variables. Apply this function to the columns of <code>iris_with_missing</code> using a <code>map</code> statement, first using <code>mean</code> and then using <code>median</code>.</p>
+</div>
+<div id="problem-2" class="section level3">
+<h3>Problem 2</h3>
+<p>This problem uses the <a href="./dataset_airbnb.html">Airbnb data</a>.</p>
+<p>Load and tidy the data as needed for analysis. Nest columns within boro and describe the resulting data frame.</p>
+<p>Using <code>mutate</code> + <code>map</code> (and other functions as necessary), fit models for rental price as an outcome using rating and room type as predictors. Extract the results of your modeling and unnest the result. Present the results of your analysis, using text, tables, and figures as appropriate.</p>
+</div>
+<div id="problem-3" class="section level3">
+<h3>Problem 3</h3>
+<p>When designing an experiment or analysis, a common question is whether it is likely that a true effect will be detected – put differently, whether a false null hypothesis will be rejected. The probability that a false null hypothesis is rejected is referred to as power, and it depends on several factors, including: the sample size; the effect size; and the error variance. In this problem, you will conduct a simulation to explore power in a multiple linear regression.</p>
+<p>First set the following design elements:</p>
+<ul>
+<li>Fix <span class="math inline">\(n=30\)</span></li>
+<li>Fix <span class="math inline">\(x_{i1}\)</span> and <span class="math inline">\(x_{i2}\)</span> as draws from independent standard normal distributions</li>
+<li>Fix <span class="math inline">\(\beta_0=1\)</span> and <span class="math inline">\(\beta_1 = 1\)</span>.</li>
+<li>Fix <span class="math inline">\(\sigma^2 = 50\)</span></li>
+</ul>
+<p>Next, set <span class="math inline">\(\beta_2=0\)</span>. Generate 10000 datasets from the model <span class="math display">\[ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \epsilon_{i} \]</span> with <span class="math inline">\(\epsilon_{i} ∼ N[0,\sigma^2]\)</span>. For each dataset, save <span class="math inline">\(\hat{\beta}_2\)</span> and the p-value arising from a test of <span class="math inline">\(H : \beta_2 = 0\)</span> using <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p>Repeat the above for <span class="math inline">\(\beta_2 = \{1, 2, 3, 4, 5, 6\}\)</span>, and complete the following:</p>
+<ul>
+<li>Make a plot showing the proportion of times the null was rejected (the power of the text) on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Describe the association between effect size and power.</li>
+<li>Make a plot showing the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> on the y axis and the effect size of <span class="math inline">\(\beta_2\)</span> on the x axis. Make a second plot (or overlay on the first) the average estimate of <span class="math inline">\(\hat{\beta}_2\)</span> in tests for which the null is rejected on the y axis and the effect size on the x axis. Is the sample average of <span class="math inline">\(\hat{\beta}_2\)</span> across tests for which the null is rejected approximately equal to the true value of <span class="math inline">\(\beta_2\)</span>? Why or why not?</li>
+</ul>
+</div>
+<div id="problem-4" class="section level3">
+<h3>Problem 4</h3>
+<p>In <a href="listcols_and_bootstrapping.html">list columns and bootstrapping</a>, we saw an example using the bootstrap when assumptions underlying an approach aren’t met. It is also useful when the distribution of a statistic of interest is difficult or impossible to obtain.</p>
+<p>In this problem we’ll revisit the simulation design below.</p>
+<pre class="r"><code>set.seed(10)
+
+n_samp = 25
+
+sim_df_const = tibble(
+  x = rnorm(n_samp, 1, 1),
+  error = rnorm(n_samp, 0, 1),
+  y = 2 + 3 * x + error
+)</code></pre>
+<p>For various reasons, I’m interested in the distribution of <span class="math inline">\(\hat{\theta} = \log \left(\frac{\hat{\beta}_0}{\hat{\beta}_1} \right)\)</span>. This distribution can be difficult to obtain analytically (although it is not impossible). Using the bootstrap, produce an empirical distribution for <span class="math inline">\(\hat{\theta}\)</span>; illustrate this distribution graphically.</p>
+<p>Increase the size of the simulated dataset to 50 and repeat the bootstrap procedure above. Increase again to 250 and repeat. Comment on your results.</p>
+</div>
+
+<br><br>
+<footer>
+    <p class="copyright text-muted" align="center">Copyright &copy; 2017 Jeff Goldsmith</p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
