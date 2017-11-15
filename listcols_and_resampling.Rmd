@@ -6,7 +6,9 @@ output:
     toc_float: true
 ---
 
-text
+R's data structures, especially data frames, are surprisingly flexible. This is useful when the "observations" you want to store become more complex than single values; for example, each row many contain a few scalar observations as well a complete data set. In these cases, _list columns_ are an appropriate column type, and `map` functions provide a way to interact with those columns.
+
+Bootstrapping is a popular resampling-based approach to statistical inference, and is helpful when usual statistical methods are intractable or inappropriate. The idea is to draw repeated samples from your original sample _with replacement_, thereby approximating the repeated sampling framework. Using list columns to store bootstrap samples is natural and provides a "tidy" approach to resampling-based inference.
 
 This is the third module in the [Iteration](topic_iteration.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C7WC2UPT7).
 
@@ -28,8 +30,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-I'll write code for today's content in a new R Markdown document called `listcols_and_resampling.Rmd` in the `example_iteration` directory / repo. The code chunk below loads the usual packages.
-
+I'll write code for today's content in a new R Markdown document called `listcols_and_bootstrapping.Rmd` in the `example_iteration` directory / repo. The code chunk below loads the usual packages.
 
 ```{r}
 library(tidyverse)
@@ -38,10 +39,11 @@ theme_set(theme_bw())
 theme_update(legend.position = "bottom")
 ```
 
+Things are gonna get a little weird.
 
-things are gonna get weird.
+### Weather data
 
-### nest weather data
+Remember the weather data?
 
 ```{r weather_data_create, cache = TRUE}
 library(rnoaa)
@@ -60,6 +62,7 @@ weather =
   select(name, id, everything())
 ```
 
+The station name and id are constant across remaining observations. For that reason, we could organize a new DF with three rows -- one for each station -- and a column that includes everything else. This is what the nest function does. 
 
 ```{r}
 weather = 
@@ -68,12 +71,34 @@ weather =
 weather
 ```
 
+The `data` column is a *list column* -- on it's own, it's a list. This is similar to the name column being a character column, becuase it contains a character vector.
+
+Inpecting the data column gives an idea of what's going on.
+
+```{r}
+weather$data
+```
+
+We can also access specific entries in the list column, which (in this case) are data frames. 
 
 ```{r}
 weather$data[[1]]
 ```
 
+Nesting columns can help with data organization / understanding by masking stuff you're less concerned about right now and clarifying the things you are concerned about. It also simplifies the use of analytic approaches across levels of a higher variable. 
+
+Also possible to reverse if your list col is contains data frames. 
+
+```{r}
+unnest(weather)
+```
+
+
 ### operations on list columns
+
+It would be great to be able to manipulate list columns, but usual operations (like `mean` or `recode`) often don't apply to the entries in a list column. 
+
+write a quick function
 
 ```{r}
 weather_lm = function(df) {
@@ -81,13 +106,25 @@ weather_lm = function(df) {
 }
 ```
 
+try it on one df
+
 ```{r}
 weather_lm(weather$data[[1]])
 ```
 
+use map to apply it everywhere
+
 ```{r}
 map(weather$data, weather_lm)
 ```
+
+note you can use an "anonymous" function using `map`'s syntax.
+
+```{r}
+map(weather$data, ~lm(tmax ~ tmin, data = .x))
+```
+
+result of map is a list; can store results as a new list column.
 
 ```{r}
 weather = 
@@ -96,6 +133,18 @@ weather =
 
 weather
 ```
+
+this is great! keeps track of everything
+
+what about other things -- summarizing, for example. that's easy with `broom::tidy`. that produces a df; let's look at a quick example. 
+
+
+```{r}
+lm(tmax ~ tmin, data = weather$data[[1]]) %>% 
+  broom::tidy()
+```
+
+we can remove other stuff then unnest. since tidy produces a data frame, unnesting this gives nicely-structured output. 
 
 ```{r}
 weather = 
@@ -106,6 +155,10 @@ weather =
 
 weather
 ```
+
+This is really handy!!
+
+Note that this isn't, generally speaking, the right way to analyze data like these. We have datasets nested within stations -- for that kind of data, a hierarchical / random effects model is more appropriate. But this is a quick and easy way to get useful answers in an exploratory way.
 
 
 ### Instacart data
@@ -119,34 +172,128 @@ Why bootstrap
 
 simulate data coming from a model with increasing variance
 
+```{r}
+set.seed(10)
+
+n_samp = 250
+
+df_1 = tibble(
+  x = rnorm(n_samp, 1, 1),
+  error = rnorm(n_samp, 0, 1),
+  y = 2 + 3 * x + error
+)
+
+df_2 = df_1 %>% 
+  mutate(
+  error = error * .75 * x,
+  y = 2 + 3 * x + error
+)
+
+bind_rows(
+  mutate(df_1, data = "df_1"),
+  mutate(df_2, data = "df_2")
+) %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point() +
+  stat_smooth(method = "lm") +
+  facet_grid(~data) 
+
+lm(y ~ x, data = df_1) %>% summary()
+lm(y ~ x, data = df_2) %>% summary()
+```
+
 point out that OLS estimates will understate variance. 
 
 bootstrapping can help here (note: WLS would also work, and might be better).
 
+write a function to do resampling from the population.
+
+
 ### BS samples as list col
 
-```{r, eval = FALSE}
+```{r}
 boot_sample = function(df) {
-  sample_n(df)
+  sample_frac(df, replace = TRUE)
 }
 
 boot_straps = data_frame(
   strap_number = 1:100,
-  strap_sample = boot_sample(sim_data)
+  strap_sample = rerun(100, boot_sample(df_2))
 )
+
+boot_straps
 ```
 
-fit models
+some quick checks
 
-extract results
+```{r}
+boot_straps %>% 
+  mutate(mean_y = map_dbl(.x = strap_sample, ~mean(.x$y) ) )
+
+boot_straps %>% 
+  filter(strap_number %in% 1:3) %>% 
+  unnest() %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  facet_grid(~strap_number) 
+```
+
+
+fit models; extract results
+
+
+```{r}
+boot_straps %>% 
+  mutate(models = map(strap_sample, ~lm(y ~ x, data = .x) ),
+         results = map(models, broom::tidy)) %>% 
+  select(-strap_sample, -models) %>% 
+  unnest() %>% 
+  group_by(term) %>% 
+  summarize(boot_se = sd(estimate))
+```
+
+
 
 make some plots
+
+
+```{r}
+boot_straps %>% 
+  unnest() %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_line(aes(group = strap_number), stat = "smooth", method = "lm", se = FALSE, alpha = .2, color = "blue") +
+  geom_point(data = df_2)
+```
+
 
 ### `bootstrap`
 
 Show how this works using `bootstrap()`
 
+```{r}
+library(modelr)
 
+boot_straps = 
+  df_2 %>% 
+  bootstrap(n = 100)
+
+boot_straps$strap[[1]]
+as_data_frame(boot_straps$strap[[1]])
+```
+
+```{r}
+
+df_2 %>% 
+  bootstrap(n = 100) %>% 
+  mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
+         results = map(models, broom::tidy)) %>% 
+  select(-strap, -models) %>% 
+  unnest() %>% 
+  group_by(term) %>% 
+  summarize(boot_se = sd(estimate))
+
+```
 
 ## Other materials
 
@@ -159,4 +306,5 @@ Show how this works using `bootstrap()`
 * https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html
 * https://github.com/tidyverse/broom/blob/master/vignettes/bootstrapping.Rmd
 * https://github.com/tidyverse/modelr
+
 The code that I produced working examples in lecture is [here](ZZZZZ).
