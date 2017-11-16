@@ -385,7 +385,7 @@ title: &quot;Untitled&quot;
 output: 
   flexdashboard::flex_dashboard:
     orientation: row
-  runtime: shiny
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -426,12 +426,35 @@ Row {.tabset .tabset-fade}
 <p>Notice that we have added <code>runtime: shiny</code> to the YAML header. We are also using slightly different layout than we used in the last class. We have a sidebar column, spaces for plots are in rows instead of columns, and we have tabsets.</p>
 <p>Add the following libraries to your dashboard.</p>
 <pre class="r"><code>library(tidyverse)
+## ── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.3.4     ✔ dplyr   0.7.4
+## ✔ tidyr   0.7.2     ✔ stringr 1.2.0
+## ✔ readr   1.1.1     ✔ forcats 0.2.0
+## Warning: package &#39;tidyr&#39; was built under R version 3.4.2
+## Warning: package &#39;purrr&#39; was built under R version 3.4.2
+## Warning: package &#39;dplyr&#39; was built under R version 3.4.2
+## ── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
 library(janitor)
 library(stringr)
 library(forcats)
 library(viridis)
+## Loading required package: viridisLite
 
 library(plotly)
+## 
+## Attaching package: &#39;plotly&#39;
+## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter
+## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout
 
 library(shiny)</code></pre>
 <p>Once again we’re going to focus on the <a href="dataset_airbnb.html">Airbnb</a> data for this topic. The goal is to make a dashboard similar to the one from the last lecture but with additional interactive elements. The code below extracts, loads and cleans the data, and selects only a few of the variables.</p>
@@ -471,8 +494,7 @@ airbnb_data = read_csv(&quot;./data/nyc_airbnb.zip&quot;) %&gt;%
 
 # selectInput widget
 selectInput(&quot;boro_choice&quot;, label = h3(&quot;Select boro&quot;),
-            choices = boros, selected = &quot;Manhattan&quot;)
-</code></pre>
+            choices = boros, selected = &quot;Manhattan&quot;)</code></pre>
 <p>Now we can select each of the different boros in New York. But how do we use this to update our dataset or plot?</p>
 <pre class="r"><code>renderPrint({ 
   input$boro_choice
@@ -510,8 +532,7 @@ radioButtons(&quot;room_choice&quot;, label = h3(&quot;Choose room type&quot;),
           alpha = 0.5, 
           color = ~price,
           text = ~text_label)
-})
-</code></pre>
+})</code></pre>
 <p>The plot shows up, but in order to get it to change along with user input options from the sidebar, we need to add some Shiny <code>input$</code> calls.</p>
 <p>Here’s a code chunk that incorporates the user input.</p>
 <pre class="r"><code>renderPlotly({
@@ -534,8 +555,7 @@ radioButtons(&quot;room_choice&quot;, label = h3(&quot;Choose room type&quot;),
   count(neighbourhood) %&gt;% 
   mutate(neighbourhood = fct_reorder(neighbourhood, n)) %&gt;% 
   plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = &quot;bar&quot;)
-})
-</code></pre>
+})</code></pre>
 <p>Notice that neighborhoods change with choice of boro.</p>
 </div>
 <div id="interactive-boxplot" class="section level3">

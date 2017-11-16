@@ -61,7 +61,6 @@ airbnb_data = read_csv("./data/nyc_airbnb.zip") %>%
   select(boro = neighbourhood_group, neighbourhood, rating, price, room_type,
          latitude, longitude) %>%
   filter(!is.na(rating)) 
-
 ```
 
 We are going to filter the dataset interactively by taking user input, and use this dataset as the basis for our plots.
@@ -76,7 +75,6 @@ boros = airbnb_data %>% distinct(boro) %>% pull()
 # selectInput widget
 selectInput("boro_choice", label = h3("Select boro"),
             choices = boros, selected = "Manhattan")
-
 ```
 
 Now we can select each of the different boros in New York. But how do we use this to update our dataset or plot?
@@ -130,7 +128,6 @@ renderPlotly({
           color = ~price,
           text = ~text_label)
 })
-
 ```
 
 The plot shows up, but in order to get it to change along with user input options from the sidebar, we need to add some Shiny `input$` calls.  
@@ -163,7 +160,6 @@ renderPlotly({
   mutate(neighbourhood = fct_reorder(neighbourhood, n)) %>% 
   plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = "bar")
 })
-
 ```
 
 Notice that neighborhoods change with choice of boro.

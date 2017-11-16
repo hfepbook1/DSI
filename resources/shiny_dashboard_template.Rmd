@@ -3,7 +3,7 @@ title: "Untitled"
 output: 
   flexdashboard::flex_dashboard:
     orientation: row
-  runtime: shiny
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
