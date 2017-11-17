@@ -101,7 +101,7 @@ In [list columns and bootstrapping](listcols_and_bootstrapping.html), we saw an 
 In this problem we'll revisit the simulation design below.
 
 ```{r, eval = FALSE}
-set.seed(10)
+set.seed(1)
 
 n_samp = 25
 
