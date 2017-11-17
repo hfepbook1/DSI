@@ -16,14 +16,14 @@ You will work closely with other classmates in a team of 4 on this project, and 
 
 ### Due dates
 
-Date                  | Description
---------------------- | -------------
-November 6 by 1:00    | Form a team and submit a proposal
-November 13-17        | Project review meeting
-December 6 by 1:00    | R Markdown and HTML 
-December 8 by 5:00    | Webpage and screencast
-December 8 by 5:00    | Peer assessment
-December 11           | In class discussion of projects
+Date                  | Description                         | Deliverable
+--------------------- | ----------------------------------- | -----------------------------------
+November 6 by 1:00    | Form a team and submit a proposal   | Written proposal document
+November 13-17        | Project review meeting              | In person meeting -- no "deliverable"
+December 6 by 1:00    | R Markdown and HTML                 | Written report giving detail project description (as a GitHub repo)
+December 8 by 5:00    | Webpage and screencast              | Webpage overview of project, with short explanatory video (published online)
+December 8 by 5:00    | Peer assessment                     | Brief assessment of your teammates contributions (as a short document)
+December 11           | In class discussion of projects     | Enjoy hearing about projects!
 
 
 ## Deliverables
@@ -68,7 +68,7 @@ Your R Markdown document and HTML file should be included in a GitHub repository
 
 You will create a webpage summarizing your project. This should not be as detailed as your submitted R Markdown and HTML files, but should give a overview of the project scope, data, approaches, visualizations, and other results. You should include a link to the GitHub repository containing your R Markdown document. 
 
-You will also create a two-minute narrated screencast illustrating your project. You may use slides, demonstrations, or any other content that is relevant to your project. Publish your screencast on youtube, vimeo, or another online platform, and embed the screencast in your website. The two-minute limit will be strictly enforced.
+You will also create a two-minute narrated screencast illustrating your project (screencasts are videos of your computer screen with spoken audio explaining what is shown on the screen -- see the [RStudio webinar page](https://www.rstudio.com/resources/webinars/) for some examples). You may use slides, demonstrations, or any other content that is relevant to your project. Publish your screencast on youtube, vimeo, or another online platform, and embed the screencast in your website. The two-minute limit will be strictly enforced.
 
 For both the website and the screencast, your audience is classmates who worked on other projects. It will be helpful to put yourself in their shoes, and ask what information you think will be most interesting. We suggest you emphasize motivation, questions, and results over methods; after all, interested folks can view your complete project on GitHub.
 
