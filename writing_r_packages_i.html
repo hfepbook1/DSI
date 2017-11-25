@@ -380,43 +380,135 @@ div.tocify {
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>Before jumping into organization, I want to revisit a recurring example from <a href="topic_iteration.html">Iteration</a>.</p>
-<p>Wrote a function to simulate from SLR and return n and estimates. Also wrote a function to repeat that nrep times and format output as a data frame.</p>
-<p>Functions are shown below, and you can download scripts 1 and 2.</p>
-<p>Show example loading packages, defining functions, and running code.</p>
-<p>That’s our motivation – we have two functions, and it’s time to write a package.</p>
+<p>Wrote a function to simulate from SLR and return n and estimates.</p>
+<pre class="r"><code>sim_regression = function(n_samp, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = rnorm(n_samp, mean = 1, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n_samp, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    n = n_samp,
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}</code></pre>
+<p>Also wrote a function to repeat that nrep times and format output as a data frame.</p>
+<pre class="r"><code>simulate_nrep = function(n_rep, n_samp, beta0, beta1) {
+  
+  rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %&gt;% 
+    bind_rows()
+  
+}</code></pre>
+<p>You can download R scripts containing <a href="./resources/sim_regression.R"><code>sim_regression</code></a> and <a href="./resources/simulate_nrep.R"><code>simulate_nreps</code></a>.</p>
+<p>These functions were used in the following context.</p>
+<pre class="r"><code>library(broom)
+library(tidyverse)
+
+sim_results = 
+  map_df(list(30, 60, 120, 240), simulate_nrep,
+         n_rep = 10, beta0 = 2, beta1 = 3) </code></pre>
+<p>That’s our motivation – we have two functions, and it’s time to write a package!</p>
 <div id="create" class="section level3">
 <h3><code>create()</code></h3>
-<p>Use devtools::create. Look at structure. Open R Project, find build tab.</p>
-<p>Don’t have to do this now, but go ahead and turn on git.</p>
+<p>I’m going to create a new package using <code>devtools::create()</code>. I’m calling this <code>example.package</code>; you might want to call yours something else.</p>
+<pre class="r"><code>library(devtools)
+create(&quot;~/Desktop/example.package&quot;)</code></pre>
+<p>(<strong>Note</strong>: you might have thought I was going to call this <code>example_package</code> in keeping with <em>literally everything else in the whole course</em>. You’d be right; that’s exactly what I was going to do. But early on CRAN decided not to let underscores in package names and that’s one of those things that just probably won’t change. Putting <code>.</code>s in package names causes other problems and I would usuall avoid it, but it seemed like the best option in this case. So here we are, stuck with <code>example.package</code>.)</p>
+<p>Contains <code>DESCRIPTION</code>, <code>NAMESPACE</code>, an empty <code>R</code> directory, and an R Project.</p>
+<p>Open R Project, find build tab – RStudio has some helpful built-in tools for package development.</p>
 </div>
 <div id="add-functions" class="section level3">
 <h3>Add functions</h3>
-<p>add functions. build and reload.</p>
-<p>edit script above to load the new package, remove function definitions, repeat. success!</p>
+<p>add functions. install and restart.</p>
+<p>Run the code below.</p>
+<pre class="r"><code>library(broom)
+library(tidyverse)
+library(example.package)
+
+rm(list = ls())
+
+simulate_nrep(n_rep = 10, n_samp = 30, beta0 = 2, beta1 = 3) </code></pre>
+<p>Note – functions aren’t defined in the global environment now, like they had been before. They’re coming from the package. That’s great!!</p>
+<p>Now try <code>?simulate_nrep</code>. There’s nothing there because we haven’t written the documentation yet, so that’s our next step.</p>
 </div>
 <div id="add-documentation" class="section level3">
 <h3>Add documentation</h3>
-<p>roxygen2 skeleton to functions; fill in some details; document(); build and reload.</p>
-<p>repeat, but now try ?sim_regression.</p>
+<p>Put cursor in the function; go to Code &gt; Insert Roxygen Skeleton.</p>
+<p>Update title, write a short summary of the function, input parameter descriptions, and return description (ignore export for now). Do the same for the other function.</p>
+<p>Use devtools::document(), or use the drop-down menu. install and restart.</p>
+<p>open the directory for the package. should have a new <code>man</code> subdirectory, with files for each function with the extension <code>.Rd</code>. These are the documentation files; you can open them if you want, but don’t edit these! Change your documentation in the roxygen stuff; keeps your functions and documentation in the same place, which is easier to keep up to date.</p>
+<p>Double check the code above still works, and try <code>?simulate_nrep</code> again.</p>
 <p>add an example (based on what we’ve been doing), build and reload.</p>
+<p>As you’re writing documentation, keep in mind that you’ll need to understand this later – this is another case where you’re collaborating with “future you”, so anything you do now to make this clear will save you time later! If you intend to share this with others, you probably need to be even more explicit in your documentation.</p>
 </div>
 <div id="package-description" class="section level3">
 <h3>Package description</h3>
+<p>Go ahead and edit the package description. There’s a lot here, some of which really only matters if you</p>
+<p>Install and restart.</p>
 </div>
 <div id="more-functions" class="section level3">
 <h3>More functions</h3>
-<p>New functions, new documentation; build, reload, try some things.</p>
-<p>Update simulate_n function to take function name, <code>...</code> argument.</p>
+<p>My package now consists of a function to simulate data from a SLR, estimate model parameters, and return the results, and a second function that reruns the first, formats the results, and returns a dataframe. This general structure could be extended to other simulation designs.</p>
+<p>The function below has the same general structure as <code>sim_regression()</code> but instead simulates data from a Bernoulli distribution and returns the sample average (script <a href="./resources/sim_bern_mean.R">here</a>.</p>
+<pre class="r"><code>sim_bern_mean = function(n_samp, prob) {
+  
+  sim_data = tibble(
+    y = rbinom(n_samp, 1, prob)
+  )
+  
+  tibble(
+    n = n_samp,
+    samp_avg = mean(sim_data$y)
+  )
+}</code></pre>
+<p>I’ll add this to my package, write some documentation, use <code>document()</code>, and install + restart. I can then check that this works the way I want.</p>
+<pre class="r"><code>library(broom)
+library(tidyverse)
+library(example.package)
+
+rm(list = ls())
+
+sim_bern_mean(25, .9)</code></pre>
+<p>A problem now is that <code>simulate_nrep</code> doesn’t take advantage of this new function, so I need to do some rewrites there. Specifically, I’ll let <code>sim_func</code> be an argument and use <code>...</code>. New function is below.</p>
+<pre class="r"><code>simulate_nrep = function(n_rep, sim_func, ...) {
+  
+  rerun(n_rep, sim_func(...)) %&gt;% 
+    bind_rows()
+  
+}</code></pre>
+<p>I’ll add this, change the documentation accordingly, <code>document()</code>, install and restart. Now I can do the following.</p>
+<pre class="r"><code>library(broom)
+library(tidyverse)
+library(example.package)
+
+rm(list = ls())
+
+simulate_nrep(10, sim_regression, n_samp = 30, beta0 = 2, beta1 = 3)</code></pre>
 </div>
 <div id="dependencies" class="section level3">
 <h3>Dependencies</h3>
-<p>Note that we’ve depended on broom, tidyverse. Add those to dependencies to roxygen, document() check namespace.</p>
-</div>
-<div id="readme" class="section level3">
-<h3>README</h3>
+<p>Note that we’ve depended on broom, tidyverse. If I opened a new R session, loaded my package, and tried to run it, I’d get an error. We’ll talk more about why this is later; for now we’ll just note that our package depends on those packages. Add those to dependencies to roxygen, document() check namespace.</p>
+<p>Also need to add this to the <code>DESCRIPTION</code>. Could do “by hand” since <code>document()</code> doesn’t touch this; instead we’ll run the following lines in the console. Check Description before and after!</p>
+<pre class="r"><code>devtools::use_package(&quot;tidyverse&quot;)
+devtools::use_package(&quot;broom&quot;)</code></pre>
+<p>Best practices would also use <code>tidyverse::fun()</code> and <code>broom::fun()</code> everywhere to make it really clear where packages are coming from; this does make a difference sometimes, although I have to say I’m not great at doing this.</p>
 </div>
 <div id="deploy-on-github" class="section level3">
 <h3>Deploy on GitHub</h3>
+<p>Throughout I’ve been using GH because that’s how to do my usual development. Turns out there’s another helpful thing – you can install packages from GH!! Try installing my package using the lines below.</p>
+<pre class="r"><code>devtools::install_github(repo = &quot;jeff-goldsmith/example.package&quot;)</code></pre>
+</div>
+<div id="readme" class="section level3">
+<h3>README</h3>
+<p>Helpful to put a short README especially if other people will need this. Files named <code>README.md</code> are handled in a special way by GH, and can be a useful way to give people a quick overview of your package without them having to install it and read the documentation first.</p>
+<p>Create a template using</p>
+<pre class="r"><code>devtools::use_readme_rmd()</code></pre>
+<p>Make some edits (I like to include installation instructions that can be copy-and-pasted).</p>
+<p>then knit, push, and check out the GH repo!</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">

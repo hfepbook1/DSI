@@ -12,6 +12,7 @@ This is the first module in the [Writing R Packages](topic_r_packages.html) topi
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   collapse = TRUE,
   fig.width = 6,
   fig.asp = .6,
@@ -30,57 +31,211 @@ knitr::opts_chunk$set(
 
 Before jumping into organization, I want to revisit a recurring example from [Iteration](topic_iteration.html).
 
-Wrote a function to simulate from SLR and return n and estimates. Also wrote a function to repeat that nrep times and format output as a data frame. 
+Wrote a function to simulate from SLR and return n and estimates. 
 
-Functions are shown below, and you can download scripts 1 and 2. 
+```{r}
+sim_regression = function(n_samp, beta0, beta1) {
+  
+  sim_data = tibble(
+    x = rnorm(n_samp, mean = 1, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n_samp, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    n = n_samp,
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+```
 
-Show example loading packages, defining functions, and running code. 
+Also wrote a function to repeat that nrep times and format output as a data frame. 
 
-That's our motivation -- we have two functions, and it's time to write a package.
+```{r}
+simulate_nrep = function(n_rep, n_samp, beta0, beta1) {
+  
+  rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %>% 
+    bind_rows()
+  
+}
+```
+
+You can download R scripts containing [`sim_regression`](./resources/sim_regression.R) and [`simulate_nreps`](./resources/simulate_nrep.R). 
+
+These functions were used in the following context.
+
+```{r}
+library(broom)
+library(tidyverse)
+
+sim_results = 
+  map_df(list(30, 60, 120, 240), simulate_nrep,
+         n_rep = 10, beta0 = 2, beta1 = 3) 
+```
+
+That's our motivation -- we have two functions, and it's time to write a package!
 
 
 ### `create()`
 
-Use devtools::create. Look at structure. Open R Project, find build tab. 
+I'm going to create a new package using `devtools::create()`. I'm calling this `example.package`; you might want to call yours something else. 
 
-Don't have to do this now, but go ahead and turn on git. 
+```{r}
+library(devtools)
+create("~/Desktop/example.package")
+```
+
+(**Note**: you might have thought I was going to call this `example_package` in keeping with _literally everything else in the whole course_. You'd be right; that's exactly what I was going to do. But early on CRAN decided not to let underscores in package names and that's one of those things that just probably won't change. Putting `.`s in package names causes other problems and I would usuall avoid it, but it seemed like the best option in this case. So here we are, stuck with `example.package`.)
+
+Contains `DESCRIPTION`, `NAMESPACE`, an empty `R` directory, and an R Project. 
+
+Open R Project, find build tab -- RStudio has some helpful built-in tools for package development. 
 
 
 ### Add functions
 
-add functions. build and reload. 
+add functions. install and restart. 
 
-edit script above to load the new package, remove function definitions, repeat. success!
+Run the code below.
+
+```{r}
+library(broom)
+library(tidyverse)
+library(example.package)
+
+rm(list = ls())
+
+simulate_nrep(n_rep = 10, n_samp = 30, beta0 = 2, beta1 = 3) 
+```
+
+Note -- functions aren't defined in the global environment now, like they had been before. They're coming from the package. That's great!!
+
+Now try `?simulate_nrep`. There's nothing there because we haven't written the documentation yet, so that's our next step. 
 
 
 ### Add documentation
 
-roxygen2 skeleton to functions; fill in some details; document(); build and reload. 
+Put cursor in the function; go to Code > Insert Roxygen Skeleton. 
 
-repeat, but now try ?sim_regression. 
+Update title, write a short summary of the function, input parameter descriptions, and return description (ignore export for now). Do the same for the other function.
+
+Use devtools::document(), or use the drop-down menu. install and restart. 
+
+open the directory for the package. should have a new `man` subdirectory, with files for each function with the extension `.Rd`. These are the documentation files; you can open them if you want, but don't edit these! Change your documentation in the roxygen stuff; keeps your functions and documentation in the same place, which is easier to keep up to date.
+
+Double check the code above still works, and try `?simulate_nrep` again. 
 
 add an example (based on what we've been doing), build and reload. 
+
+As you're writing documentation, keep in mind that you'll need to understand this later -- this is another case where you're collaborating with "future you", so anything you do now to make this clear will save you time later! If you intend to share this with others, you probably need to be even more explicit in your documentation. 
 
 
 ### Package description
 
+Go ahead and edit the package description. There's a lot here, some of which really only matters if you plan to share this with others. Nonetheless, fill it in. Many folks start with version number `0.1.0`; Jeff Leek's guide has some nice thoughts about [versioning](https://github.com/jtleek/rpackages#versioning-your-package) based on Bioconductor. 
+
+This is also a good time to put a license on it -- run the line below and change `LICENSE.txt` to your name and the current year. 
+
+```{r}
+devtools::use_mit_license()
+```
+
+Install and restart. 
 
 ### More functions
 
-New functions, new documentation; build, reload, try some things. 
+My package now consists of a function to simulate data from a SLR, estimate model parameters, and return the results, and a second function that reruns the first, formats the results, and returns a dataframe. This general structure could be extended to other simulation designs.
 
-Update simulate_n function to take function name, `...` argument. 
+The function below has the same general structure as `sim_regression()` but instead simulates data from a Bernoulli distribution and returns the sample average (script [here](./resources/sim_bern_mean.R).
+
+```{r}
+sim_bern_mean = function(n_samp, prob) {
+  
+  sim_data = tibble(
+    y = rbinom(n_samp, 1, prob)
+  )
+  
+  tibble(
+    n = n_samp,
+    samp_avg = mean(sim_data$y)
+  )
+}
+```
+
+I'll add this to my package, write some documentation, use `document()`, and install + restart. I can then check that this works the way I want.
+
+```{r}
+library(broom)
+library(tidyverse)
+library(example.package)
+
+rm(list = ls())
+
+sim_bern_mean(25, .9)
+```
+
+A problem now is that `simulate_nrep` doesn't take advantage of this new function, so I need to do some rewrites there. Specifically, I'll let `sim_func` be an argument and use `...`. New function is below. 
+
+```{r}
+simulate_nrep = function(n_rep, sim_func, ...) {
+  
+  rerun(n_rep, sim_func(...)) %>% 
+    bind_rows()
+  
+}
+```
+
+I'll add this, change the documentation accordingly, `document()`, install and restart. Now I can do the following. 
+
+```{r}
+library(broom)
+library(tidyverse)
+library(example.package)
+
+rm(list = ls())
+
+simulate_nrep(10, sim_regression, n_samp = 30, beta0 = 2, beta1 = 3)
+```
 
 
 ### Dependencies
 
-Note that we've depended on broom, tidyverse. Add those to dependencies to roxygen, document() check namespace. 
+Note that we've depended on broom, tidyverse. If I opened a new R session, loaded my package, and tried to run it, I'd get an error. We'll talk more about why this is later; for now we'll just note that our package depends on those packages. Add those to dependencies to roxygen, document() check namespace. 
+
+Also need to add this to the `DESCRIPTION`. Could do "by hand" since `document()` doesn't touch this; instead we'll run the following lines in the console. Check Description before and after!
+
+```{r}
+devtools::use_package("tidyverse")
+devtools::use_package("broom")
+```
+
+Best practices would also use `tidyverse::fun()` and `broom::fun()` everywhere to make it really clear where packages are coming from; this does make a difference sometimes, although I have to say I'm not great at doing this. 
+
+
+### Deploy on GitHub
+
+Throughout I've been using GH because that's how to do my usual development. Turns out there's another helpful thing -- you can install packages from GH!! Try installing my package using the lines below.
+
+```{r}
+devtools::install_github(repo = "jeff-goldsmith/example.package")
+```
 
 
 ### README
 
+Helpful to put a short README especially if other people will need this. Files named `README.md` are handled in a special way by GH, and can be a useful way to give people a quick overview of your package without them having to install it and read the documentation first. 
 
-### Deploy on GitHub
+Create a template using
+
+```{r}
+devtools::use_readme_rmd()
+```
+
+Make some edits (I like to include installation instructions that can be copy-and-pasted).
+
+then knit, push, and check out the GH repo!
 
 
 ## Other materials
