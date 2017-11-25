@@ -1,0 +1,41 @@
+---
+title: "Writing R Packages"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+text
+
+This is the second module in the [Writing R Packages](topic_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="3f91d97c70e641cea46366ac9d90c929" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-writing-functions" title="Writing Functions" target="_blank">Writing Functions</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+
+
+## Other materials
+
+For basics on R packages, see the first part
+
+* http://r-pkgs.had.co.nz/tests.html, http://r-pkgs.had.co.nz/vignettes.html, http://r-pkgs.had.co.nz/data.html, http://r-pkgs.had.co.nz/namespace.html
+* https://cran.r-project.org/doc/manuals/r-release/R-exts.html
+
+
+The code that I produced working examples in lecture is [here](...).
