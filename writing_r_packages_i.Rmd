@@ -1,0 +1,94 @@
+---
+title: "Writing R Packages"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+text
+
+This is the first module in the [Writing R Packages](topic_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+
+## Some slides
+
+<script async class="speakerdeck-embed" data-id="3f91d97c70e641cea46366ac9d90c929" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/dsi-writing-functions" title="Writing Functions" target="_blank">Writing Functions</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div><br>
+
+
+## Example
+
+Before jumping into organization, I want to revisit a recurring example from [Iteration](topic_iteration.html).
+
+Wrote a function to simulate from SLR and return n and estimates. Also wrote a function to repeat that nrep times and format output as a data frame. 
+
+Functions are shown below, and you can download scripts 1 and 2. 
+
+Show example loading packages, defining functions, and running code. 
+
+That's our motivation -- we have two functions, and it's time to write a package.
+
+
+### `create()`
+
+Use devtools::create. Look at structure. Open R Project, find build tab. 
+
+Don't have to do this now, but go ahead and turn on git. 
+
+
+### Add functions
+
+add functions. build and reload. 
+
+edit script above to load the new package, remove function definitions, repeat. success!
+
+
+### Add documentation
+
+roxygen2 skeleton to functions; fill in some details; document(); build and reload. 
+
+repeat, but now try ?sim_regression. 
+
+add an example (based on what we've been doing), build and reload. 
+
+
+### Package description
+
+
+### More functions
+
+New functions, new documentation; build, reload, try some things. 
+
+Update simulate_n function to take function name, `...` argument. 
+
+
+### Dependencies
+
+Note that we've depended on broom, tidyverse. Add those to dependencies to roxygen, document() check namespace. 
+
+
+### README
+
+
+### Deploy on GitHub
+
+
+## Other materials
+
+* https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/
+* https://github.com/jtleek/rpackages
+* http://stat545.com/packages00_index.html, http://stat545.com/cm109-110-notes_and_exercises.html, and 
+http://stat545.com/packages06_foofactors-package.html
+* http://r-pkgs.had.co.nz/intro.html and http://r-pkgs.had.co.nz/package.html; maybe http://r-pkgs.had.co.nz/r.html, http://r-pkgs.had.co.nz/description.html, http://r-pkgs.had.co.nz/man.html,
+
+The code that I produced working examples in lecture is [here](...).
