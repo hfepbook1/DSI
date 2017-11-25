@@ -12,4 +12,4 @@ This topic is made up of the following components:
 
 The slack channel for this topic is [here](https://p8105-fall2017.slack.com/messages/C7CGD92CX).
 
-The code that I produced working examples in lecture is [here]().
+The code that I produced working examples in lecture is [here](https://github.com/jeff-goldsmith/example_iteration).
