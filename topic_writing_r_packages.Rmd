@@ -1,0 +1,11 @@
+---
+title: "Writing R Packages"
+---
+
+Brief overview of content
+
+This topic is made up of the following components:
+
+* Writing R Packages [Part I](writing_r_packages_i.html)
+* Writing R Packages [Part II](writing_r_packages_ii.html)
+
