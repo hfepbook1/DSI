@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-text
+If you write more than two functions, you need a package -- this will remind you what functions do and how they interact with each other, help you keep track of inputs and outputs, and, if you want to share you code, allow you to do so in a standard format. This module will take us from a few functions to a complete package.
 
 This is the first module in the [Writing R Packages](topic_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
 
@@ -29,9 +29,7 @@ knitr::opts_chunk$set(
 
 ## Example
 
-Before jumping into organization, I want to revisit a recurring example from [Iteration](topic_iteration.html).
-
-Wrote a function to simulate from SLR and return n and estimates. 
+Rather than jumping into how to organize this material, we'll start by motivating the need for an R package by revisiting an example from [Iteration](topic_iteration.html). There, we wrote a short function to simulate data from a simple linear regression; this function returns a data frame containing the sample size and estimated coefficients for the simualted dataset. 
 
 ```{r}
 sim_regression = function(n_samp, beta0, beta1) {
@@ -51,7 +49,7 @@ sim_regression = function(n_samp, beta0, beta1) {
 }
 ```
 
-Also wrote a function to repeat that nrep times and format output as a data frame. 
+We also wrote a wrapper function to repeat the simulation many times and collapse the output to a data frame. 
 
 ```{r}
 simulate_nrep = function(n_rep, n_samp, beta0, beta1) {
@@ -64,7 +62,7 @@ simulate_nrep = function(n_rep, n_samp, beta0, beta1) {
 
 You can download R scripts containing [`sim_regression`](./resources/sim_regression.R) and [`simulate_nreps`](./resources/simulate_nrep.R). 
 
-These functions were used in the following context.
+We used these functions to examine the properties of ordinary least squares estimates in a simple linear regression.
 
 ```{r}
 library(broom)
@@ -72,15 +70,21 @@ library(tidyverse)
 
 sim_results = 
   map_df(list(30, 60, 120, 240), simulate_nrep,
-         n_rep = 10, beta0 = 2, beta1 = 3) 
+         n_rep = 100, beta0 = 2, beta1 = 3) 
+
+sim_results %>% 
+  mutate(n = as.factor(n),
+         n = fct_relabel(n, relabel_function)) %>% 
+  ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
+  geom_point(alpha = .2) + 
+  facet_grid(~n)
 ```
 
-That's our motivation -- we have two functions, and it's time to write a package!
-
+It's really easy to forget what these functions do and how to work with them, even in the space of a couple of weeks. In this case it's not _too_ bad to look back at the code, but for more complex functions it can be very challenging. That's why writing packages is helpful. 
 
 ### `create()`
 
-I'm going to create a new package using `devtools::create()`. I'm calling this `example.package`; you might want to call yours something else. 
+I'll create a new package skeleton called `example.package` using `devtools::create()`.
 
 ```{r}
 library(devtools)
@@ -89,16 +93,14 @@ create("~/Desktop/example.package")
 
 (**Note**: you might have thought I was going to call this `example_package` in keeping with _literally everything else in the whole course_. You'd be right; that's exactly what I was going to do. But early on CRAN decided not to let underscores in package names and that's one of those things that just probably won't change. Putting `.`s in package names causes other problems and I would usuall avoid it, but it seemed like the best option in this case. So here we are, stuck with `example.package`.)
 
-Contains `DESCRIPTION`, `NAMESPACE`, an empty `R` directory, and an R Project. 
+Take a look at the directory that `create()` creates. This contains `DESCRIPTION` and `NAMESPACE` files, an empty `R` directory, and an R Project -- everything you need to get a package started. 
 
-Open R Project, find build tab -- RStudio has some helpful built-in tools for package development. 
+Open the R Project, and notice the build tab. RStudio has a lot of helpful built-in tools for package development, which we'll use frequently. Like other things we've seen, these are often shortcuts for commands that do the same stuff. 
 
 
 ### Add functions
 
-add functions. install and restart. 
-
-Run the code below.
+My "package" currently doesn't do anything, so I'm going to copy the `.R` files above into the `R` directory. Then I'll install this version of the package and restart the R session, and run the code below.
 
 ```{r}
 library(broom)
@@ -110,26 +112,48 @@ rm(list = ls())
 simulate_nrep(n_rep = 10, n_samp = 30, beta0 = 2, beta1 = 3) 
 ```
 
-Note -- functions aren't defined in the global environment now, like they had been before. They're coming from the package. That's great!!
+I've removed the functions from the global environment, but can still run the code above. That's because we've made those functions accessible to R through `example.package`, which is great!!
 
-Now try `?simulate_nrep`. There's nothing there because we haven't written the documentation yet, so that's our next step. 
+If you try `?sim_regression` you'll find there's nothing there; that's because we haven't written any documentation. Putting all your functions in a package keeps them from cluttering up your scripts and R Markdown documents, but packages aren't really useful without documentation.
 
 
 ### Add documentation
 
-Put cursor in the function; go to Code > Insert Roxygen Skeleton. 
+Open `sim_regression.R` and put your cursor somewhere inside the function. Go to Code > Insert Roxygen Skeleton; this will add a bunch of commented lines above the function. We'll use the `roxygen2` package to convert these specially formatted lines into the file `man/sim_regression.Rd`, which will become the help page accessed using `?sim_regression`.
 
-Update title, write a short summary of the function, input parameter descriptions, and return description (ignore export for now). Do the same for the other function.
+After updating the title, writing a short summary of the function, describing input parameters and the return object (ignore `@export` and `@examples` for now), you should have something like the following:
 
-Use devtools::document(), or use the drop-down menu. install and restart. 
+```{r}
+#' Simulate from an SLR
+#'
+#' Simualtes data from a simple linear regression model with user-defined
+#' sample size and regression coefficients. Fits a SLR to the simulated 
+#' data and returns regression coefficients.
+#'
+#' @param n_samp sample size
+#' @param beta0 intercept
+#' @param beta1 slope
+#'
+#' @return tbl_df with one row, containing sample size and coef estimates
+#' @export
+#'
+#' @examples
+```
 
-open the directory for the package. should have a new `man` subdirectory, with files for each function with the extension `.Rd`. These are the documentation files; you can open them if you want, but don't edit these! Change your documentation in the roxygen stuff; keeps your functions and documentation in the same place, which is easier to keep up to date.
+Repeat this process to create a roxygen comments for `simulate_nrep`. 
 
-Double check the code above still works, and try `?simulate_nrep` again. 
+Once the roxygen comments are in place, use `devtools::document()` or Build > More > Document to create help pages for the two functions. Install and restart, and try `?sim_regression` again. Now you have help pages accessible in the usual way -- neat!!
 
-add an example (based on what we've been doing), build and reload. 
+Open the directory for the package. You should find a new `man` subdirectory, with files for each function with the extension `.Rd`. These are the documentation files; you can open them if you want, but don't edit them! Always change your documentation in the roxygen comments -- doing so keeps your functions and documentation in the same place, which makes it easier to stay organized and up to date.
 
-As you're writing documentation, keep in mind that you'll need to understand this later -- this is another case where you're collaborating with "future you", so anything you do now to make this clear will save you time later! If you intend to share this with others, you probably need to be even more explicit in your documentation. 
+These descriptions are helpful, but illustrative examples are great too! Edit the roxygen comments to include the lines below, then `devtools::document()`, install + rebuild, and check out the new help page. 
+
+```{r}
+#' @examples
+#' sim_regression(30, 2, 3)
+```
+
+As you writing documentation, keep in mind that you'll need to understand how your functions work later -- this is another case where you're collaborating with "future you", so anything you do now to make this clear will save you time in the long run! If you intend to share this with others, you probably need to be even more explicit in your documentation. 
 
 
 ### Package description

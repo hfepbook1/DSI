@@ -367,7 +367,7 @@ div.tocify {
 </div>
 
 
-<p>text</p>
+<p>If you write more than two functions, you need a package – this will remind you what functions do and how they interact with each other, help you keep track of inputs and outputs, and, if you want to share you code, allow you to do so in a standard format. This module will take us from a few functions to a complete package.</p>
 <p>This is the first module in the <a href="topic_r_packages.html">Writing R Packages</a> topic; the relevant slack channel is <a href="https://p8105-fall2017.slack.com/messages/C86A5JU9L">here</a>.</p>
 <div id="some-slides" class="section level2">
 <h2>Some slides</h2>
@@ -379,8 +379,7 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Before jumping into organization, I want to revisit a recurring example from <a href="topic_iteration.html">Iteration</a>.</p>
-<p>Wrote a function to simulate from SLR and return n and estimates.</p>
+<p>Rather than jumping into how to organize this material, we’ll start by motivating the need for an R package by revisiting an example from <a href="topic_iteration.html">Iteration</a>. There, we wrote a short function to simulate data from a simple linear regression; this function returns a data frame containing the sample size and estimated coefficients for the simualted dataset.</p>
 <pre class="r"><code>sim_regression = function(n_samp, beta0, beta1) {
   
   sim_data = tibble(
@@ -396,7 +395,7 @@ div.tocify {
     beta1_hat = coef(ls_fit)[2]
   )
 }</code></pre>
-<p>Also wrote a function to repeat that nrep times and format output as a data frame.</p>
+<p>We also wrote a wrapper function to repeat the simulation many times and collapse the output to a data frame.</p>
 <pre class="r"><code>simulate_nrep = function(n_rep, n_samp, beta0, beta1) {
   
   rerun(n_rep, sim_regression(n_samp, beta0, beta1)) %&gt;% 
@@ -404,27 +403,33 @@ div.tocify {
   
 }</code></pre>
 <p>You can download R scripts containing <a href="./resources/sim_regression.R"><code>sim_regression</code></a> and <a href="./resources/simulate_nrep.R"><code>simulate_nreps</code></a>.</p>
-<p>These functions were used in the following context.</p>
+<p>We used these functions to examine the properties of ordinary least squares estimates in a simple linear regression.</p>
 <pre class="r"><code>library(broom)
 library(tidyverse)
 
 sim_results = 
   map_df(list(30, 60, 120, 240), simulate_nrep,
-         n_rep = 10, beta0 = 2, beta1 = 3) </code></pre>
-<p>That’s our motivation – we have two functions, and it’s time to write a package!</p>
+         n_rep = 100, beta0 = 2, beta1 = 3) 
+
+sim_results %&gt;% 
+  mutate(n = as.factor(n),
+         n = fct_relabel(n, relabel_function)) %&gt;% 
+  ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
+  geom_point(alpha = .2) + 
+  facet_grid(~n)</code></pre>
+<p>It’s really easy to forget what these functions do and how to work with them, even in the space of a couple of weeks. In this case it’s not <em>too</em> bad to look back at the code, but for more complex functions it can be very challenging. That’s why writing packages is helpful.</p>
 <div id="create" class="section level3">
 <h3><code>create()</code></h3>
-<p>I’m going to create a new package using <code>devtools::create()</code>. I’m calling this <code>example.package</code>; you might want to call yours something else.</p>
+<p>I’ll create a new package skeleton called <code>example.package</code> using <code>devtools::create()</code>.</p>
 <pre class="r"><code>library(devtools)
 create(&quot;~/Desktop/example.package&quot;)</code></pre>
 <p>(<strong>Note</strong>: you might have thought I was going to call this <code>example_package</code> in keeping with <em>literally everything else in the whole course</em>. You’d be right; that’s exactly what I was going to do. But early on CRAN decided not to let underscores in package names and that’s one of those things that just probably won’t change. Putting <code>.</code>s in package names causes other problems and I would usuall avoid it, but it seemed like the best option in this case. So here we are, stuck with <code>example.package</code>.)</p>
-<p>Contains <code>DESCRIPTION</code>, <code>NAMESPACE</code>, an empty <code>R</code> directory, and an R Project.</p>
-<p>Open R Project, find build tab – RStudio has some helpful built-in tools for package development.</p>
+<p>Take a look at the directory that <code>create()</code> creates. This contains <code>DESCRIPTION</code> and <code>NAMESPACE</code> files, an empty <code>R</code> directory, and an R Project – everything you need to get a package started.</p>
+<p>Open the R Project, and notice the build tab. RStudio has a lot of helpful built-in tools for package development, which we’ll use frequently. Like other things we’ve seen, these are often shortcuts for commands that do the same stuff.</p>
 </div>
 <div id="add-functions" class="section level3">
 <h3>Add functions</h3>
-<p>add functions. install and restart.</p>
-<p>Run the code below.</p>
+<p>My “package” currently doesn’t do anything, so I’m going to copy the <code>.R</code> files above into the <code>R</code> directory. Then I’ll install this version of the package and restart the R session, and run the code below.</p>
 <pre class="r"><code>library(broom)
 library(tidyverse)
 library(example.package)
@@ -432,22 +437,40 @@ library(example.package)
 rm(list = ls())
 
 simulate_nrep(n_rep = 10, n_samp = 30, beta0 = 2, beta1 = 3) </code></pre>
-<p>Note – functions aren’t defined in the global environment now, like they had been before. They’re coming from the package. That’s great!!</p>
-<p>Now try <code>?simulate_nrep</code>. There’s nothing there because we haven’t written the documentation yet, so that’s our next step.</p>
+<p>I’ve removed the functions from the global environment, but can still run the code above. That’s because we’ve made those functions accessible to R through <code>example.package</code>, which is great!!</p>
+<p>If you try <code>?sim_regression</code> you’ll find there’s nothing there; that’s because we haven’t written any documentation. Putting all your functions in a package keeps them from cluttering up your scripts and R Markdown documents, but packages aren’t really useful without documentation.</p>
 </div>
 <div id="add-documentation" class="section level3">
 <h3>Add documentation</h3>
-<p>Put cursor in the function; go to Code &gt; Insert Roxygen Skeleton.</p>
-<p>Update title, write a short summary of the function, input parameter descriptions, and return description (ignore export for now). Do the same for the other function.</p>
-<p>Use devtools::document(), or use the drop-down menu. install and restart.</p>
-<p>open the directory for the package. should have a new <code>man</code> subdirectory, with files for each function with the extension <code>.Rd</code>. These are the documentation files; you can open them if you want, but don’t edit these! Change your documentation in the roxygen stuff; keeps your functions and documentation in the same place, which is easier to keep up to date.</p>
-<p>Double check the code above still works, and try <code>?simulate_nrep</code> again.</p>
-<p>add an example (based on what we’ve been doing), build and reload.</p>
-<p>As you’re writing documentation, keep in mind that you’ll need to understand this later – this is another case where you’re collaborating with “future you”, so anything you do now to make this clear will save you time later! If you intend to share this with others, you probably need to be even more explicit in your documentation.</p>
+<p>Open <code>sim_regression.R</code> and put your cursor somewhere inside the function. Go to Code &gt; Insert Roxygen Skeleton; this will add a bunch of commented lines above the function. We’ll use the <code>roxygen2</code> package to convert these specially formatted lines into the file <code>man/sim_regression.Rd</code>, which will become the help page accessed using <code>?sim_regression</code>.</p>
+<p>After updating the title, writing a short summary of the function, describing input parameters and the return object (ignore <code>@export</code> and <code>@examples</code> for now), you should have something like the following:</p>
+<pre class="r"><code>#&#39; Simulate from an SLR
+#&#39;
+#&#39; Simualtes data from a simple linear regression model with user-defined
+#&#39; sample size and regression coefficients. Fits a SLR to the simulated 
+#&#39; data and returns regression coefficients.
+#&#39;
+#&#39; @param n_samp sample size
+#&#39; @param beta0 intercept
+#&#39; @param beta1 slope
+#&#39;
+#&#39; @return tbl_df with one row, containing sample size and coef estimates
+#&#39; @export
+#&#39;
+#&#39; @examples</code></pre>
+<p>Repeat this process to create a roxygen comments for <code>simulate_nrep</code>.</p>
+<p>Once the roxygen comments are in place, use <code>devtools::document()</code> or Build &gt; More &gt; Document to create help pages for the two functions. Install and restart, and try <code>?sim_regression</code> again. Now you have help pages accessible in the usual way – neat!!</p>
+<p>Open the directory for the package. You should find a new <code>man</code> subdirectory, with files for each function with the extension <code>.Rd</code>. These are the documentation files; you can open them if you want, but don’t edit them! Always change your documentation in the roxygen comments – doing so keeps your functions and documentation in the same place, which makes it easier to stay organized and up to date.</p>
+<p>These descriptions are helpful, but illustrative examples are great too! Edit the roxygen comments to include the lines below, then <code>devtools::document()</code>, install + rebuild, and check out the new help page.</p>
+<pre class="r"><code>#&#39; @examples
+#&#39; sim_regression(30, 2, 3)</code></pre>
+<p>As you writing documentation, keep in mind that you’ll need to understand how your functions work later – this is another case where you’re collaborating with “future you”, so anything you do now to make this clear will save you time in the long run! If you intend to share this with others, you probably need to be even more explicit in your documentation.</p>
 </div>
 <div id="package-description" class="section level3">
 <h3>Package description</h3>
-<p>Go ahead and edit the package description. There’s a lot here, some of which really only matters if you</p>
+<p>Go ahead and edit the package description. There’s a lot here, some of which really only matters if you plan to share this with others. Nonetheless, fill it in. Many folks start with version number <code>0.1.0</code>; Jeff Leek’s guide has some nice thoughts about <a href="https://github.com/jtleek/rpackages#versioning-your-package">versioning</a> based on Bioconductor.</p>
+<p>This is also a good time to put a license on it – run the line below and change <code>LICENSE.txt</code> to your name and the current year.</p>
+<pre class="r"><code>devtools::use_mit_license()</code></pre>
 <p>Install and restart.</p>
 </div>
 <div id="more-functions" class="section level3">
