@@ -60,7 +60,7 @@ simulate_nrep = function(n_rep, n_samp, beta0, beta1) {
 }
 ```
 
-You can download R scripts containing [`sim_regression`](./resources/sim_regression.R) and [`simulate_nreps`](./resources/simulate_nrep.R). 
+You can download R scripts containing [`sim_regression`](./resources/sim_regression.R) and [`simulate_nrep`](./resources/simulate_nrep.R). 
 
 We used these functions to examine the properties of ordinary least squares estimates in a simple linear regression.
 
@@ -119,7 +119,7 @@ If you try `?sim_regression` you'll find there's nothing there; that's because w
 
 ### Add documentation
 
-Open `sim_regression.R` and put your cursor somewhere inside the function. Go to Code > Insert Roxygen Skeleton; this will add a bunch of commented lines above the function. We'll use the `roxygen2` package to convert these specially formatted lines into the file `man/sim_regression.Rd`, which will become the help page accessed using `?sim_regression`.
+Open `sim_regression.R` and put your cursor somewhere inside the function. Go to Code > Insert Roxygen Skeleton; this will add a bunch of commented lines above the function. We'll use the `roxygen2` package to convert these specially formatted lines into the file `/man/sim_regression.Rd`, which will become the help page accessed using `?sim_regression`.
 
 After updating the title, writing a short summary of the function, describing input parameters and the return object (ignore `@export` and `@examples` for now), you should have something like the following:
 
@@ -144,7 +144,7 @@ Repeat this process to create a roxygen comments for `simulate_nrep`.
 
 Once the roxygen comments are in place, use `devtools::document()` or Build > More > Document to create help pages for the two functions. Install and restart, and try `?sim_regression` again. Now you have help pages accessible in the usual way -- neat!!
 
-Open the directory for the package. You should find a new `man` subdirectory, with files for each function with the extension `.Rd`. These are the documentation files; you can open them if you want, but don't edit them! Always change your documentation in the roxygen comments -- doing so keeps your functions and documentation in the same place, which makes it easier to stay organized and up to date.
+Open the directory for the package. You should find a new `/man/` subdirectory, with files for each function with the extension `.Rd`. These are the documentation files; you can open them if you want, but don't edit them! Always change your documentation in the roxygen comments -- doing so keeps your functions and documentation in the same place, which makes it easier to stay organized and up to date.
 
 These descriptions are helpful, but illustrative examples are great too! Edit the roxygen comments to include the lines below, then `devtools::document()`, install + rebuild, and check out the new help page. 
 
@@ -158,21 +158,21 @@ As you writing documentation, keep in mind that you'll need to understand how yo
 
 ### Package description
 
-Go ahead and edit the package description. There's a lot here, some of which really only matters if you plan to share this with others. Nonetheless, fill it in. Many folks start with version number `0.1.0`; Jeff Leek's guide has some nice thoughts about [versioning](https://github.com/jtleek/rpackages#versioning-your-package) based on Bioconductor. 
+The `DESCRIPTION` file should mostly be edited by hand. This is higher-level information about the package, and [there's a lot here](http://r-pkgs.had.co.nz/description.html). Some of this really only matters if you plan to share your package with others, but it's quick and easy to fill in (and you never know when a personal package will become public). A few quick points:
 
-This is also a good time to put a license on it -- run the line below and change `LICENSE.txt` to your name and the current year. 
+* [There are rules](http://r-pkgs.had.co.nz/description.html#pkg-description) for the title and description
+* At this point, you're probably the only author
+* Start with version number `0.1.0`; Jeff Leek's guide has some nice thoughts about [versioning](https://github.com/jtleek/rpackages#versioning-your-package) based on Bioconductor. 
+* Add a licence -- run `devtools::use_mit_license()` and change `LICENSE.txt` to your name and the current year. 
 
-```{r}
-devtools::use_mit_license()
-```
+Once you've done all this, install and restart. 
 
-Install and restart. 
 
 ### More functions
 
-My package now consists of a function to simulate data from a SLR, estimate model parameters, and return the results, and a second function that reruns the first, formats the results, and returns a dataframe. This general structure could be extended to other simulation designs.
+Right now, `example.package` consists of a function to simulate data from a SLR, estimate model parameters, and return the results, and a second function that reruns the first, formats the results, and returns a dataframe. To build on this framework, we'll add a new function that simulates from a different data generating mechanism and edit `simulate_nrep` to work with both simulation functions.
 
-The function below has the same general structure as `sim_regression()` but instead simulates data from a Bernoulli distribution and returns the sample average (script [here](./resources/sim_bern_mean.R).
+The `sim_bern_mean` function has the same general structure as `sim_regression()` but simulates data from a Bernoulli distribution and returns the sample average (download the script [here](./resources/sim_bern_mean.R).
 
 ```{r}
 sim_bern_mean = function(n_samp, prob) {
@@ -188,7 +188,7 @@ sim_bern_mean = function(n_samp, prob) {
 }
 ```
 
-I'll add this to my package, write some documentation, use `document()`, and install + restart. I can then check that this works the way I want.
+To add this to `example.package`, we need to copy the script to `/R/`, write some documentation using roxygen comments, use `document()` to create the `.Rd` file, and install + restart. After these steps, I can check that the function works the way I intended.
 
 ```{r}
 library(broom)
@@ -200,7 +200,7 @@ rm(list = ls())
 sim_bern_mean(25, .9)
 ```
 
-A problem now is that `simulate_nrep` doesn't take advantage of this new function, so I need to do some rewrites there. Specifically, I'll let `sim_func` be an argument and use `...`. New function is below. 
+A problem now is that `simulate_nrep` doesn't take advantage of this new function, so I need to do some edits there. Specifically, I'll add `sim_func` as an argument and use the [mysterious but useful](http://stat545.com/block011_write-your-own-function-03.html#the-useful-but-mysterious-...-argument) `...` to pass additional arguments on to other functions -- this is helpful because we can still send arguments to `sim_regression` or `sim_bern_mean` without listing everything in the definition of `simulate_nrep`. The function after making these edits follows. 
 
 ```{r}
 simulate_nrep = function(n_rep, sim_func, ...) {
@@ -211,7 +211,7 @@ simulate_nrep = function(n_rep, sim_func, ...) {
 }
 ```
 
-I'll add this, change the documentation accordingly, `document()`, install and restart. Now I can do the following. 
+After making these edits, I'll need to change the documentation accordingly, run `document()`, install and restart, and check that the functions work as expected.
 
 ```{r}
 library(broom)
@@ -221,53 +221,71 @@ library(example.package)
 rm(list = ls())
 
 simulate_nrep(10, sim_regression, n_samp = 30, beta0 = 2, beta1 = 3)
+simulate_nrep(10, sim_bern_mean, n_samp = 25, prob = .9)
 ```
+
+At this point, you'd probably want to add some default values to `sim_regression` and `sim_bern_mean` (and add these to the documentation!).
 
 
 ### Dependencies
 
-Note that we've depended on broom, tidyverse. If I opened a new R session, loaded my package, and tried to run it, I'd get an error. We'll talk more about why this is later; for now we'll just note that our package depends on those packages. Add those to dependencies to roxygen, document() check namespace. 
+Our functions depend on other functions in `broom` and `tidyverse`, but we haven't made this explicit. As a consequence, opening a new R session, loading only `example.package`, and running the functions as above will produce an error. We'll talk more about the details of this process later, but for now we simply need to know that our package depends on those packages. 
 
-Also need to add this to the `DESCRIPTION`. Could do "by hand" since `document()` doesn't touch this; instead we'll run the following lines in the console. Check Description before and after!
+The best way to make your package's dependencies known to R is to use `package::function()` everywhere in your code (e.g. `broom::tidy()` and `tibble::tibble()`). This makes it clear which functions exist outside your package and can help prevent errors if multiple packages have functions with the same name. 
+
+That strategy can be a bit heavy-handed if you use the same function a lot, or if you use lots of functions from the same package. In these cases, you can edit the roxygen comments to include `@importFrom package function` or `@import package`. These make it increasingly less clear which functions come from which package (especially `@import`) but will make the relevant functions available. In `example.package`, I'll use `broom::tidy()` in my functions and `@import tidyverse` to make `%>%`, `tibble()`, `rerun()`, and `bind_rows()` available for use.
+
+These steps make it clear which packages you depend on, but you still need R to include them when you load your package. To address this point, add dependencies to the `Imports` field of the `DESCRIPTION`. This is a step you could do "by hand" since we've made edits to the file previously; instead we'll run the following lines in the console. Check the `DESCRIPTION` before and after!
 
 ```{r}
 devtools::use_package("tidyverse")
 devtools::use_package("broom")
 ```
 
-Best practices would also use `tidyverse::fun()` and `broom::fun()` everywhere to make it really clear where packages are coming from; this does make a difference sometimes, although I have to say I'm not great at doing this. 
+To check that this has worked, restart RStudio and run the following lines.
+
+```{r}
+library(example.package)
+
+rm(list = ls())
+
+simulate_nrep(10, sim_regression, n_samp = 30, beta0 = 2, beta1 = 3)
+simulate_nrep(10, sim_bern_mean, n_samp = 25, prob = .9)
+```
+
+Figuring out exactly what you depend on can take some getting used to, but it's a critical step for ensuring your package really is self-contained. You should also try to limit your dependencies, both to keep your package simple and to make it easier to maintain if the dependencies are updated. 
 
 
 ### Deploy on GitHub
 
-Throughout I've been using GH because that's how to do my usual development. Turns out there's another helpful thing -- you can install packages from GH!! Try installing my package using the lines below.
+Throughout this example, I've been using git and GitHub because that's how I do all my work. In the case of package development, this turns out to have benefits beyond the usual version control stuff -- you can install R packages directly from GitHub!! 
+
+Try installing `example.package` using the lines below.
 
 ```{r}
 devtools::install_github(repo = "jeff-goldsmith/example.package")
 ```
 
+GitHub has become a common way to make R packages publicly available. Packages that exist only on GitHub have a lot fewer guarantees than packages on CRAN and may be less stable, but can be useful anyway (especially if they're from a developer you trust). You can also frequently access the "developer versions" of CRAN packages using GitHub to get the latest features (again with the caveat that these might be less stable). 
+
 
 ### README
 
-Helpful to put a short README especially if other people will need this. Files named `README.md` are handled in a special way by GH, and can be a useful way to give people a quick overview of your package without them having to install it and read the documentation first. 
+The information in the package documentation can be difficult for someone to find and read quickly, so it's helpful to add a short description if you intend to make your package useful for others. Files named `README.md` are handled in a special way by GitHub, and are perfect for this purpose. 
 
-Create a template using
+Create a template README using `devtools::use_readme_rmd()`, and then edit so that someone who happens across the repo will know what the package does and how it works. I also like to include instructions for installing from GitHub that can be copy-and-pasted, so folks don't have to track down your user and repo names.
 
-```{r}
-devtools::use_readme_rmd()
-```
-
-Make some edits (I like to include installation instructions that can be copy-and-pasted).
-
-then knit, push, and check out the GH repo!
+After making edits, knit the README, commit, push to remote, and check out the GitHub repo!
 
 
 ## Other materials
 
-* https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/
-* https://github.com/jtleek/rpackages
-* http://stat545.com/packages00_index.html, http://stat545.com/cm109-110-notes_and_exercises.html, and 
-http://stat545.com/packages06_foofactors-package.html
-* http://r-pkgs.had.co.nz/intro.html and http://r-pkgs.had.co.nz/package.html; maybe http://r-pkgs.had.co.nz/r.html, http://r-pkgs.had.co.nz/description.html, http://r-pkgs.had.co.nz/man.html,
+Writing packages is a major activity for folks who use R. It seems intimidating at first, and really understanding everything can be a lot of work. Thankfully lots of people have tried to make things easy and clear. 
+
+* Hilary Parker's [blog post](https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) on writing a blog post from scratch makes it clear how easy writing a package can be -- this is usually where I start new packages!
+* Jeff Leek's [package development guide](https://github.com/jtleek/rpackages) has a lot of great tips about design, but isn't really a how-to
+* Jenny Bryan has, not surprisingly, some [slides](http://stat545.com/packages00_index.html), a short [illustrated example](http://stat545.com/cm109-110-notes_and_exercises.html), and a longer [illustrated example](http://stat545.com/packages06_foofactors-package.html), all of which are excellent
+* Hadley Wickham has a whole book on R packages; for now, the most relevant chapters are the [intro](http://r-pkgs.had.co.nz/intro.html) and [package overview](http://r-pkgs.had.co.nz/package.html); the chapters on [R code](http://r-pkgs.had.co.nz/r.html), the [DESCRIPTION](http://r-pkgs.had.co.nz/description.html), and the [help pages](http://r-pkgs.had.co.nz/man.html) may also be useful.
+* Finally, RStudio has a [`devtools` cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/devtools-cheatsheet.pdf)
 
 The code that I produced working examples in lecture is [here](...).
