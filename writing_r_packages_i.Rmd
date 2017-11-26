@@ -8,7 +8,7 @@ output:
 
 If you write more than two functions, you need a package -- this will remind you what functions do and how they interact with each other, help you keep track of inputs and outputs, and, if you want to share you code, allow you to do so in a standard format. This module will take us from a few functions to a complete package.
 
-This is the first module in the [Writing R Packages](topic_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
+This is the first module in the [Writing R Packages](topic_writing_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(

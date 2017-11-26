@@ -1,14 +1,14 @@
 ---
-title: "Writing R Packages"
+title: "Writing R Packages II"
 output:
   html_document: 
     toc: true
     toc_float: true
 ---
 
-text
+If you write more than two functions, you need a package -- this will remind you what functions do and how they interact with each other, help you keep track of inputs and outputs, and, if you want to share you code, allow you to do so in a standard format. The [first part](writing_r_packages_i.html) of this module covered getting to a complete package from scratch; this module covers some important but more advanced issues in R package development.
 
-This is the second module in the [Writing R Packages](topic_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
+This is the second module in the [Writing R Packages](topic_writing_r_packages.html) topic; the relevant slack channel is [here](https://p8105-fall2017.slack.com/messages/C86A5JU9L).
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
