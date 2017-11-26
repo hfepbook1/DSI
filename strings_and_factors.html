@@ -310,7 +310,7 @@ div.tocify {
       <a href="topic_iteration.html">Iteration</a>
     </li>
     <li>
-      <a href="topic_r_packages.html">R Packages</a>
+      <a href="topic_writing_r_packages.html">R Packages</a>
     </li>
   </ul>
 </li>
@@ -466,30 +466,30 @@ urls = str_c(url_base, 1:5)
 read_html(urls[1]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Cleans plaque, but you&#39;ll need another brush too&quot;   
-##  [2] &quot;Five Stars&quot;                                         
-##  [3] &quot;Too strong to use&quot;                                  
-##  [4] &quot;Five Stars&quot;                                         
-##  [5] &quot;I love this thing&quot;                                  
-##  [6] &quot;Defective toothbrush&quot;                               
-##  [7] &quot;Meh&quot;                                                
-##  [8] &quot;This is a great toothbrush especially for the price&quot;
-##  [9] &quot;Didn&#39;t Meet My Expectations!&quot;                       
-## [10] &quot;I don&#39;t know what to say about this item, ...&quot;
+##  [1] &quot;My previous dentist recommended buying one of these and so did my new ...&quot;                                                              
+##  [2] &quot;Five Stars&quot;                                                                                                                             
+##  [3] &quot;I have not known what a clean mouth felt like until after the dentist&quot;                                                                  
+##  [4] &quot;Christmas Present&quot;                                                                                                                      
+##  [5] &quot;After 6-months, has hit the dust.&quot;                                                                                                      
+##  [6] &quot;Three Stars&quot;                                                                                                                            
+##  [7] &quot;I had been talking this product up for her because I have used one for many years and I love it, I was embarrassed when she sent me ...&quot;
+##  [8] &quot;Five Stars&quot;                                                                                                                             
+##  [9] &quot;Five Stars&quot;                                                                                                                             
+## [10] &quot;Five Stars&quot;
 
 read_html(urls[2]) %&gt;% 
   html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
   html_text()
-##  [1] &quot;Looks great, works great&quot;               
-##  [2] &quot;great product&quot;                          
-##  [3] &quot;Still Testing It Out&quot;                   
-##  [4] &quot;Lighter, Smaller Quality Product&quot;       
-##  [5] &quot;Sonicare Essence Toothbrush is better&quot;  
-##  [6] &quot;The toothbrush you&#39;ve been waiting for.&quot;
-##  [7] &quot;Five Stars&quot;                             
-##  [8] &quot;Three Stars&quot;                            
-##  [9] &quot;Dentist clean teeth!&quot;                   
-## [10] &quot;Five Stars&quot;</code></pre>
+##  [1] &quot;One Star&quot;                                              
+##  [2] &quot;Not a good choice.&quot;                                    
+##  [3] &quot;Good toothbrush&quot;                                       
+##  [4] &quot;Five Stars&quot;                                            
+##  [5] &quot;Five Stars&quot;                                            
+##  [6] &quot;Good entry level Sonicare&quot;                             
+##  [7] &quot;Electric Toothberush&quot;                                  
+##  [8] &quot;I bought one several days ago, it&#39;s convenient for ...&quot;
+##  [9] &quot;Three Stars&quot;                                           
+## [10] &quot;It lasted almost 7 months&quot;</code></pre>
 <p>It would get really tedious to try to scrape all (5000+) reviews by copying code over and over; before long we’ll learn about writing R functions to reuse code and make this much easier!</p>
 </div>
 <div id="biostat-methods-i-example" class="section level3">

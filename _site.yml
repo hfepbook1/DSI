@@ -22,7 +22,7 @@ navbar:
         - text: "Iteration"
           href: topic_iteration.html
         - text: "R Packages"
-          href: topic_r_packages.html
+          href: topic_writing_r_packages.html
     - text: "Datasets"
       menu: 
         - text: "Mr. Trash Wheel"
