@@ -28,14 +28,44 @@ knitr::opts_chunk$set(
 
 ## Example
 
+Keep working on the same package.
+
+### Vignettes
+
+Short vignette for the package; include as Rmd. 
+
+### Search path
+
+search(), MASS::select vs tidyverse::select
+
+### NAMESPACE
+
+Look at namespace file in package at various devel stages
+
+### Checks
+
+Run check on old version of package
+
+### Tests 
+
+Write a couple of simple tests
+
+
+
 
 
 ## Other materials
 
-For basics on R packages, see the first part
+Many of these topics are touched on in the other materials for [writing R packages I](writing_r_packages_i.html); below we provide additional resources specific to the more specialized topics here. 
 
-* http://r-pkgs.had.co.nz/tests.html, http://r-pkgs.had.co.nz/vignettes.html, http://r-pkgs.had.co.nz/data.html, http://r-pkgs.had.co.nz/namespace.html
-* https://cran.r-project.org/doc/manuals/r-release/R-exts.html
-
+* The R Packages book is the best resource. There are chapters on
+    * [What is a package?](http://r-pkgs.had.co.nz/package.html#package)
+    * [NAMESPACE](http://r-pkgs.had.co.nz/namespace.html)
+    * [Checks](http://r-pkgs.had.co.nz/check.html) 
+    * [Tests](http://r-pkgs.had.co.nz/tests.html)
+    * [Vignettes](http://r-pkgs.had.co.nz/vignettes.html)
+    * [Data](http://r-pkgs.had.co.nz/data.html)
+    * [Compiled code](http://r-pkgs.had.co.nz/src.html)
+* The official guide to [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html) also exists, although I'm not sure I exactly _recommend_ it ...
 
 The code that I produced working examples in lecture is [here](...).
