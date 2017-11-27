@@ -231,17 +231,18 @@ At this point, you'd probably want to add some default values to `sim_regression
 
 ### Dependencies
 
-Our functions depend on other functions in `broom` and `tidyverse`, but we haven't made this explicit. As a consequence, opening a new R session, loading only `example.package`, and running the functions as above will produce an error. We'll talk more about the details of this process later, but for now we simply need to know that our package depends on those packages. 
+Our functions depend on other functions in `broom`, `tibble`, and `tidyverse`, but we haven't made this explicit. As a consequence, opening a new R session, loading only `example.package`, and running the functions as above will produce an error. We'll talk more about the details of this process later, but for now we simply need to know that our package depends on those packages. 
 
 The best way to make your package's dependencies known to R is to use `package::function()` everywhere in your code (e.g. `broom::tidy()` and `tibble::tibble()`). This makes it clear which functions exist outside your package and can help prevent errors if multiple packages have functions with the same name. 
 
-That strategy can be a bit heavy-handed if you use the same function a lot, or if you use lots of functions from the same package. In these cases, you can edit the roxygen comments to include `@importFrom package function` or `@import package`. These make it increasingly less clear which functions come from which package (especially `@import`) but will make the relevant functions available. In `example.package`, I'll use `broom::tidy()` in my functions and `@import tidyverse` to make `%>%`, `tibble()`, `pull()`, `rerun()`, and `bind_rows()` available for use.
+That strategy can be a bit heavy-handed if you use the same function a lot, or if you use lots of functions from the same package. In these cases, you can edit the roxygen comments to include `@importFrom package function` or `@import package`. These make it increasingly less clear which functions come from which package (especially `@import`) but will make the relevant functions available. In `example.package`, I'll use `broom::tidy()` and `tibble:tibble()` in my functions, and also `@import tidyverse` to make `%>%`, `pull()`, `rerun()`, and `bind_rows()` available for use.
 
 These steps make it clear which packages you depend on, but you still need R to include them when you load your package. To address this point, add dependencies to the `Imports` field of the `DESCRIPTION`. This is a step you could do "by hand" since we've made edits to the file previously; instead we'll run the following lines in the console. Check the `DESCRIPTION` before and after!
 
 ```{r}
-devtools::use_package("tidyverse")
 devtools::use_package("broom")
+devtools::use_package("tibble")
+devtools::use_package("tidyverse")
 ```
 
 To check that this has worked, restart RStudio and run the following lines.
