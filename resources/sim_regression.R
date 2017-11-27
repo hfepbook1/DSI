@@ -5,11 +5,12 @@ sim_regression = function(n_samp, beta0, beta1) {
     y = beta0 + beta1 * x + rnorm(n_samp, 0, 1)
   )
   
-  ls_fit = lm(y ~ x, data = sim_data)
+  ls_fit = lm(y ~ x, data = sim_data) %>% 
+    tidy()
   
   tibble(
     n = n_samp,
-    beta0_hat = coef(ls_fit)[1],
-    beta1_hat = coef(ls_fit)[2]
+    beta0_hat = pull(ls_fit, estimate)[1],
+    beta1_hat = pull(ls_fit, estimate)[2]
   )
 }

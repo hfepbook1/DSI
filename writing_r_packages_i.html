@@ -387,12 +387,13 @@ div.tocify {
     y = beta0 + beta1 * x + rnorm(n_samp, 0, 1)
   )
   
-  ls_fit = lm(y ~ x, data = sim_data)
+  ls_fit = lm(y ~ x, data = sim_data) %&gt;% 
+    tidy()
   
   tibble(
     n = n_samp,
-    beta0_hat = coef(ls_fit)[1],
-    beta1_hat = coef(ls_fit)[2]
+    beta0_hat = pull(ls_fit, estimate)[1],
+    beta1_hat = pull(ls_fit, estimate)[2]
   )
 }</code></pre>
 <p>We also wrote a wrapper function to repeat the simulation many times and collapse the output to a data frame.</p>
@@ -463,6 +464,7 @@ simulate_nrep(n_rep = 10, n_samp = 30, beta0 = 2, beta1 = 3) </code></pre>
 <p>Open the directory for the package. You should find a new <code>/man/</code> subdirectory, with files for each function with the extension <code>.Rd</code>. These are the documentation files; you can open them if you want, but don’t edit them! Always change your documentation in the roxygen comments – doing so keeps your functions and documentation in the same place, which makes it easier to stay organized and up to date.</p>
 <p>These descriptions are helpful, but illustrative examples are great too! Edit the roxygen comments to include the lines below, then <code>devtools::document()</code>, install + rebuild, and check out the new help page.</p>
 <pre class="r"><code>#&#39; @examples
+#&#39; # simulate a single dataset
 #&#39; sim_regression(30, 2, 3)</code></pre>
 <p>As you writing documentation, keep in mind that you’ll need to understand how your functions work later – this is another case where you’re collaborating with “future you”, so anything you do now to make this clear will save you time in the long run! If you intend to share this with others, you probably need to be even more explicit in your documentation.</p>
 </div>
@@ -522,14 +524,12 @@ simulate_nrep(10, sim_bern_mean, n_samp = 25, prob = .9)</code></pre>
 <h3>Dependencies</h3>
 <p>Our functions depend on other functions in <code>broom</code> and <code>tidyverse</code>, but we haven’t made this explicit. As a consequence, opening a new R session, loading only <code>example.package</code>, and running the functions as above will produce an error. We’ll talk more about the details of this process later, but for now we simply need to know that our package depends on those packages.</p>
 <p>The best way to make your package’s dependencies known to R is to use <code>package::function()</code> everywhere in your code (e.g. <code>broom::tidy()</code> and <code>tibble::tibble()</code>). This makes it clear which functions exist outside your package and can help prevent errors if multiple packages have functions with the same name.</p>
-<p>That strategy can be a bit heavy-handed if you use the same function a lot, or if you use lots of functions from the same package. In these cases, you can edit the roxygen comments to include <code>@importFrom package function</code> or <code>@import package</code>. These make it increasingly less clear which functions come from which package (especially <code>@import</code>) but will make the relevant functions available. In <code>example.package</code>, I’ll use <code>broom::tidy()</code> in my functions and <code>@import tidyverse</code> to make <code>%&gt;%</code>, <code>tibble()</code>, <code>rerun()</code>, and <code>bind_rows()</code> available for use.</p>
+<p>That strategy can be a bit heavy-handed if you use the same function a lot, or if you use lots of functions from the same package. In these cases, you can edit the roxygen comments to include <code>@importFrom package function</code> or <code>@import package</code>. These make it increasingly less clear which functions come from which package (especially <code>@import</code>) but will make the relevant functions available. In <code>example.package</code>, I’ll use <code>broom::tidy()</code> in my functions and <code>@import tidyverse</code> to make <code>%&gt;%</code>, <code>tibble()</code>, <code>pull()</code>, <code>rerun()</code>, and <code>bind_rows()</code> available for use.</p>
 <p>These steps make it clear which packages you depend on, but you still need R to include them when you load your package. To address this point, add dependencies to the <code>Imports</code> field of the <code>DESCRIPTION</code>. This is a step you could do “by hand” since we’ve made edits to the file previously; instead we’ll run the following lines in the console. Check the <code>DESCRIPTION</code> before and after!</p>
 <pre class="r"><code>devtools::use_package(&quot;tidyverse&quot;)
 devtools::use_package(&quot;broom&quot;)</code></pre>
 <p>To check that this has worked, restart RStudio and run the following lines.</p>
 <pre class="r"><code>library(example.package)
-
-rm(list = ls())
 
 simulate_nrep(10, sim_regression, n_samp = 30, beta0 = 2, beta1 = 3)
 simulate_nrep(10, sim_bern_mean, n_samp = 25, prob = .9)</code></pre>
