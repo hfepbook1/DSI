@@ -1,0 +1,67 @@
+---
+title: "example.package"
+author: "Jeff Goldsmith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{example.package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package was written as an example in the course [Data Science I](http://jeffgoldsmith.com/DSI/). It includes functions for simulating data from a simple linear regression model and from a Bernoulli distribution, and for repeating the simulation process a large number of times. In this vignette we look at both simulation functions and how they are used to illustrate properties of relevant estimators under repeated sampling. 
+
+The chunk below loads `example.package` and other packages needed to run the code in this vignette.
+
+```{r}
+library(example.package)
+library(ggplot2)
+```
+
+## `sim_regression`
+
+The `sim_regression` function simulates data from a simple linear regression model, fits a model using OLS, and returns a dataframe containing the sample size and coefficient estimates. The function has three arguments: the sample size, the true intercept, and the true slope. 
+
+The code chunk below demonstrates the usage of this function using two examples.
+
+```{r}
+sim_regression(n_samp = 30, beta0 = 2, beta1 = 3)
+sim_regression(n_samp = 3000, beta0 = 2, beta1 = 3)
+```
+
+## `sim_bern_mean`
+
+The `sim_bern_mean` function simulates data from a Bernoulli distribution and returns a dataframe containing the sample size and sample mean. The function has two arguments: the sample size and the probability of taking the value 1 in each experiment. 
+
+The code chunk below demonstrates the usage of this function using two examples.
+
+```{r}
+sim_bern_mean(n_samp = 30, prob = .95)
+sim_bern_mean(n_samp = 3000, prob = .95)
+```
+
+## `simulate_nrep`
+
+The function `simulate_nrep` is a wrapper for `purrr:rerun` that is used to repeat the simulations made possible by `sim_regression` and `sim_bern_mean`. This function has two arguments: the number of simulation repetitions and the simulation function (i.e. `sim_regression` or `sim_bern_mean`); additional arguments are passed to the simulation function. 
+
+The purpose of this function (and of this package) is to illustrate the properties of estimators under repeated sampling. For example, we can obtain an empirical distribution of regression coefficients and plot the result using the lines below.
+
+```{r}
+sim_results = 
+  simulate_nrep(n_rep = 100, sim_func = sim_regression,
+                n_samp = 30, beta0 = 2, beta1 = 3)
+
+ggplot(sim_results, aes(x = beta0_hat, y = beta1_hat)) + 
+  geom_point()
+```
+
+Similarly, we can obtain an empirical distribution of the sample mean for a Bernoulli distribution and create a density plot using the lines below. 
+
+```{r}
+sim_results = 
+  simulate_nrep(n_rep = 100, sim_func = sim_bern_mean,
+                n_samp = 30, prob = .95)
+
+ggplot(sim_results, aes(x = samp_avg)) + 
+  geom_density()
+```

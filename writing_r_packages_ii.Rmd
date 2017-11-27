@@ -28,19 +28,87 @@ knitr::opts_chunk$set(
 
 ## Example
 
-Keep working on the same package.
-
-### Vignettes
-
-Short vignette for the package; include as Rmd. 
+For today's example, I'll continue working on `example.package`, the R package we started in [writing R packages I](writing_r_packages_i.html). 
 
 ### Search path
 
-search(), MASS::select vs tidyverse::select
+Before jumping into new pacakge development stuff, we're going to take a closer look at R's search path. You can see your current search path using `search()`. 
 
-### NAMESPACE
+```{r}
+search()
+```
 
-Look at namespace file in package at various devel stages
+This shows the packages in the search path; mostly we have default packages. 
+
+When you call a function, R has to find it. We've often made the location of a function explicit using `package::function()` which tells R specifically where to look, but doesn't affect the search path.
+
+```{r}
+iris = janitor::clean_names(iris)
+search()
+```
+
+Note the search path hasn't changed. 
+
+When you call a function, R will look for it in the global environment and then in attached packages. Throughout this course, we've been using `library()` to attach a package to the search path, meaning that it is included in the collection of packages R searches when trying to find a function. Just calling `clean_names()` won't work because `janitor` isn't in the search path, but we can attach it and then everything works fine.
+
+```{r}
+library(janitor)
+search()
+
+iris = clean_names(iris)
+```
+
+Why not just attach everything? At least in part, because of naming conflicts. For example, both `MASS` and `dplyr` have functions called `select()`, and they do really different things. If you load both packages, which version you get depends on the order in which they're loaded. 
+This, for example, works.
+
+```{r}
+library(MASS)
+library(tidyverse)
+
+iris %>% 
+  as_tibble() %>% 
+  select(sepal_length)
+```
+
+Note the warning that `dplyr::select()` masks `MASS::select()`. 
+
+The code below detaches both.
+
+```{r}
+detach("package:tidyverse", unload = TRUE)
+detach("package:MASS", unload = TRUE)
+```
+
+Now we try again in reverse order.
+
+```{r, error = TRUE}
+library(tidyverse)
+library(MASS)
+
+iris %>% 
+  as_tibble() %>% 
+  select(sepal_length)
+
+iris %>% 
+  as_tibble() %>% 
+  dplyr::select(sepal_length)
+```
+
+The first attempt produces an error, because it's using (implicitly) `MASS::select()`; the second is clear about which `select` to use and works as expected. 
+
+As you work more in R you will run into search path issues (if you haven't already), and understanding how attaching packages affects the search path will help you resolve this. This discussion also ilustrates why it's best to only attach the packages you need, and to use `package::function()` notation in cases where a package isn't used repeatedly. 
+
+
+### `NAMESPACE`
+
+The search path discussion is particularly relevant in the context of writing your own packages. In particular, the `NAMESPACE` file determines search path associated with your package. 
+
+We used `@import tidyverse` in our roxygen comments, which adds the statement `import(tidyverse)` to the `NAMESPACE`. As a result, code in our package will include `tidyverse` when looking for functions. 
+
+There's an important but confusing distinction between import _directives_ in the `NAMESPACE` and the `Import` _field_ in the `DESCRIPTION`. Although they share a name, these mean different things: roughly, in the `DESCRIPTION` we're listing packages that have to be installed for our package to work, while in the `NAMESPACE` we're listing packages that need to be included in the search path. 
+
+To illustrate this distinction, recall that we used `broom::tidy()` in our functions rather than including `@import broom` in the roxygen comments. This makes it very clear where `tidy()` comes from, and means we don't need `broom` in the search path; thus, `broom` doesn't appear in the `NAMESPACE`. We do still need the package though, so it's listed as a dependency in the `DESCRIPTION`. 
+
 
 ### Checks
 
@@ -50,7 +118,35 @@ Run check on old version of package
 
 Write a couple of simple tests
 
+### Vignettes
 
+Help pages are great if you know what to look for, or need a reminder about arguments. But to give a general sense of how the package works -- what functions do, how they interact, why you wrote it -- you needed longer documentation. 
+
+Short vignette for the package; include as Rmd. 
+
+```{r, eval = FALSE}
+devtools::use_vignette("ep_vignette")
+```
+
+This changes some infrastructure
+
+* Adds knitr and rmarkdown to Suggests in DESCRIPTION.
+* Creates a new file with boilerplate vignette content, vignettes/hello-foofactors.Rmd.
+* Adds inst/doc to .gitignore.
+
+If using RStudio, open vignettes/hello-foofactors.Rmd for editing.
+
+Now you need to edit vignettes/hello-foofactors.Rmd. At the very least, do this:
+
+* Replace both instances of “Vignette Title” in the YAML with an actual title and with the same title.
+* List yourself as author or remove that line.
+* Remove the boilerplate content and throw in some usage. Even early on, just mine your examples or tests for something to throw in here. It is better than nothing.
+
+The vignette I wrote for `example.package` can be downloaded [here](resources/sim_vignette.Rmd). 
+
+gets complicated because vignettes are stored in inst/doc, which we're gitignoring. 
+
+building a package (going from source to bundle) will compile the vignette and include that in the bundle -- that way, packages installed from a bundle will have vignettes available. generally, installing from github builds the package bundle and installs that, but doesn't compile vignettes to save time. you can force the inclusion of the vignette using `devtools::install_github(build_vignettes = TRUE)` and then view the vignette using `vignette("ep_vignette")`. For packages I put on GH, I usually include those lines in my README with an idea about how long it will take to build the vingette. 
 
 
 

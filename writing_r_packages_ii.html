@@ -379,18 +379,108 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Keep working on the same package.</p>
-<div id="vignettes" class="section level3">
-<h3>Vignettes</h3>
-<p>Short vignette for the package; include as Rmd.</p>
-</div>
+<p>For today’s example, I’ll continue working on <code>example.package</code>, the R package we started in <a href="writing_r_packages_i.html">writing R packages I</a>.</p>
 <div id="search-path" class="section level3">
 <h3>Search path</h3>
-<p>search(), MASS::select vs tidyverse::select</p>
+<p>Before jumping into new pacakge development stuff, we’re going to take a closer look at R’s search path. You can see your current search path using <code>search()</code>.</p>
+<pre class="r"><code>search()
+## [1] &quot;.GlobalEnv&quot;        &quot;package:stats&quot;     &quot;package:graphics&quot; 
+## [4] &quot;package:grDevices&quot; &quot;package:utils&quot;     &quot;package:datasets&quot; 
+## [7] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
+<p>This shows the packages in the search path; mostly we have default packages.</p>
+<p>When you call a function, R has to find it. We’ve often made the location of a function explicit using <code>package::function()</code> which tells R specifically where to look, but doesn’t affect the search path.</p>
+<pre class="r"><code>iris = janitor::clean_names(iris)
+search()
+## [1] &quot;.GlobalEnv&quot;        &quot;package:stats&quot;     &quot;package:graphics&quot; 
+## [4] &quot;package:grDevices&quot; &quot;package:utils&quot;     &quot;package:datasets&quot; 
+## [7] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
+<p>Note the search path hasn’t changed.</p>
+<p>When you call a function, R will look for it in the global environment and then in attached packages. Throughout this course, we’ve been using <code>library()</code> to attach a package to the search path, meaning that it is included in the collection of packages R searches when trying to find a function. Just calling <code>clean_names()</code> won’t work because <code>janitor</code> isn’t in the search path, but we can attach it and then everything works fine.</p>
+<pre class="r"><code>library(janitor)
+search()
+##  [1] &quot;.GlobalEnv&quot;        &quot;package:janitor&quot;   &quot;package:stats&quot;    
+##  [4] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    
+##  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
+## [10] &quot;package:base&quot;
+
+iris = clean_names(iris)</code></pre>
+<p>Why not just attach everything? At least in part, because of naming conflicts. For example, both <code>MASS</code> and <code>dplyr</code> have functions called <code>select()</code>, and they do really different things. If you load both packages, which version you get depends on the order in which they’re loaded. This, for example, works.</p>
+<pre class="r"><code>library(MASS)
+library(tidyverse)
+## ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.3.4     ✔ dplyr   0.7.4
+## ✔ tidyr   0.7.2     ✔ stringr 1.2.0
+## ✔ readr   1.1.1     ✔ forcats 0.2.0
+## Warning: package &#39;tidyr&#39; was built under R version 3.4.2
+## Warning: package &#39;purrr&#39; was built under R version 3.4.2
+## Warning: package &#39;dplyr&#39; was built under R version 3.4.2
+## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ✖ dplyr::select() masks MASS::select()
+
+iris %&gt;% 
+  as_tibble() %&gt;% 
+  select(sepal_length)
+## # A tibble: 150 x 1
+##    sepal_length
+##           &lt;dbl&gt;
+##  1          5.1
+##  2          4.9
+##  3          4.7
+##  4          4.6
+##  5          5.0
+##  6          5.4
+##  7          4.6
+##  8          5.0
+##  9          4.4
+## 10          4.9
+## # ... with 140 more rows</code></pre>
+<p>Note the warning that <code>dplyr::select()</code> masks <code>MASS::select()</code>.</p>
+<p>The code below detaches both.</p>
+<pre class="r"><code>detach(&quot;package:tidyverse&quot;, unload = TRUE)
+detach(&quot;package:MASS&quot;, unload = TRUE)</code></pre>
+<p>Now we try again in reverse order.</p>
+<pre class="r"><code>library(tidyverse)
+library(MASS)
+## 
+## Attaching package: &#39;MASS&#39;
+## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     select
+
+iris %&gt;% 
+  as_tibble() %&gt;% 
+  select(sepal_length)
+## Error in select(., sepal_length): unused argument (sepal_length)
+
+iris %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(sepal_length)
+## # A tibble: 150 x 1
+##    sepal_length
+##           &lt;dbl&gt;
+##  1          5.1
+##  2          4.9
+##  3          4.7
+##  4          4.6
+##  5          5.0
+##  6          5.4
+##  7          4.6
+##  8          5.0
+##  9          4.4
+## 10          4.9
+## # ... with 140 more rows</code></pre>
+<p>The first attempt produces an error, because it’s using (implicitly) <code>MASS::select()</code>; the second is clear about which <code>select</code> to use and works as expected.</p>
+<p>As you work more in R you will run into search path issues (if you haven’t already), and understanding how attaching packages affects the search path will help you resolve this. This discussion also ilustrates why it’s best to only attach the packages you need, and to use <code>package::function()</code> notation in cases where a package isn’t used repeatedly.</p>
 </div>
 <div id="namespace" class="section level3">
-<h3>NAMESPACE</h3>
-<p>Look at namespace file in package at various devel stages</p>
+<h3><code>NAMESPACE</code></h3>
+<p>The search path discussion is particularly relevant in the context of writing your own packages. In particular, the <code>NAMESPACE</code> file determines search path associated with your package.</p>
+<p>We used <code>@import tidyverse</code> in our roxygen comments, which adds the statement <code>import(tidyverse)</code> to the <code>NAMESPACE</code>. As a result, code in our package will include <code>tidyverse</code> when looking for functions.</p>
+<p>There’s an important but confusing distinction between import <em>directives</em> in the <code>NAMESPACE</code> and the <code>Import</code> <em>field</em> in the <code>DESCRIPTION</code>. Although they share a name, these mean different things: roughly, in the <code>DESCRIPTION</code> we’re listing packages that have to be installed for our package to work, while in the <code>NAMESPACE</code> we’re listing packages that need to be included in the search path.</p>
+<p>To illustrate this distinction, recall that we used <code>broom::tidy()</code> in our functions rather than including <code>@import broom</code> in the roxygen comments. This makes it very clear where <code>tidy()</code> comes from, and means we don’t need <code>broom</code> in the search path; thus, <code>broom</code> doesn’t appear in the <code>NAMESPACE</code>. We do still need the package though, so it’s listed as a dependency in the <code>DESCRIPTION</code>.</p>
 </div>
 <div id="checks" class="section level3">
 <h3>Checks</h3>
@@ -399,6 +489,28 @@ div.tocify {
 <div id="tests" class="section level3">
 <h3>Tests</h3>
 <p>Write a couple of simple tests</p>
+</div>
+<div id="vignettes" class="section level3">
+<h3>Vignettes</h3>
+<p>Help pages are great if you know what to look for, or need a reminder about arguments. But to give a general sense of how the package works – what functions do, how they interact, why you wrote it – you needed longer documentation.</p>
+<p>Short vignette for the package; include as Rmd.</p>
+<pre class="r"><code>devtools::use_vignette(&quot;ep_vignette&quot;)</code></pre>
+<p>This changes some infrastructure</p>
+<ul>
+<li>Adds knitr and rmarkdown to Suggests in DESCRIPTION.</li>
+<li>Creates a new file with boilerplate vignette content, vignettes/hello-foofactors.Rmd.</li>
+<li>Adds inst/doc to .gitignore.</li>
+</ul>
+<p>If using RStudio, open vignettes/hello-foofactors.Rmd for editing.</p>
+<p>Now you need to edit vignettes/hello-foofactors.Rmd. At the very least, do this:</p>
+<ul>
+<li>Replace both instances of “Vignette Title” in the YAML with an actual title and with the same title.</li>
+<li>List yourself as author or remove that line.</li>
+<li>Remove the boilerplate content and throw in some usage. Even early on, just mine your examples or tests for something to throw in here. It is better than nothing.</li>
+</ul>
+<p>The vignette I wrote for <code>example.package</code> can be downloaded <a href="resources/sim_vignette.Rmd">here</a>.</p>
+<p>gets complicated because vignettes are stored in inst/doc, which we’re gitignoring.</p>
+<p>building a package (going from source to bundle) will compile the vignette and include that in the bundle – that way, packages installed from a bundle will have vignettes available. generally, installing from github builds the package bundle and installs that, but doesn’t compile vignettes to save time. you can force the inclusion of the vignette using <code>devtools::install_github(build_vignettes = TRUE)</code> and then view the vignette using <code>vignette(&quot;ep_vignette&quot;)</code>. For packages I put on GH, I usually include those lines in my README with an idea about how long it will take to build the vingette.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
